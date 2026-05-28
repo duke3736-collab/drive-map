@@ -5,6 +5,13 @@ import Script from "next/script";
 import AdBanner from "@/components/AdBanner";
 import PWAInstallButton from "@/components/PWAInstallButton";
 
+declare global {
+  interface Window {
+    kakao: any;
+    Kakao: any;
+  }
+}
+
 interface Course {
   id: number;
   title: string;
