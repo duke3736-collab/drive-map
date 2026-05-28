@@ -519,7 +519,7 @@ export default function Home() {
       )}
 
       {/* 지도 컨트롤 (확대/축소/내위치) */}
-      <div className="absolute z-20 top-1/2 -translate-y-1/2 right-4 md:transform-none md:top-6 md:bottom-auto md:right-auto md:left-[424px] flex flex-col gap-2 shadow-[0_5px_15px_rgba(0,0,0,0.3)]">
+      <div className="absolute z-20 top-1/2 -translate-y-1/2 right-4 md:transform-none md:top-auto md:bottom-20 md:right-auto md:left-[424px] flex flex-col gap-2 shadow-[0_5px_15px_rgba(0,0,0,0.3)]">
         <button 
           onClick={findMyLocation}
           className="w-10 h-10 bg-white/90 backdrop-blur-sm rounded-xl border border-slate-200 flex items-center justify-center text-slate-700 hover:bg-white hover:text-sky-600 transition-colors shadow-sm"
