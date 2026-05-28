@@ -349,6 +349,11 @@ export default function Home() {
         <div className="grid grid-cols-2 gap-3 pt-4">
           <button 
             onClick={() => {
+              const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+              if (!isMobile) {
+                alert("🚗 스마트폰에서 접속하셔야 내비게이션 앱이 실행됩니다!\n(PC에서는 내비 어플이 없어서 작동하지 않습니다)");
+                return;
+              }
               const wps = parseWaypoints(selectedCourse.waypoints);
               if (wps.length > 0) {
                 const dest = wps[wps.length - 1];
@@ -361,6 +366,11 @@ export default function Home() {
           </button>
           <button 
             onClick={() => {
+              const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+              if (!isMobile) {
+                alert("🚗 스마트폰에서 접속하셔야 카카오내비 앱이 실행됩니다!\n(PC에서는 내비 어플이 없어서 작동하지 않습니다)");
+                return;
+              }
               const wps = parseWaypoints(selectedCourse.waypoints);
               if (wps.length > 0) {
                 const dest = wps[wps.length - 1];
