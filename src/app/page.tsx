@@ -509,15 +509,17 @@ export default function Home() {
             </div>
           </div>
           
-          {/* 두 번째 플로팅 광고 (예비 스폰서) */}
-          <div className="w-full bg-slate-900/80 backdrop-blur-lg rounded-2xl border border-slate-700/80 p-4 shadow-[0_10px_30px_rgba(0,0,0,0.5)] hover:border-pink-500/50 transition-colors cursor-pointer group overflow-hidden relative">
-            <div className="absolute inset-0 bg-gradient-to-br from-pink-600/10 to-transparent"></div>
-            <div className="relative z-10 flex flex-col gap-2">
-              <span className="text-[10px] font-black tracking-widest text-slate-500 uppercase">Event</span>
-              <div className="w-full h-20 bg-slate-800 rounded-lg flex items-center justify-center">
-                <span className="text-slate-400 font-bold group-hover:text-pink-400 transition-colors">🎁 주유권 추첨 이벤트</span>
-              </div>
-            </div>
+          {/* 두 번째 플로팅 광고 (쿠팡 파트너스 - 국내여행) */}
+          <div className="w-full bg-slate-900/80 backdrop-blur-lg rounded-2xl border border-slate-700/80 p-3 shadow-[0_10px_30px_rgba(0,0,0,0.5)] overflow-hidden flex justify-center items-center">
+            <iframe 
+              src="https://ads-partners.coupang.com/widgets.html?id=992805&template=carousel&trackingCode=AF2374736&subId=&width=250&height=300" 
+              width="250" 
+              height="300" 
+              frameBorder="0" 
+              scrolling="no" 
+              referrerPolicy="unsafe-url"
+              className="rounded-lg bg-white"
+            ></iframe>
           </div>
         </div>
       </div>
