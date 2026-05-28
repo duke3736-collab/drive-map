@@ -388,25 +388,30 @@ export default function Home() {
         </div>
 
         {/* PC 전용: 사이드바 코스 디테일 및 광고 영역 */}
-        <div className="hidden md:flex flex-col flex-1 overflow-y-auto mt-6 pr-2 custom-scrollbar">
-          {selectedCourse ? (
-            renderCourseDetails(true)
-          ) : (
-            <div className="flex flex-col items-center justify-center h-full text-slate-500 pb-20">
-              <span className="text-5xl mb-4">📍</span>
-              <p className="font-bold text-lg mb-2 text-slate-400">지도에서 코스를 선택해주세요</p>
-              <p className="text-sm text-slate-600 text-center px-4">
-                오른쪽 지도에 표시된 마커를 클릭하시면<br/>상세한 코스 정보와 뷰를 확인할 수 있습니다.
-              </p>
-              
-              {/* 수익화 배너 영역 (광고주 배너) */}
-              <div className="mt-16 w-full h-32 bg-slate-800/50 rounded-xl flex items-center justify-center border border-slate-700/50 border-dashed hover:bg-slate-800 transition-colors cursor-pointer group">
-                <p className="text-slate-500 text-sm font-bold group-hover:text-indigo-400 transition-colors">
-                  [ AD ] 배너 광고 문의
+        <div className="hidden md:flex flex-col flex-1 overflow-y-auto mt-6 pr-2 custom-scrollbar relative">
+          <div className="flex-1 pb-4">
+            {selectedCourse ? (
+              renderCourseDetails(true)
+            ) : (
+              <div className="flex flex-col items-center justify-center h-full text-slate-500 pb-10">
+                <span className="text-5xl mb-4">📍</span>
+                <p className="font-bold text-lg mb-2 text-slate-400">지도에서 코스를 선택해주세요</p>
+                <p className="text-sm text-slate-600 text-center px-4">
+                  오른쪽 지도에 표시된 마커를 클릭하시면<br/>상세한 코스 정보와 뷰를 확인할 수 있습니다.
                 </p>
               </div>
+            )}
+          </div>
+          
+          {/* 수익화 배너 영역 (광고주 배너) - 항상 하단 고정 노출 */}
+          <div className="mt-auto pt-6 w-full shrink-0">
+            <div className="w-full h-24 bg-slate-800/50 rounded-xl flex flex-col items-center justify-center border border-slate-700/50 border-dashed hover:bg-slate-800 transition-colors cursor-pointer group">
+              <span className="text-xs text-slate-600 mb-1">Sponsored</span>
+              <p className="text-slate-500 text-sm font-bold group-hover:text-indigo-400 transition-colors">
+                [ AD ] 배너 광고 문의
+              </p>
             </div>
-          )}
+          </div>
         </div>
       </div>
 
