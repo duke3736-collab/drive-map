@@ -1,0 +1,16 @@
+{
+  "name": "Drive Map",
+  "short_name": "Drive Map",
+  "description": "전국 감성 드라이브 코스 지도",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#020617",
+  "theme_color": "#020617",
+  "icons": [
+    {
+      "src": "/favicon.ico",
+      "sizes": "64x64",
+      "type": "image/x-icon"
+    }
+  ]
+}

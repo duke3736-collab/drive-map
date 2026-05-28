@@ -3,6 +3,7 @@
 import { useEffect, useState, useRef } from "react";
 import Script from "next/script";
 import AdBanner from "@/components/AdBanner";
+import PWAInstallButton from "@/components/PWAInstallButton";
 
 interface Course {
   id: number;
@@ -371,6 +372,46 @@ export default function Home() {
             <span className="text-lg">🚕</span> 카카오내비
           </button>
         </div>
+
+        {/* 카카오톡 공유 버튼 */}
+        <button 
+          onClick={() => {
+            if (!window.Kakao) {
+              alert("카카오 SDK가 아직 로드되지 않았습니다.");
+              return;
+            }
+            if (!window.Kakao.isInitialized()) {
+              window.Kakao.init(KAKAO_APP_KEY);
+            }
+            
+            const url = "https://drive.weknews.com";
+            
+            window.Kakao.Share.sendDefault({
+              objectType: 'feed',
+              content: {
+                title: `[Drive Map] ${selectedCourse.title}`,
+                description: selectedCourse.description,
+                imageUrl: selectedCourse.imageUrl || 'https://drive.weknews.com/images/hero.png',
+                link: {
+                  mobileWebUrl: url,
+                  webUrl: url,
+                },
+              },
+              buttons: [
+                {
+                  title: '코스 자세히 보기',
+                  link: {
+                    mobileWebUrl: url,
+                    webUrl: url,
+                  },
+                },
+              ],
+            });
+          }}
+          className="w-full mt-3 bg-[#FEE500] hover:bg-[#F4DC00] text-[#191919] font-bold py-3 rounded-xl transition-colors flex items-center justify-center gap-2 shadow-md"
+        >
+          <span className="text-xl">💬</span> 카카오톡 공유하기
+        </button>
       </div>
     );
   };
@@ -410,6 +451,10 @@ export default function Home() {
         src={`//dapi.kakao.com/v2/maps/sdk.js?appkey=${KAKAO_APP_KEY}&autoload=false`}
         strategy="afterInteractive"
         onLoad={initMap}
+      />
+      <Script 
+        src="https://t1.kakaocdn.net/kakao_js_sdk/2.7.2/kakao.min.js" 
+        strategy="lazyOnload"
       />
 
       {/* 스플래시 화면이 끝난 후에만 구글 애드센스 로드 (첫 화면 하단 앵커 광고 방지) */}
@@ -470,27 +515,31 @@ export default function Home() {
           <span className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400">🔍</span>
         </div>
 
-        {/* 자사 서비스(씨맵) 크로스 프로모션 배너 */}
+        {/* 자사 서비스(씨맵) 크로스 프로모션 배너 및 PWA 설치 */}
         {!selectedCourse && (
-          <a 
-            href="https://map.weknews.com" 
-            target="_blank" 
-            rel="noopener noreferrer"
-            className="block w-full bg-gradient-to-r from-sky-500 to-blue-600 rounded-2xl p-4 mb-6 shadow-lg shadow-sky-500/20 hover:shadow-sky-500/40 hover:-translate-y-1 transition-all group relative overflow-hidden"
-          >
-            <div className="absolute -right-4 -top-4 w-24 h-24 bg-white/20 rounded-full blur-xl group-hover:bg-white/30 transition-colors"></div>
-            <div className="relative z-10 flex items-center justify-between">
-              <div>
-                <h3 className="text-white font-black text-lg mb-1 flex items-center gap-2 tracking-tight">
-                  <span className="text-2xl group-hover:animate-bounce">🌊</span> 여름 물놀이 스팟 찾기
-                </h3>
-                <p className="text-sky-100 text-xs font-semibold">전국 계곡, 해수욕장, 수영장을 씨맵에서 한눈에!</p>
+          <div className="mb-6">
+            <a 
+              href="https://map.weknews.com" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="block w-full bg-gradient-to-r from-sky-500 to-blue-600 rounded-2xl p-4 shadow-lg shadow-sky-500/20 hover:shadow-sky-500/40 hover:-translate-y-1 transition-all group relative overflow-hidden"
+            >
+              <div className="absolute -right-4 -top-4 w-24 h-24 bg-white/20 rounded-full blur-xl group-hover:bg-white/30 transition-colors"></div>
+              <div className="relative z-10 flex items-center justify-between">
+                <div>
+                  <h3 className="text-white font-black text-lg mb-1 flex items-center gap-2 tracking-tight">
+                    <span className="text-2xl group-hover:animate-bounce">🌊</span> 여름 물놀이 스팟 찾기
+                  </h3>
+                  <p className="text-sky-100 text-xs font-semibold">전국 계곡, 해수욕장, 수영장을 씨맵에서 한눈에!</p>
+                </div>
+                <div className="bg-white text-blue-600 w-8 h-8 rounded-full flex items-center justify-center font-black shadow-md group-hover:scale-110 transition-transform shrink-0">
+                  ➔
+                </div>
               </div>
-              <div className="bg-white text-blue-600 w-8 h-8 rounded-full flex items-center justify-center font-black shadow-md group-hover:scale-110 transition-transform shrink-0">
-                ➔
-              </div>
-            </div>
-          </a>
+            </a>
+            
+            <PWAInstallButton />
+          </div>
         )}
 
         <div className="flex md:flex-wrap overflow-x-auto gap-2 pb-2 scrollbar-hide shrink-0">

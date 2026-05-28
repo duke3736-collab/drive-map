@@ -3,8 +3,24 @@ import Script from "next/script";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "드라이브 맵 (Drive Map) - 전국 감성 드라이브 코스 추천",
-  description: "야경, 해안도로, 벚꽃길 등 전국 드라이버들을 위한 숨은 드라이브 코스 지도입니다.",
+  title: "Drive Map - 전국 감성 드라이브 코스",
+  description: "답답한 도심을 벗어나 완벽한 궤적을 그리며 달려보세요. 전국 드라이브 코스와 주변 핫플을 한눈에!",
+  manifest: "/manifest.json",
+  openGraph: {
+    title: "Drive Map - 전국 감성 드라이브 코스",
+    description: "답답한 도심을 벗어나 완벽한 궤적을 그리며 달려보세요.",
+    url: "https://drive.weknews.com",
+    siteName: "Drive Map",
+    images: [
+      {
+        url: "https://drive.weknews.com/images/hero.png",
+        width: 1200,
+        height: 630,
+      }
+    ],
+    locale: "ko_KR",
+    type: "website",
+  },
 };
 
 export const viewport: Viewport = {
