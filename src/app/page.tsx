@@ -420,6 +420,29 @@ export default function Home() {
           <span className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400">🔍</span>
         </div>
 
+        {/* 자사 서비스(씨맵) 크로스 프로모션 배너 */}
+        {!selectedCourse && (
+          <a 
+            href="https://map.weknews.com" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="block w-full bg-gradient-to-r from-sky-500 to-blue-600 rounded-2xl p-4 mb-6 shadow-lg shadow-sky-500/20 hover:shadow-sky-500/40 hover:-translate-y-1 transition-all group relative overflow-hidden"
+          >
+            <div className="absolute -right-4 -top-4 w-24 h-24 bg-white/20 rounded-full blur-xl group-hover:bg-white/30 transition-colors"></div>
+            <div className="relative z-10 flex items-center justify-between">
+              <div>
+                <h3 className="text-white font-black text-lg mb-1 flex items-center gap-2 tracking-tight">
+                  <span className="text-2xl group-hover:animate-bounce">🌊</span> 여름 물놀이 스팟 찾기
+                </h3>
+                <p className="text-sky-100 text-xs font-semibold">전국 계곡, 해수욕장, 수영장을 씨맵에서 한눈에!</p>
+              </div>
+              <div className="bg-white text-blue-600 w-8 h-8 rounded-full flex items-center justify-center font-black shadow-md group-hover:scale-110 transition-transform shrink-0">
+                ➔
+              </div>
+            </div>
+          </a>
+        )}
+
         <div className="flex md:flex-wrap overflow-x-auto gap-2 pb-2 scrollbar-hide shrink-0">
           {themes.map(t => (
             <button
