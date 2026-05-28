@@ -21,7 +21,7 @@ export default function RootLayout({
   return (
     <html lang="ko">
       <body className="bg-slate-900 text-slate-100 font-sans antialiased selection:bg-indigo-500 selection:text-white">
-        <main className="max-w-[480px] mx-auto min-h-screen bg-slate-950 relative shadow-2xl overflow-hidden">
+        <main className="w-full min-h-screen bg-slate-950 relative shadow-2xl overflow-hidden">
           {children}
         </main>
       </body>
