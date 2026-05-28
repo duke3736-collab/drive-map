@@ -57,26 +57,26 @@ export default function Home() {
   // 뒤로가기 및 닫기 공통 함수
   const closeCourse = () => {
     setSelectedCourse(null);
-    if (window.history.state?.courseOpen) {
-      window.history.back();
+    if (window.location.hash === '#course') {
+      window.history.back(); // 해시 제거
     }
   };
 
-  // 브라우저 뒤로가기 버튼 감지
+  // 브라우저 뒤로가기 감지 (해시 변경 감지)
   useEffect(() => {
-    const handlePopState = () => {
-      if (selectedCourse) {
+    const handleHashChange = () => {
+      if (window.location.hash !== '#course') {
         setSelectedCourse(null);
       }
     };
-    window.addEventListener('popstate', handlePopState);
-    return () => window.removeEventListener('popstate', handlePopState);
-  }, [selectedCourse]);
+    window.addEventListener('hashchange', handleHashChange);
+    return () => window.removeEventListener('hashchange', handleHashChange);
+  }, []);
 
-  // 코스가 선택되었을 때 history state 추가
+  // 코스 선택 시 URL 해시 추가 (히스토리 스택에 쌓기)
   useEffect(() => {
-    if (selectedCourse && !window.history.state?.courseOpen) {
-      window.history.pushState({ courseOpen: true }, '');
+    if (selectedCourse && window.location.hash !== '#course') {
+      window.location.hash = 'course';
     }
   }, [selectedCourse]);
 
