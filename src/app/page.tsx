@@ -48,6 +48,32 @@ export default function Home() {
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [showSplash, setShowSplash] = useState(true);
 
+  // 뒤로가기 및 닫기 공통 함수
+  const closeCourse = () => {
+    setSelectedCourse(null);
+    if (window.history.state?.courseOpen) {
+      window.history.back();
+    }
+  };
+
+  // 브라우저 뒤로가기 버튼 감지
+  useEffect(() => {
+    const handlePopState = () => {
+      if (selectedCourse) {
+        setSelectedCourse(null);
+      }
+    };
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, [selectedCourse]);
+
+  // 코스가 선택되었을 때 history state 추가
+  useEffect(() => {
+    if (selectedCourse && !window.history.state?.courseOpen) {
+      window.history.pushState({ courseOpen: true }, '');
+    }
+  }, [selectedCourse]);
+
   // Derived state for filtering
   const filteredCourses = courses.filter(c => {
     if (activeTheme !== 'all' && c.theme !== activeTheme) return false;
@@ -518,7 +544,7 @@ export default function Home() {
             value={searchQuery}
             onChange={(e) => {
               setSearchQuery(e.target.value);
-              setSelectedCourse(null);
+              closeCourse();
             }}
             className="w-full bg-slate-800/80 border border-slate-700 text-white px-4 py-3 rounded-xl focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all placeholder:text-slate-500 shadow-inner"
           />
@@ -686,25 +712,23 @@ export default function Home() {
           md:hidden absolute bottom-0 left-0 w-full bg-slate-900/95 backdrop-blur-xl border-t border-slate-800 rounded-t-[32px] p-6 pt-2 shadow-[0_-10px_40px_rgba(0,0,0,0.5)] transition-transform duration-500 ease-out z-30 custom-scrollbar overflow-y-auto max-h-[85vh]
           ${selectedCourse ? 'translate-y-0' : 'translate-y-full'}
         `}
-        onTouchStart={(e) => {
-          // Record the starting Y position of the touch
-          (window as any).touchStartY = e.touches[0].clientY;
-        }}
-        onTouchEnd={(e) => {
-          const touchEndY = e.changedTouches[0].clientY;
-          const touchStartY = (window as any).touchStartY || 0;
-          // If swiped down more than 50px, close the bottom sheet
-          if (touchEndY - touchStartY > 50) {
-            setSelectedCourse(null);
-          }
-        }}
       >
         {/* 드래그 손잡이 (Pill) */}
         <div 
-          className="w-full flex justify-center pb-4 cursor-pointer"
-          onClick={() => setSelectedCourse(null)}
+          className="w-full flex justify-center pb-6 pt-2 cursor-pointer"
+          onClick={closeCourse}
+          onTouchStart={(e) => {
+            (window as any).pillTouchStartY = e.touches[0].clientY;
+          }}
+          onTouchEnd={(e) => {
+            const touchEndY = e.changedTouches[0].clientY;
+            const touchStartY = (window as any).pillTouchStartY || 0;
+            if (touchEndY - touchStartY > 20) {
+              closeCourse();
+            }
+          }}
         >
-          <div className="w-12 h-1.5 bg-slate-600 rounded-full"></div>
+          <div className="w-16 h-1.5 bg-slate-600 rounded-full"></div>
         </div>
         
         {renderCourseDetails(false)}
