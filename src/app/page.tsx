@@ -12,6 +12,7 @@ interface Course {
   distance: string;
   duration: string;
   waypoints: string;
+  imageUrl?: string;
 }
 
 interface ParsedWaypoint {
@@ -34,12 +35,15 @@ export default function Home() {
   const mapRef = useRef<any>(null);
   const polylinesRef = useRef<any[]>([]);
   const markersRef = useRef<any[]>([]);
+  // 이미 서버에서 받아온 도로 좌표 및 실시간 거리/시간 캐싱
+  const cachedPathsRef = useRef<Record<number, { path: any[], distance?: number, duration?: number }>>({});
 
   const [mapLoaded, setMapLoaded] = useState(false);
   const [courses, setCourses] = useState<Course[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [selectedCourse, setSelectedCourse] = useState<Course | null>(null);
   const [activeTheme, setActiveTheme] = useState<string>("all");
+  const [showSplash, setShowSplash] = useState(true);
 
   const themes = [
     { id: "all", icon: "🌌", label: "전체보기" },
@@ -54,8 +58,18 @@ export default function Home() {
     const fetchCourses = async () => {
       try {
         const res = await fetch(GOOGLE_SHEET_URL);
-        const data = await res.json();
-        // 헤더 행이 들어올 수도 있으므로 id가 있는 것만 필터링
+        const rawData = await res.json();
+        
+        // 공백 제거 (키 및 문자열 값의 앞뒤 공백/줄바꿈 모두 제거)
+        const data = rawData.map((item: any) => {
+          const cleanItem: any = {};
+          Object.keys(item).forEach(key => {
+            const val = item[key];
+            cleanItem[key.trim()] = typeof val === 'string' ? val.trim() : val;
+          });
+          return cleanItem;
+        });
+
         setCourses(data.filter((item: any) => item.id));
       } catch (e) {
         console.error("데이터 로드 실패", e);
@@ -73,17 +87,29 @@ export default function Home() {
     window.kakao.maps.load(() => {
       if (!mapContainerRef.current) return;
       const options = {
-        // 초기 서울 중심 좌표
         center: new window.kakao.maps.LatLng(37.5665, 126.9780),
         level: 10,
       };
       const map = new window.kakao.maps.Map(mapContainerRef.current, options);
       mapRef.current = map;
+      
+      const updateMarkerScale = () => {
+        const level = map.getLevel();
+        let scale = 1;
+        if (level <= 4) scale = 1.8;
+        else if (level <= 6) scale = 1.5;
+        else if (level <= 8) scale = 1.2;
+        else if (level <= 10) scale = 1.0;
+        else scale = 0.8;
+        document.documentElement.style.setProperty('--marker-scale', scale.toString());
+      };
+      updateMarkerScale();
+      window.kakao.maps.event.addListener(map, 'zoom_changed', updateMarkerScale);
+
       setMapLoaded(true);
     });
   };
 
-  // 폴백
   useEffect(() => {
     if (mapLoaded) return;
     const interval = setInterval(() => {
@@ -95,7 +121,6 @@ export default function Home() {
     return () => clearInterval(interval);
   }, [mapLoaded]);
 
-  // waypoints 문자열 파싱 (이름,위도,경도|이름,위도,경도)
   const parseWaypoints = (str: string): ParsedWaypoint[] => {
     if (!str) return [];
     return str.split('|').map(pt => {
@@ -108,11 +133,11 @@ export default function Home() {
     });
   };
 
-  // 코스 그리기
+  // 코스 그리기 (도로망 연동 반영)
   useEffect(() => {
     if (!mapLoaded || !mapRef.current || courses.length === 0) return;
 
-    // 기존 선, 마커 초기화
+    // 기존 리셋
     polylinesRef.current.forEach(p => p.setMap(null));
     markersRef.current.forEach(m => m.setMap(null));
     polylinesRef.current = [];
@@ -122,39 +147,22 @@ export default function Home() {
       ? courses 
       : courses.filter(c => c.theme === activeTheme);
 
-    filteredCourses.forEach(course => {
+    filteredCourses.forEach(async (course) => {
       const waypoints = parseWaypoints(course.waypoints);
       if (waypoints.length < 2) return;
-
-      const path = waypoints.map(wp => new window.kakao.maps.LatLng(wp.lat, wp.lng));
       
-      // 코스 선 그리기 (Polyline)
       const isSelected = selectedCourse?.id === course.id;
-      const polyline = new window.kakao.maps.Polyline({
-        path: path,
-        strokeWeight: isSelected ? 8 : 5,
-        strokeColor: isSelected ? '#3B82F6' : '#94A3B8', // 선택되면 파란색, 아니면 회색
-        strokeOpacity: isSelected ? 1 : 0.6,
-        strokeStyle: 'solid'
-      });
-      polyline.setMap(mapRef.current);
-      polylinesRef.current.push(polyline);
 
-      // 선 클릭 이벤트
-      window.kakao.maps.event.addListener(polyline, 'click', () => {
-        handleCourseClick(course, waypoints);
-      });
-
-      // 마커(시작점, 도착점) 커스텀 오버레이
+      // 1. 마커 그리기
       [waypoints[0], waypoints[waypoints.length - 1]].forEach((wp, idx) => {
         const isStart = idx === 0;
         const contentNode = document.createElement('div');
         contentNode.innerHTML = `
-          <div class="relative flex flex-col items-center cursor-pointer transition-transform hover:scale-110 z-10 ${isSelected ? 'scale-110 z-20' : ''}">
-            <div class="bg-slate-900 border-2 ${isStart ? 'border-indigo-400' : 'border-rose-400'} text-white text-[10px] font-bold px-2 py-0.5 rounded-full shadow-lg mb-1 whitespace-nowrap">
+          <div class="relative flex flex-col items-center cursor-pointer transition-transform hover:scale-110 z-10 ${isSelected ? 'scale-125 z-20' : ''}" style="transform: scale(var(--marker-scale, 1)); transform-origin: bottom center;">
+            <div class="bg-slate-900 border-2 ${isStart ? 'border-indigo-400' : 'border-rose-400'} text-white text-xs md:text-sm font-bold px-3 py-1 rounded-full shadow-lg mb-1 whitespace-nowrap">
               ${wp.name}
             </div>
-            <div class="w-4 h-4 rounded-full ${isStart ? 'bg-indigo-500' : 'bg-rose-500'} border-2 border-white shadow-md"></div>
+            <div class="w-5 h-5 rounded-full ${isStart ? 'bg-indigo-500' : 'bg-rose-500'} border-[3px] border-white shadow-md"></div>
           </div>
         `;
         contentNode.onclick = () => handleCourseClick(course, waypoints);
@@ -167,16 +175,83 @@ export default function Home() {
         customOverlay.setMap(mapRef.current);
         markersRef.current.push(customOverlay);
       });
+
+      // 2. 도로에 밀착된 선(Polyline) 그리기
+      let pathCoordinates: any[] = [];
+      let realDistance: number | undefined;
+      let realDuration: number | undefined;
+      
+      if (cachedPathsRef.current[course.id]) {
+        // 이미 한 번 구한 적 있으면 캐시 사용 (빠름)
+        pathCoordinates = cachedPathsRef.current[course.id].path;
+        drawPolyline(course, pathCoordinates, waypoints, isSelected);
+      } else {
+        // 없으면 카카오 서버에서 길찾기 연산 받아오기
+        try {
+          const res = await fetch('/api/directions', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ waypoints })
+          });
+          const naviData = await res.json();
+          
+          if (naviData.routes && naviData.routes.length > 0) {
+            const route = naviData.routes[0];
+            realDistance = route.summary.distance; // 미터 단위
+            realDuration = route.summary.duration; // 초 단위
+
+            const sections = route.sections;
+            sections.forEach((section: any) => {
+              section.roads.forEach((road: any) => {
+                for (let i = 0; i < road.vertexes.length; i += 2) {
+                  // 카카오 API는 [lng, lat] 순서로 줍니다. LatLng 에는 (lat, lng) 순서로 넣습니다.
+                  const lng = road.vertexes[i];
+                  const lat = road.vertexes[i+1];
+                  pathCoordinates.push(new window.kakao.maps.LatLng(lat, lng));
+                }
+              });
+            });
+          } else {
+            // 실패 시 직선 폴백
+            pathCoordinates = waypoints.map(wp => new window.kakao.maps.LatLng(wp.lat, wp.lng));
+          }
+
+          cachedPathsRef.current[course.id] = { path: pathCoordinates, distance: realDistance, duration: realDuration };
+          drawPolyline(course, pathCoordinates, waypoints, isSelected);
+
+        } catch (e) {
+          console.error(e);
+          pathCoordinates = waypoints.map(wp => new window.kakao.maps.LatLng(wp.lat, wp.lng));
+          drawPolyline(course, pathCoordinates, waypoints, isSelected);
+        }
+      }
     });
 
   }, [courses, mapLoaded, activeTheme, selectedCourse]);
 
+  const drawPolyline = (course: Course, path: any[], waypoints: ParsedWaypoint[], isSelected: boolean) => {
+    if (!mapRef.current) return;
+    
+    const polyline = new window.kakao.maps.Polyline({
+      path: path,
+      strokeWeight: isSelected ? 10 : 6,
+      strokeColor: isSelected ? '#EF4444' : '#3B82F6', // 선택 시 진한 빨강, 미선택 시 파랑
+      strokeOpacity: isSelected ? 1 : 0.8,
+      strokeStyle: 'solid',
+      zIndex: isSelected ? 10 : 1
+    });
+    polyline.setMap(mapRef.current);
+    polylinesRef.current.push(polyline);
+
+    window.kakao.maps.event.addListener(polyline, 'click', () => {
+      handleCourseClick(course, waypoints);
+    });
+  };
+
   const handleCourseClick = (course: Course, waypoints: ParsedWaypoint[]) => {
     setSelectedCourse(course);
     
-    // 지도 중심 이동 및 확대
     if (mapRef.current && waypoints.length > 0) {
-      // 대략적인 중간 지점으로 이동
       const midIdx = Math.floor(waypoints.length / 2);
       const moveLatLon = new window.kakao.maps.LatLng(waypoints[midIdx].lat, waypoints[midIdx].lng);
       mapRef.current.panTo(moveLatLon);
@@ -184,14 +259,42 @@ export default function Home() {
   };
 
   return (
-    <div className="w-full h-[100dvh] flex flex-col relative bg-slate-950">
+    <div className="w-full h-[100dvh] flex flex-col relative bg-slate-950 overflow-hidden">
+      {/* 이니셜 D 감성의 메인 스플래시 화면 */}
+      {showSplash && (
+        <div className="absolute inset-0 z-50 bg-slate-950 flex flex-col items-center justify-center overflow-hidden">
+          <div 
+            className="absolute inset-0 bg-cover bg-center opacity-70 scale-105"
+            style={{ backgroundImage: "url('/images/hero.png')" }}
+          ></div>
+          <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/40 to-transparent"></div>
+          
+          <div className="relative z-10 text-center px-6 mt-32">
+            <span className="inline-block bg-indigo-600 text-white font-black px-5 py-2 rounded-full text-sm mb-6 shadow-lg shadow-indigo-500/50">
+              전국 감성 드라이브 코스
+            </span>
+            <h1 className="text-6xl font-black text-white mb-4 tracking-tighter drop-shadow-[0_5px_5px_rgba(0,0,0,0.8)] italic">
+              DRIVE MAP
+            </h1>
+            <p className="text-slate-200 font-bold mb-12 drop-shadow-md text-lg">
+              답답한 도심을 벗어나<br/>완벽한 궤적을 그리며 달려보세요
+            </p>
+            <button 
+              onClick={() => setShowSplash(false)}
+              className="bg-white text-slate-900 font-black text-xl px-12 py-5 rounded-full shadow-2xl hover:scale-105 hover:bg-slate-100 transition-all border-4 border-slate-200"
+            >
+              드라이브 시작하기 🏁
+            </button>
+          </div>
+        </div>
+      )}
+
       <Script 
         src={`//dapi.kakao.com/v2/maps/sdk.js?appkey=${KAKAO_APP_KEY}&autoload=false`}
         strategy="afterInteractive"
         onLoad={initMap}
       />
 
-      {/* 헤더 및 테마 필터 (지도 위에 둥둥 떠있게) */}
       <div className="absolute top-0 left-0 w-full z-10 p-4 bg-gradient-to-b from-slate-950/80 to-transparent">
         <h1 className="text-xl font-black text-white mb-3 tracking-tight flex items-center gap-2">
           <span>🚗</span> Drive Map
@@ -216,7 +319,6 @@ export default function Home() {
         </div>
       </div>
 
-      {/* 카카오맵 영역 */}
       <div className="flex-1 w-full relative bg-slate-900">
         {(!mapLoaded || isLoading) && (
           <div className="absolute inset-0 flex flex-col items-center justify-center bg-slate-950/80 backdrop-blur-sm z-20">
@@ -224,21 +326,25 @@ export default function Home() {
             <p className="text-slate-300 font-bold">
               {isLoading ? "코스 데이터를 불러오는 중..." : "지도를 불러오는 중..."}
             </p>
-            {/* 테스트용 임시 문구 (나중에 삭제 가능) */}
-            {isLoading && <p className="text-slate-500 text-xs mt-2 text-center px-4">대표님이 방금 만든 구글 시트에서<br/>실시간으로 데이터를 가져오고 있습니다!</p>}
           </div>
         )}
         <div ref={mapContainerRef} className="w-full h-full"></div>
       </div>
 
-      {/* Bottom Sheet (코스 선택 시 슬라이드업) */}
       <div className={`absolute bottom-0 left-0 w-full bg-slate-900/95 backdrop-blur-xl border-t border-slate-800 rounded-t-[32px] p-6 shadow-[0_-10px_40px_rgba(0,0,0,0.5)] transition-transform duration-500 ease-out z-30 ${selectedCourse ? 'translate-y-0' : 'translate-y-[120%]'}`}>
         
-        {/* 닫기 손잡이 */}
         <div className="w-12 h-1.5 bg-slate-700 rounded-full mx-auto mb-6 cursor-pointer" onClick={() => setSelectedCourse(null)}></div>
 
         {selectedCourse && (
           <div className="space-y-4">
+            {/* 코스 풍경 사진 (이미지 URL이 있을 경우에만 렌더링) */}
+            {selectedCourse.imageUrl && (
+              <div 
+                className="w-full h-48 bg-slate-800 rounded-2xl bg-cover bg-center shadow-inner mb-4 border border-slate-700"
+                style={{ backgroundImage: `url("${selectedCourse.imageUrl}")` }}
+              ></div>
+            )}
+            
             <div className="flex gap-2 flex-wrap">
               {selectedCourse.tags.split(' ').map((tag, idx) => (
                 <span key={idx} className="bg-indigo-500/20 text-indigo-400 border border-indigo-500/30 px-2 py-1 rounded-md text-xs font-bold">
@@ -258,11 +364,19 @@ export default function Home() {
             <div className="flex gap-4 pt-2 border-t border-slate-800">
               <div className="flex items-center gap-2">
                 <span className="text-slate-500 text-xs">총 거리</span>
-                <span className="font-bold text-slate-200">{selectedCourse.distance}</span>
+                <span className="font-bold text-slate-200">
+                  {cachedPathsRef.current[selectedCourse.id]?.distance 
+                    ? `${(cachedPathsRef.current[selectedCourse.id].distance! / 1000).toFixed(1)}km` 
+                    : selectedCourse.distance}
+                </span>
               </div>
               <div className="flex items-center gap-2">
                 <span className="text-slate-500 text-xs">예상 시간</span>
-                <span className="font-bold text-slate-200">{selectedCourse.duration}</span>
+                <span className="font-bold text-slate-200">
+                  {cachedPathsRef.current[selectedCourse.id]?.duration
+                    ? `${Math.ceil(cachedPathsRef.current[selectedCourse.id].duration! / 60)}분`
+                    : selectedCourse.duration}
+                </span>
               </div>
             </div>
 
