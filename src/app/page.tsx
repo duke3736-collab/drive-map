@@ -47,6 +47,12 @@ export default function Home() {
   const [activeTheme, setActiveTheme] = useState<string>("all");
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [showSplash, setShowSplash] = useState(true);
+  const [dragY, setDragY] = useState(0);
+
+  // selectedCourse가 닫히면 드래그 상태 초기화
+  useEffect(() => {
+    if (!selectedCourse) setDragY(0);
+  }, [selectedCourse]);
 
   // 뒤로가기 및 닫기 공통 함수
   const closeCourse = () => {
@@ -709,9 +715,12 @@ export default function Home() {
       {/* 모바일 하단 코스 디테일 바텀 시트 */}
       <div 
         className={`
-          md:hidden absolute bottom-0 left-0 w-full bg-slate-900/95 backdrop-blur-xl border-t border-slate-800 rounded-t-[32px] p-6 pt-2 shadow-[0_-10px_40px_rgba(0,0,0,0.5)] transition-transform duration-500 ease-out z-30 custom-scrollbar overflow-y-auto max-h-[85vh]
-          ${selectedCourse ? 'translate-y-0' : 'translate-y-full'}
+          md:hidden absolute bottom-0 left-0 w-full bg-slate-900/95 backdrop-blur-xl border-t border-slate-800 rounded-t-[32px] p-6 pt-2 shadow-[0_-10px_40px_rgba(0,0,0,0.5)] z-30 custom-scrollbar overflow-y-auto max-h-[85vh]
         `}
+        style={{
+          transform: selectedCourse ? `translateY(${dragY}px)` : 'translateY(100%)',
+          transition: dragY > 0 ? 'none' : 'transform 0.5s cubic-bezier(0.32, 0.72, 0, 1)'
+        }}
       >
         {/* 드래그 손잡이 (Pill) */}
         <div 
@@ -720,12 +729,22 @@ export default function Home() {
           onTouchStart={(e) => {
             (window as any).pillTouchStartY = e.touches[0].clientY;
           }}
-          onTouchEnd={(e) => {
-            const touchEndY = e.changedTouches[0].clientY;
-            const touchStartY = (window as any).pillTouchStartY || 0;
-            if (touchEndY - touchStartY > 20) {
-              closeCourse();
+          onTouchMove={(e) => {
+            const startY = (window as any).pillTouchStartY;
+            if (!startY) return;
+            const currentY = e.touches[0].clientY;
+            const deltaY = currentY - startY;
+            if (deltaY > 0) {
+              setDragY(deltaY);
             }
+          }}
+          onTouchEnd={(e) => {
+            if (dragY > 80) {
+              closeCourse();
+            } else {
+              setDragY(0);
+            }
+            (window as any).pillTouchStartY = null;
           }}
         >
           <div className="w-16 h-1.5 bg-slate-600 rounded-full"></div>
