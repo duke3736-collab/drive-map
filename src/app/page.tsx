@@ -273,6 +273,31 @@ export default function Home() {
     }
   };
 
+  const findMyLocation = () => {
+    if (!navigator.geolocation) {
+      alert("현재 브라우저에서는 위치 정보를 지원하지 않습니다.");
+      return;
+    }
+    navigator.geolocation.getCurrentPosition((position) => {
+      const lat = position.coords.latitude;
+      const lng = position.coords.longitude;
+      if (mapRef.current) {
+        const moveLatLon = new window.kakao.maps.LatLng(lat, lng);
+        mapRef.current.panTo(moveLatLon);
+        mapRef.current.setLevel(5);
+        
+        const content = `<div class="w-4 h-4 bg-red-500 rounded-full border-2 border-white shadow-md animate-pulse"></div>`;
+        const customOverlay = new window.kakao.maps.CustomOverlay({
+          position: moveLatLon,
+          content: content,
+        });
+        customOverlay.setMap(mapRef.current);
+      }
+    }, () => {
+      alert("스마트폰/브라우저의 위치 접근 권한을 허용해주세요!");
+    });
+  };
+
   const renderCourseDetails = (isDesktop: boolean) => {
     if (!selectedCourse) return null;
     return (
@@ -396,6 +421,31 @@ export default function Home() {
           strategy="afterInteractive"
         />
       )}
+
+      {/* 지도 컨트롤 (확대/축소/내위치) */}
+      <div className="absolute z-20 top-[180px] right-4 md:top-auto md:bottom-10 md:right-auto md:left-[424px] flex flex-col gap-2 shadow-[0_5px_15px_rgba(0,0,0,0.3)]">
+        <button 
+          onClick={findMyLocation}
+          className="w-10 h-10 bg-white/90 backdrop-blur-sm rounded-xl border border-slate-200 flex items-center justify-center text-slate-700 hover:bg-white hover:text-sky-600 transition-colors shadow-sm"
+          title="내 위치"
+        >
+          🎯
+        </button>
+        <div className="bg-white/90 backdrop-blur-sm rounded-xl border border-slate-200 overflow-hidden flex flex-col shadow-sm">
+          <button 
+            onClick={() => mapRef.current?.setLevel(mapRef.current.getLevel() - 1)}
+            className="w-10 h-10 flex items-center justify-center text-slate-700 hover:bg-white hover:text-sky-600 font-black text-xl border-b border-slate-200 transition-colors"
+          >
+            +
+          </button>
+          <button 
+            onClick={() => mapRef.current?.setLevel(mapRef.current.getLevel() + 1)}
+            className="w-10 h-10 flex items-center justify-center text-slate-700 hover:bg-white hover:text-sky-600 font-black text-2xl transition-colors"
+          >
+            −
+          </button>
+        </div>
+      </div>
 
       {/* PC 사이드바 / 모바일 상단 헤더 */}
       <div className="
