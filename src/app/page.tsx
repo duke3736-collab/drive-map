@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useRef } from "react";
 import Script from "next/script";
+import AdBanner from "@/components/AdBanner";
 
 interface Course {
   id: number;
@@ -453,13 +454,14 @@ export default function Home() {
             )}
           </div>
           
-          {/* 수익화 배너 영역 (광고주 배너) - 항상 하단 고정 노출 */}
+          {/* 수익화 배너 영역 (구글 애드센스) - 항상 하단 고정 노출 */}
           <div className="mt-auto pt-6 w-full shrink-0">
-            <div className="w-full h-24 bg-slate-800/50 rounded-xl flex flex-col items-center justify-center border border-slate-600/80 border-dashed hover:bg-slate-800 transition-colors cursor-pointer group">
-              <span className="text-xs text-slate-400 mb-1">Sponsored</span>
-              <p className="text-slate-300 text-sm font-bold group-hover:text-indigo-400 transition-colors">
-                [ AD ] 배너 광고 문의
-              </p>
+            <div className="w-full h-[250px] bg-slate-800/50 rounded-xl overflow-hidden shadow-sm">
+              <AdBanner 
+                dataAdSlot="4564542487" 
+                dataAdFormat="auto" 
+                dataFullWidthResponsive={true} 
+              />
             </div>
           </div>
         </div>
@@ -478,18 +480,18 @@ export default function Home() {
 
         {/* PC 우측 플로팅 배너 영역 */}
         <div className="hidden md:flex absolute top-6 right-6 z-20 flex-col gap-4 w-[280px]">
-          {/* 첫 번째 플로팅 광고 */}
-          <div className="w-full bg-slate-900/80 backdrop-blur-lg rounded-2xl border border-slate-700/80 p-4 shadow-[0_10px_30px_rgba(0,0,0,0.5)] hover:border-indigo-500/50 transition-colors cursor-pointer group overflow-hidden relative">
-            <div className="absolute inset-0 bg-gradient-to-br from-indigo-600/10 to-transparent"></div>
-            <div className="relative z-10 flex flex-col gap-2">
-              <span className="text-[10px] font-black tracking-widest text-slate-500 uppercase">Sponsored</span>
-              <div className="w-full h-24 bg-slate-800 rounded-lg flex items-center justify-center">
-                <span className="text-slate-400 font-bold group-hover:text-indigo-400 transition-colors">🚗 이달의 렌터카 특가</span>
-              </div>
+          {/* 첫 번째 플로팅 광고 (구글 애드센스) */}
+          <div className="w-full bg-slate-900/80 backdrop-blur-lg rounded-2xl border border-slate-700/80 p-2 shadow-[0_10px_30px_rgba(0,0,0,0.5)] overflow-hidden">
+            <div className="w-full h-[250px] bg-slate-800 rounded-lg overflow-hidden">
+              <AdBanner 
+                dataAdSlot="4564542487" 
+                dataAdFormat="auto" 
+                dataFullWidthResponsive={true} 
+              />
             </div>
           </div>
           
-          {/* 두 번째 플로팅 광고 */}
+          {/* 두 번째 플로팅 광고 (예비 스폰서) */}
           <div className="w-full bg-slate-900/80 backdrop-blur-lg rounded-2xl border border-slate-700/80 p-4 shadow-[0_10px_30px_rgba(0,0,0,0.5)] hover:border-pink-500/50 transition-colors cursor-pointer group overflow-hidden relative">
             <div className="absolute inset-0 bg-gradient-to-br from-pink-600/10 to-transparent"></div>
             <div className="relative z-10 flex flex-col gap-2">
