@@ -519,7 +519,7 @@ export default function Home() {
             </div>
           </div>
           
-          {/* 두 번째 플로팅 광고 (쿠팡 파트너스 - 국내여행) */}
+          {/* 두 번째 플로팅 광고 (쿠팡 파트너스 1번) */}
           <div className="w-full bg-slate-900/80 backdrop-blur-lg rounded-2xl border border-slate-700/80 p-3 shadow-[0_10px_30px_rgba(0,0,0,0.5)] overflow-hidden flex justify-center items-center">
             <iframe 
               src="https://ads-partners.coupang.com/widgets.html?id=992805&template=carousel&trackingCode=AF2374736&subId=&width=250&height=300" 
@@ -528,7 +528,20 @@ export default function Home() {
               frameBorder="0" 
               scrolling="no" 
               referrerPolicy="unsafe-url"
-              className="rounded-lg bg-white"
+              className="rounded-lg bg-white shrink-0"
+            ></iframe>
+          </div>
+
+          {/* 세 번째 플로팅 광고 (쿠팡 파트너스 2번 - 신규) */}
+          <div className="w-full bg-slate-900/80 backdrop-blur-lg rounded-2xl border border-slate-700/80 p-3 shadow-[0_10px_30px_rgba(0,0,0,0.5)] overflow-hidden flex justify-center items-center">
+            <iframe 
+              src="https://ads-partners.coupang.com/widgets.html?id=992806&template=carousel&trackingCode=AF2374736&subId=&width=250&height=300" 
+              width="250" 
+              height="300" 
+              frameBorder="0" 
+              scrolling="no" 
+              referrerPolicy="unsafe-url"
+              className="rounded-lg bg-white shrink-0"
             ></iframe>
           </div>
         </div>
