@@ -497,7 +497,7 @@ export default function Home() {
         <div ref={mapContainerRef} className="w-full h-full"></div>
 
         {/* PC 우측 플로팅 배너 영역 */}
-        <div className="hidden md:flex absolute top-6 right-6 z-20 flex-col gap-4 w-[280px]">
+        <div className="hidden md:flex absolute top-6 right-6 z-20 flex-col gap-4 w-[280px] max-h-[calc(100dvh-48px)] overflow-y-auto custom-scrollbar pb-6">
           {/* 첫 번째 플로팅 광고 (구글 애드센스) */}
           <div className="w-full bg-slate-900/80 backdrop-blur-lg rounded-2xl border border-slate-700/80 p-2 shadow-[0_10px_30px_rgba(0,0,0,0.5)] overflow-hidden">
             <div className="w-full h-[250px] bg-slate-800 rounded-lg overflow-hidden">
