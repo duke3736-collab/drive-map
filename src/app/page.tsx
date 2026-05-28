@@ -406,7 +406,16 @@ export default function Home() {
               const wps = parseWaypoints(selectedCourse.waypoints);
               if (wps.length > 0) {
                 const dest = wps[wps.length - 1];
-                window.location.href = `kakaonavi://navigate?ep=${dest.lng},${dest.lat}&name=${encodeURIComponent(dest.name)}`;
+                if (window.Kakao && window.Kakao.isInitialized()) {
+                  window.Kakao.Navi.start({
+                    name: dest.name,
+                    x: dest.lng,
+                    y: dest.lat,
+                    coordType: 'wgs84'
+                  });
+                } else {
+                  window.location.href = `https://map.kakao.com/link/to/${encodeURIComponent(dest.name)},${dest.lat},${dest.lng}`;
+                }
               }
             }}
             className="w-full bg-[#FEE500] hover:bg-[#F4DC00] text-[#191919] font-bold py-3 rounded-xl transition-colors flex items-center justify-center gap-2 shadow-md"
