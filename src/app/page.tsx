@@ -321,10 +321,28 @@ export default function Home() {
         </div>
 
         <div className="grid grid-cols-2 gap-3 pt-4">
-          <button className="w-full bg-[#111111] border border-slate-600 hover:bg-slate-800 text-white font-bold py-3 rounded-xl transition-colors flex items-center justify-center gap-2 shadow-md">
-            <span className="text-lg">🧭</span> 안내 시작
+          <button 
+            onClick={() => {
+              const wps = parseWaypoints(selectedCourse.waypoints);
+              if (wps.length > 0) {
+                const dest = wps[wps.length - 1];
+                window.location.href = `tmap://route?goalname=${encodeURIComponent(dest.name)}&goalx=${dest.lng}&goaly=${dest.lat}`;
+              }
+            }}
+            className="w-full bg-[#111111] border border-slate-600 hover:bg-slate-800 text-white font-bold py-3 rounded-xl transition-colors flex items-center justify-center gap-2 shadow-md"
+          >
+            <span className="text-lg">🧭</span> 티맵 안내
           </button>
-          <button className="w-full bg-[#FEE500] hover:bg-[#F4DC00] text-[#191919] font-bold py-3 rounded-xl transition-colors flex items-center justify-center gap-2 shadow-md">
+          <button 
+            onClick={() => {
+              const wps = parseWaypoints(selectedCourse.waypoints);
+              if (wps.length > 0) {
+                const dest = wps[wps.length - 1];
+                window.location.href = `kakaonavi://navigate?ep=${dest.lng},${dest.lat}&name=${encodeURIComponent(dest.name)}`;
+              }
+            }}
+            className="w-full bg-[#FEE500] hover:bg-[#F4DC00] text-[#191919] font-bold py-3 rounded-xl transition-colors flex items-center justify-center gap-2 shadow-md"
+          >
             <span className="text-lg">🚕</span> 카카오내비
           </button>
         </div>
