@@ -387,6 +387,16 @@ export default function Home() {
         onLoad={initMap}
       />
 
+      {/* 스플래시 화면이 끝난 후에만 구글 애드센스 로드 (첫 화면 하단 앵커 광고 방지) */}
+      {!showSplash && (
+        <Script
+          async
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6635245275061755"
+          crossOrigin="anonymous"
+          strategy="afterInteractive"
+        />
+      )}
+
       {/* PC 사이드바 / 모바일 상단 헤더 */}
       <div className="
         md:relative md:w-[400px] md:h-full md:bg-slate-900 md:border-r md:border-slate-800 md:flex md:flex-col md:p-6 md:z-20
