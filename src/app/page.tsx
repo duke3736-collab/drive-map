@@ -43,7 +43,20 @@ export default function Home() {
   const [isLoading, setIsLoading] = useState(true);
   const [selectedCourse, setSelectedCourse] = useState<Course | null>(null);
   const [activeTheme, setActiveTheme] = useState<string>("all");
+  const [searchQuery, setSearchQuery] = useState<string>("");
   const [showSplash, setShowSplash] = useState(true);
+
+  // Derived state for filtering
+  const filteredCourses = courses.filter(c => {
+    if (activeTheme !== 'all' && c.theme !== activeTheme) return false;
+    if (searchQuery.trim() !== '') {
+      const q = searchQuery.toLowerCase().trim();
+      if (!c.title.toLowerCase().includes(q) && !c.description.toLowerCase().includes(q) && !c.tags.toLowerCase().includes(q)) {
+        return false;
+      }
+    }
+    return true;
+  });
 
   const themes = [
     { id: "all", icon: "🌌", label: "전체보기" },
@@ -148,10 +161,6 @@ export default function Home() {
     polylinesRef.current = [];
     markersRef.current = [];
 
-    const filteredCourses = activeTheme === 'all' 
-      ? courses 
-      : courses.filter(c => c.theme === activeTheme);
-
     filteredCourses.forEach(async (course) => {
       const waypoints = parseWaypoints(course.waypoints);
       if (waypoints.length < 2) return;
@@ -232,7 +241,7 @@ export default function Home() {
       }
     });
 
-  }, [courses, mapLoaded, activeTheme, selectedCourse]);
+  }, [courses, mapLoaded, activeTheme, selectedCourse, searchQuery]);
 
   const drawPolyline = (course: Course, path: any[], waypoints: ParsedWaypoint[], isSelected: boolean) => {
     if (!mapRef.current) return;
@@ -368,7 +377,22 @@ export default function Home() {
         <h1 className="text-xl md:text-3xl font-black text-white mb-3 md:mb-6 tracking-tight flex items-center gap-2">
           <span>🚗</span> Drive Map
         </h1>
-        <div className="flex md:flex-wrap overflow-x-auto gap-2 pb-2 scrollbar-hide">
+
+        <div className="relative mb-4 w-full shrink-0">
+          <input 
+            type="text" 
+            placeholder="지역, 코스명, 태그 검색 (예: 북한강)" 
+            value={searchQuery}
+            onChange={(e) => {
+              setSearchQuery(e.target.value);
+              setSelectedCourse(null);
+            }}
+            className="w-full bg-slate-800/80 border border-slate-700 text-white px-4 py-3 rounded-xl focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all placeholder:text-slate-500 shadow-inner"
+          />
+          <span className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400">🔍</span>
+        </div>
+
+        <div className="flex md:flex-wrap overflow-x-auto gap-2 pb-2 scrollbar-hide shrink-0">
           {themes.map(t => (
             <button
               key={t.id}
@@ -392,6 +416,33 @@ export default function Home() {
           <div className="flex-1 pb-4">
             {selectedCourse ? (
               renderCourseDetails(true)
+            ) : filteredCourses.length > 0 && (searchQuery || activeTheme !== 'all') ? (
+              <div className="space-y-3">
+                <p className="text-slate-400 text-sm font-bold px-2">총 {filteredCourses.length}개의 코스</p>
+                {filteredCourses.map(course => (
+                  <div 
+                    key={course.id} 
+                    onClick={() => {
+                      setSelectedCourse(course);
+                      if (mapRef.current) {
+                        const waypoints = parseWaypoints(course.waypoints);
+                        if (waypoints.length > 0) {
+                          const midIdx = Math.floor(waypoints.length / 2);
+                          mapRef.current.panTo(new window.kakao.maps.LatLng(waypoints[midIdx].lat, waypoints[midIdx].lng));
+                        }
+                      }
+                    }}
+                    className="p-4 rounded-xl bg-slate-800/50 border border-slate-700/50 hover:bg-slate-700/80 hover:border-slate-500 transition-all cursor-pointer group"
+                  >
+                    <h3 className="text-white font-bold mb-1 group-hover:text-indigo-400 transition-colors">{course.title}</h3>
+                    <p className="text-slate-400 text-xs line-clamp-2 mb-2">{course.description}</p>
+                    <div className="flex gap-2">
+                      <span className="text-xs text-indigo-400 font-bold">{course.distance}</span>
+                      <span className="text-xs text-slate-500">{course.duration}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
             ) : (
               <div className="flex flex-col items-center justify-center h-full text-slate-500 pb-10">
                 <span className="text-5xl mb-4">📍</span>
@@ -425,6 +476,31 @@ export default function Home() {
           </div>
         )}
         <div ref={mapContainerRef} className="w-full h-full"></div>
+
+        {/* PC 우측 플로팅 배너 영역 */}
+        <div className="hidden md:flex absolute top-6 right-6 z-20 flex-col gap-4 w-[280px]">
+          {/* 첫 번째 플로팅 광고 */}
+          <div className="w-full bg-slate-900/80 backdrop-blur-lg rounded-2xl border border-slate-700/80 p-4 shadow-[0_10px_30px_rgba(0,0,0,0.5)] hover:border-indigo-500/50 transition-colors cursor-pointer group overflow-hidden relative">
+            <div className="absolute inset-0 bg-gradient-to-br from-indigo-600/10 to-transparent"></div>
+            <div className="relative z-10 flex flex-col gap-2">
+              <span className="text-[10px] font-black tracking-widest text-slate-500 uppercase">Sponsored</span>
+              <div className="w-full h-24 bg-slate-800 rounded-lg flex items-center justify-center">
+                <span className="text-slate-400 font-bold group-hover:text-indigo-400 transition-colors">🚗 이달의 렌터카 특가</span>
+              </div>
+            </div>
+          </div>
+          
+          {/* 두 번째 플로팅 광고 */}
+          <div className="w-full bg-slate-900/80 backdrop-blur-lg rounded-2xl border border-slate-700/80 p-4 shadow-[0_10px_30px_rgba(0,0,0,0.5)] hover:border-pink-500/50 transition-colors cursor-pointer group overflow-hidden relative">
+            <div className="absolute inset-0 bg-gradient-to-br from-pink-600/10 to-transparent"></div>
+            <div className="relative z-10 flex flex-col gap-2">
+              <span className="text-[10px] font-black tracking-widest text-slate-500 uppercase">Event</span>
+              <div className="w-full h-20 bg-slate-800 rounded-lg flex items-center justify-center">
+                <span className="text-slate-400 font-bold group-hover:text-pink-400 transition-colors">🎁 주유권 추첨 이벤트</span>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
 
       {/* 모바일 전용: 하단 바텀 시트 (PC에서는 숨김) */}
