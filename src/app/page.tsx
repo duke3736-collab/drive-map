@@ -106,6 +106,11 @@ export default function Home() {
       updateMarkerScale();
       window.kakao.maps.event.addListener(map, 'zoom_changed', updateMarkerScale);
 
+      // 브라우저 리사이즈 시 지도 크기 재계산 (PC/모바일 전환 시 깨짐 방지)
+      window.addEventListener('resize', () => {
+        if (mapRef.current) mapRef.current.relayout();
+      });
+
       setMapLoaded(true);
     });
   };
@@ -258,8 +263,68 @@ export default function Home() {
     }
   };
 
+  const renderCourseDetails = (isDesktop: boolean) => {
+    if (!selectedCourse) return null;
+    return (
+      <div className="space-y-4">
+        {/* 코스 풍경 사진 (이미지 URL이 있을 경우에만 렌더링) */}
+        {selectedCourse.imageUrl && (
+          <div 
+            className="w-full h-48 bg-slate-800 rounded-2xl bg-cover bg-center shadow-inner mb-4 border border-slate-700"
+            style={{ backgroundImage: `url("${selectedCourse.imageUrl}")` }}
+          ></div>
+        )}
+        
+        <div className="flex gap-2 flex-wrap">
+          {selectedCourse.tags.split(' ').map((tag, idx) => (
+            <span key={idx} className="bg-indigo-500/20 text-indigo-400 border border-indigo-500/30 px-2 py-1 rounded-md text-xs font-bold">
+              {tag}
+            </span>
+          ))}
+        </div>
+        
+        <h2 className="text-2xl font-black text-white leading-tight">
+          {selectedCourse.title}
+        </h2>
+        
+        <p className="text-slate-400 text-sm leading-relaxed">
+          {selectedCourse.description}
+        </p>
+        
+        <div className="flex gap-4 pt-2 border-t border-slate-800">
+          <div className="flex items-center gap-2">
+            <span className="text-slate-500 text-xs">총 거리</span>
+            <span className="font-bold text-slate-200">
+              {cachedPathsRef.current[selectedCourse.id]?.distance 
+                ? `${(cachedPathsRef.current[selectedCourse.id].distance! / 1000).toFixed(1)}km` 
+                : selectedCourse.distance}
+            </span>
+          </div>
+          <div className="flex items-center gap-2">
+            <span className="text-slate-500 text-xs">예상 시간</span>
+            <span className="font-bold text-slate-200">
+              {cachedPathsRef.current[selectedCourse.id]?.duration
+                ? `${Math.ceil(cachedPathsRef.current[selectedCourse.id].duration! / 60)}분`
+                : selectedCourse.duration}
+            </span>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-2 gap-3 pt-4">
+          <button className="w-full bg-[#000000] border border-slate-700 hover:bg-slate-800 text-white font-bold py-3 rounded-xl transition-colors flex items-center justify-center gap-2">
+            <img src="https://tmapapi.sktelecom.com/main/style/images/top/logo.png" alt="tmap" className="h-4 brightness-200 invert" />
+            안내 시작
+          </button>
+          <button className="w-full bg-[#FEE500] hover:bg-[#F4DC00] text-[#191919] font-bold py-3 rounded-xl transition-colors flex items-center justify-center gap-2">
+            카카오내비
+          </button>
+        </div>
+      </div>
+    );
+  };
+
   return (
-    <div className="w-full h-[100dvh] flex flex-col relative bg-slate-950 overflow-hidden">
+    <div className="w-full h-[100dvh] flex flex-col md:flex-row relative bg-slate-950 overflow-hidden">
       {/* 이니셜 D 감성의 메인 스플래시 화면 */}
       {showSplash && (
         <div className="absolute inset-0 z-50 bg-slate-950 flex flex-col items-center justify-center overflow-hidden">
@@ -295,11 +360,15 @@ export default function Home() {
         onLoad={initMap}
       />
 
-      <div className="absolute top-0 left-0 w-full z-10 p-4 bg-gradient-to-b from-slate-950/80 to-transparent">
-        <h1 className="text-xl font-black text-white mb-3 tracking-tight flex items-center gap-2">
+      {/* PC 사이드바 / 모바일 상단 헤더 */}
+      <div className="
+        md:relative md:w-[400px] md:h-full md:bg-slate-900 md:border-r md:border-slate-800 md:flex md:flex-col md:p-6 md:z-20
+        absolute top-0 left-0 w-full z-10 p-4 bg-gradient-to-b from-slate-950/80 to-transparent md:bg-none
+      ">
+        <h1 className="text-xl md:text-3xl font-black text-white mb-3 md:mb-6 tracking-tight flex items-center gap-2">
           <span>🚗</span> Drive Map
         </h1>
-        <div className="flex overflow-x-auto gap-2 pb-2 scrollbar-hide">
+        <div className="flex md:flex-wrap overflow-x-auto gap-2 pb-2 scrollbar-hide">
           {themes.map(t => (
             <button
               key={t.id}
@@ -317,6 +386,28 @@ export default function Home() {
             </button>
           ))}
         </div>
+
+        {/* PC 전용: 사이드바 코스 디테일 및 광고 영역 */}
+        <div className="hidden md:flex flex-col flex-1 overflow-y-auto mt-6 pr-2 custom-scrollbar">
+          {selectedCourse ? (
+            renderCourseDetails(true)
+          ) : (
+            <div className="flex flex-col items-center justify-center h-full text-slate-500 pb-20">
+              <span className="text-5xl mb-4">📍</span>
+              <p className="font-bold text-lg mb-2 text-slate-400">지도에서 코스를 선택해주세요</p>
+              <p className="text-sm text-slate-600 text-center px-4">
+                오른쪽 지도에 표시된 마커를 클릭하시면<br/>상세한 코스 정보와 뷰를 확인할 수 있습니다.
+              </p>
+              
+              {/* 수익화 배너 영역 (광고주 배너) */}
+              <div className="mt-16 w-full h-32 bg-slate-800/50 rounded-xl flex items-center justify-center border border-slate-700/50 border-dashed hover:bg-slate-800 transition-colors cursor-pointer group">
+                <p className="text-slate-500 text-sm font-bold group-hover:text-indigo-400 transition-colors">
+                  [ AD ] 배너 광고 문의
+                </p>
+              </div>
+            </div>
+          )}
+        </div>
       </div>
 
       <div className="flex-1 w-full relative bg-slate-900">
@@ -331,66 +422,10 @@ export default function Home() {
         <div ref={mapContainerRef} className="w-full h-full"></div>
       </div>
 
-      <div className={`absolute bottom-0 left-0 w-full bg-slate-900/95 backdrop-blur-xl border-t border-slate-800 rounded-t-[32px] p-6 shadow-[0_-10px_40px_rgba(0,0,0,0.5)] transition-transform duration-500 ease-out z-30 ${selectedCourse ? 'translate-y-0' : 'translate-y-[120%]'}`}>
-        
+      {/* 모바일 전용: 하단 바텀 시트 (PC에서는 숨김) */}
+      <div className={`md:hidden absolute bottom-0 left-0 w-full bg-slate-900/95 backdrop-blur-xl border-t border-slate-800 rounded-t-[32px] p-6 shadow-[0_-10px_40px_rgba(0,0,0,0.5)] transition-transform duration-500 ease-out z-30 ${selectedCourse ? 'translate-y-0' : 'translate-y-[120%]'}`}>
         <div className="w-12 h-1.5 bg-slate-700 rounded-full mx-auto mb-6 cursor-pointer" onClick={() => setSelectedCourse(null)}></div>
-
-        {selectedCourse && (
-          <div className="space-y-4">
-            {/* 코스 풍경 사진 (이미지 URL이 있을 경우에만 렌더링) */}
-            {selectedCourse.imageUrl && (
-              <div 
-                className="w-full h-48 bg-slate-800 rounded-2xl bg-cover bg-center shadow-inner mb-4 border border-slate-700"
-                style={{ backgroundImage: `url("${selectedCourse.imageUrl}")` }}
-              ></div>
-            )}
-            
-            <div className="flex gap-2 flex-wrap">
-              {selectedCourse.tags.split(' ').map((tag, idx) => (
-                <span key={idx} className="bg-indigo-500/20 text-indigo-400 border border-indigo-500/30 px-2 py-1 rounded-md text-xs font-bold">
-                  {tag}
-                </span>
-              ))}
-            </div>
-            
-            <h2 className="text-2xl font-black text-white leading-tight">
-              {selectedCourse.title}
-            </h2>
-            
-            <p className="text-slate-400 text-sm leading-relaxed">
-              {selectedCourse.description}
-            </p>
-            
-            <div className="flex gap-4 pt-2 border-t border-slate-800">
-              <div className="flex items-center gap-2">
-                <span className="text-slate-500 text-xs">총 거리</span>
-                <span className="font-bold text-slate-200">
-                  {cachedPathsRef.current[selectedCourse.id]?.distance 
-                    ? `${(cachedPathsRef.current[selectedCourse.id].distance! / 1000).toFixed(1)}km` 
-                    : selectedCourse.distance}
-                </span>
-              </div>
-              <div className="flex items-center gap-2">
-                <span className="text-slate-500 text-xs">예상 시간</span>
-                <span className="font-bold text-slate-200">
-                  {cachedPathsRef.current[selectedCourse.id]?.duration
-                    ? `${Math.ceil(cachedPathsRef.current[selectedCourse.id].duration! / 60)}분`
-                    : selectedCourse.duration}
-                </span>
-              </div>
-            </div>
-
-            <div className="grid grid-cols-2 gap-3 pt-4">
-              <button className="w-full bg-[#000000] border border-slate-700 hover:bg-slate-800 text-white font-bold py-3 rounded-xl transition-colors flex items-center justify-center gap-2">
-                <img src="https://tmapapi.sktelecom.com/main/style/images/top/logo.png" alt="tmap" className="h-4 brightness-200 invert" />
-                안내 시작
-              </button>
-              <button className="w-full bg-[#FEE500] hover:bg-[#F4DC00] text-[#191919] font-bold py-3 rounded-xl transition-colors flex items-center justify-center gap-2">
-                카카오내비
-              </button>
-            </div>
-          </div>
-        )}
+        {renderCourseDetails(false)}
       </div>
 
     </div>
