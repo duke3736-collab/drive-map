@@ -296,22 +296,22 @@ export default function Home() {
           {selectedCourse.title}
         </h2>
         
-        <p className="text-slate-400 text-sm leading-relaxed">
+        <p className="text-slate-300 text-sm leading-relaxed">
           {selectedCourse.description}
         </p>
         
         <div className="flex gap-4 pt-2 border-t border-slate-800">
           <div className="flex items-center gap-2">
-            <span className="text-slate-500 text-xs">총 거리</span>
-            <span className="font-bold text-slate-200">
+            <span className="text-slate-400 text-xs">총 거리</span>
+            <span className="font-bold text-slate-100">
               {cachedPathsRef.current[selectedCourse.id]?.distance 
                 ? `${(cachedPathsRef.current[selectedCourse.id].distance! / 1000).toFixed(1)}km` 
                 : selectedCourse.distance}
             </span>
           </div>
           <div className="flex items-center gap-2">
-            <span className="text-slate-500 text-xs">예상 시간</span>
-            <span className="font-bold text-slate-200">
+            <span className="text-slate-400 text-xs">예상 시간</span>
+            <span className="font-bold text-slate-100">
               {cachedPathsRef.current[selectedCourse.id]?.duration
                 ? `${Math.ceil(cachedPathsRef.current[selectedCourse.id].duration! / 60)}분`
                 : selectedCourse.duration}
@@ -320,12 +320,11 @@ export default function Home() {
         </div>
 
         <div className="grid grid-cols-2 gap-3 pt-4">
-          <button className="w-full bg-[#000000] border border-slate-700 hover:bg-slate-800 text-white font-bold py-3 rounded-xl transition-colors flex items-center justify-center gap-2">
-            <img src="https://tmapapi.sktelecom.com/main/style/images/top/logo.png" alt="tmap" className="h-4 brightness-200 invert" />
-            안내 시작
+          <button className="w-full bg-[#111111] border border-slate-600 hover:bg-slate-800 text-white font-bold py-3 rounded-xl transition-colors flex items-center justify-center gap-2 shadow-md">
+            <span className="text-lg">🧭</span> 안내 시작
           </button>
-          <button className="w-full bg-[#FEE500] hover:bg-[#F4DC00] text-[#191919] font-bold py-3 rounded-xl transition-colors flex items-center justify-center gap-2">
-            카카오내비
+          <button className="w-full bg-[#FEE500] hover:bg-[#F4DC00] text-[#191919] font-bold py-3 rounded-xl transition-colors flex items-center justify-center gap-2 shadow-md">
+            <span className="text-lg">🚕</span> 카카오내비
           </button>
         </div>
       </div>
@@ -418,7 +417,7 @@ export default function Home() {
               renderCourseDetails(true)
             ) : filteredCourses.length > 0 && (searchQuery || activeTheme !== 'all') ? (
               <div className="space-y-3">
-                <p className="text-slate-400 text-sm font-bold px-2">총 {filteredCourses.length}개의 코스</p>
+                <p className="text-slate-300 text-sm font-bold px-2">총 {filteredCourses.length}개의 코스</p>
                 {filteredCourses.map(course => (
                   <div 
                     key={course.id} 
@@ -432,13 +431,13 @@ export default function Home() {
                         }
                       }
                     }}
-                    className="p-4 rounded-xl bg-slate-800/50 border border-slate-700/50 hover:bg-slate-700/80 hover:border-slate-500 transition-all cursor-pointer group"
+                    className="p-4 rounded-xl bg-slate-800/50 border border-slate-600/80 hover:bg-slate-700/80 hover:border-slate-500 transition-all cursor-pointer group shadow-sm"
                   >
                     <h3 className="text-white font-bold mb-1 group-hover:text-indigo-400 transition-colors">{course.title}</h3>
-                    <p className="text-slate-400 text-xs line-clamp-2 mb-2">{course.description}</p>
+                    <p className="text-slate-300 text-xs line-clamp-2 mb-2">{course.description}</p>
                     <div className="flex gap-2">
                       <span className="text-xs text-indigo-400 font-bold">{course.distance}</span>
-                      <span className="text-xs text-slate-500">{course.duration}</span>
+                      <span className="text-xs text-slate-400">{course.duration}</span>
                     </div>
                   </div>
                 ))}
@@ -456,9 +455,9 @@ export default function Home() {
           
           {/* 수익화 배너 영역 (광고주 배너) - 항상 하단 고정 노출 */}
           <div className="mt-auto pt-6 w-full shrink-0">
-            <div className="w-full h-24 bg-slate-800/50 rounded-xl flex flex-col items-center justify-center border border-slate-700/50 border-dashed hover:bg-slate-800 transition-colors cursor-pointer group">
-              <span className="text-xs text-slate-600 mb-1">Sponsored</span>
-              <p className="text-slate-500 text-sm font-bold group-hover:text-indigo-400 transition-colors">
+            <div className="w-full h-24 bg-slate-800/50 rounded-xl flex flex-col items-center justify-center border border-slate-600/80 border-dashed hover:bg-slate-800 transition-colors cursor-pointer group">
+              <span className="text-xs text-slate-400 mb-1">Sponsored</span>
+              <p className="text-slate-300 text-sm font-bold group-hover:text-indigo-400 transition-colors">
                 [ AD ] 배너 광고 문의
               </p>
             </div>
