@@ -755,9 +755,11 @@ export default function Home() {
     setSelectedCourse(course);
     
     if (mapRef.current && waypoints.length > 0) {
-      const midIdx = Math.floor(waypoints.length / 2);
-      const moveLatLon = new window.kakao.maps.LatLng(waypoints[midIdx].lat, waypoints[midIdx].lng);
-      mapRef.current.panTo(moveLatLon);
+      const bounds = new window.kakao.maps.LatLngBounds();
+      waypoints.forEach(wp => bounds.extend(new window.kakao.maps.LatLng(wp.lat, wp.lng)));
+      
+      const paddingLeft = window.innerWidth > 768 ? 450 : 50;
+      mapRef.current.setBounds(bounds, 100, 100, 50, paddingLeft);
     }
   };
 
@@ -1256,7 +1258,8 @@ export default function Home() {
                       <button
                         key={course.id}
                         onClick={() => {
-                           setSelectedCourse(course);
+                           const wps = parseWaypoints(course.waypoints);
+                           handleCourseClick(course, wps);
                         }}
                         className="w-full text-left p-2 hover:bg-slate-700 rounded-xl transition-colors flex gap-3 items-center active:scale-[0.98]"
                       >
@@ -1501,14 +1504,8 @@ export default function Home() {
                   <div 
                     key={course.id} 
                     onClick={() => {
-                      setSelectedCourse(course);
-                      if (mapRef.current) {
-                        const waypoints = parseWaypoints(course.waypoints);
-                        if (waypoints.length > 0) {
-                          const midIdx = Math.floor(waypoints.length / 2);
-                          mapRef.current.panTo(new window.kakao.maps.LatLng(waypoints[midIdx].lat, waypoints[midIdx].lng));
-                        }
-                      }
+                      const wps = parseWaypoints(course.waypoints);
+                      handleCourseClick(course, wps);
                     }}
                     className="p-4 rounded-xl bg-slate-800/50 border border-slate-600/80 hover:bg-slate-700/80 hover:border-slate-500 transition-all cursor-pointer group shadow-sm"
                   >
