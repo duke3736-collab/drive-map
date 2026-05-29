@@ -25,6 +25,7 @@ interface Course {
   duration: string;
   waypoints: string;
   imageUrl?: string;
+  _distanceToUser?: number;
 }
 
 interface ParsedWaypoint {
@@ -75,6 +76,71 @@ export default function Home() {
   const [inquiryContent, setInquiryContent] = useState('');
   const [inquiryContact, setInquiryContact] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // 즐겨찾기 상태 (localStorage 연동)
+  const [favorites, setFavorites] = useState<number[]>([]);
+  // 위치 기반 정렬 상태
+  const [userLocation, setUserLocation] = useState<{lat: number, lng: number} | null>(null);
+  const [isSortedByDistance, setIsSortedByDistance] = useState(false);
+
+  // 초기 렌더링 시 localStorage에서 찜 목록 불러오기
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem('driveMapFavorites');
+      if (saved) setFavorites(JSON.parse(saved));
+    } catch (e) {}
+  }, []);
+
+  const toggleFavorite = (courseId: number, e?: React.MouseEvent) => {
+    if (e) {
+      e.stopPropagation();
+      e.preventDefault();
+    }
+    setFavorites(prev => {
+      const isFav = prev.includes(courseId);
+      const newFavs = isFav ? prev.filter(id => id !== courseId) : [...prev, courseId];
+      localStorage.setItem('driveMapFavorites', JSON.stringify(newFavs));
+      return newFavs;
+    });
+  };
+
+  const calculateDistance = (lat1: number, lon1: number, lat2: number, lon2: number) => {
+    const R = 6371; // 지구의 반지름 (km)
+    const dLat = (lat2 - lat1) * (Math.PI / 180);
+    const dLon = (lon2 - lon1) * (Math.PI / 180);
+    const a = 
+      Math.sin(dLat/2) * Math.sin(dLat/2) +
+      Math.cos(lat1 * (Math.PI / 180)) * Math.cos(lat2 * (Math.PI / 180)) * 
+      Math.sin(dLon/2) * Math.sin(dLon/2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+    return R * c; // 단위: km
+  };
+
+  const handleSortByDistance = () => {
+    if (isSortedByDistance) {
+      setIsSortedByDistance(false);
+      return;
+    }
+
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          setUserLocation({
+            lat: position.coords.latitude,
+            lng: position.coords.longitude
+          });
+          setIsSortedByDistance(true);
+          setSelectedCourse(null); // 목록 보기 위해 선택 해제
+        },
+        (error) => {
+          console.error(error);
+          alert("위치 권한을 허용해주시면 가장 가까운 코스를 찾아드립니다!");
+        }
+      );
+    } else {
+      alert("이 브라우저에서는 위치 기능을 지원하지 않습니다.");
+    }
+  };
 
   const handleInquirySubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -137,38 +203,26 @@ export default function Home() {
   }, [selectedCourse]);
 
   // Derived state for filtering
-  const filteredCourses = courses.filter(c => {
-    if (activeTheme !== 'all' && c.theme !== activeTheme) return false;
+  let filteredCourses = courses.filter(c => {
+    if (activeTheme === 'favorites') {
+      if (!favorites.includes(c.id)) return false;
+    } else if (activeTheme !== 'all' && c.theme !== activeTheme) {
+      return false;
+    }
+
     if (searchQuery.trim() !== '') {
       let q = searchQuery.toLowerCase().trim();
       
       // 지역명 검색어 유연화 (예: '제주도' -> '제주', '강원도' -> '강원')
       const aliases: Record<string, string> = {
-        '제주도': '제주',
-        '강원도': '강원',
-        '경기도': '경기',
-        '충청도': '충청',
-        '전라도': '전라',
-        '경상도': '경상',
-        '서울특별시': '서울',
-        '서울시': '서울',
-        '부산광역시': '부산',
-        '부산시': '부산',
-        '대구광역시': '대구',
-        '대구시': '대구',
-        '인천광역시': '인천',
-        '인천시': '인천',
-        '광주광역시': '광주',
-        '광주시': '광주',
-        '대전광역시': '대전',
-        '대전시': '대전',
-        '울산광역시': '울산',
-        '울산시': '울산'
+        '제주도': '제주', '강원도': '강원', '경기도': '경기', '충청도': '충청',
+        '전라도': '전라', '경상도': '경상', '서울특별시': '서울', '서울시': '서울',
+        '부산광역시': '부산', '부산시': '부산', '대구광역시': '대구', '대구시': '대구',
+        '인천광역시': '인천', '인천시': '인천', '광주광역시': '광주', '광주시': '광주',
+        '대전광역시': '대전', '대전시': '대전', '울산광역시': '울산', '울산시': '울산'
       };
       
-      if (aliases[q]) {
-        q = aliases[q];
-      }
+      if (aliases[q]) q = aliases[q];
 
       if (
         !c.title.toLowerCase().includes(q) && 
@@ -182,7 +236,25 @@ export default function Home() {
     return true;
   });
 
+  // 거리순 정렬 로직 적용
+  if (isSortedByDistance && userLocation) {
+    filteredCourses = [...filteredCourses].sort((a, b) => {
+      const wpA = parseWaypoints(a.waypoints);
+      const wpB = parseWaypoints(b.waypoints);
+      if (wpA.length === 0 || wpB.length === 0) return 0;
+      
+      const distA = calculateDistance(userLocation.lat, userLocation.lng, wpA[0].lat, wpA[0].lng);
+      const distB = calculateDistance(userLocation.lat, userLocation.lng, wpB[0].lat, wpB[0].lng);
+      
+      a._distanceToUser = distA;
+      b._distanceToUser = distB;
+      
+      return distA - distB;
+    });
+  }
+
   const themes = [
+    { id: "favorites", icon: "❤️", label: "내 찜목록" },
     { id: "야경 드라이브", icon: "🌃", label: "야경 드라이브" },
     { id: "해안도로", icon: "🌊", label: "해안도로" },
     { id: "숲속/계곡", icon: "🌲", label: "숲속/계곡" },
@@ -527,9 +599,18 @@ export default function Home() {
           ))}
         </div>
         
-        <h2 className="text-2xl font-black text-white leading-tight">
-          {selectedCourse.title}
-        </h2>
+        <div className="flex justify-between items-start gap-2">
+          <h2 className="text-2xl font-black text-white leading-tight flex-1">
+            {selectedCourse.title}
+          </h2>
+          <button 
+            onClick={(e) => toggleFavorite(selectedCourse.id, e)}
+            className="text-2xl hover:scale-110 active:scale-95 transition-transform p-1"
+            title={favorites.includes(selectedCourse.id) ? "찜 해제" : "찜하기"}
+          >
+            {favorites.includes(selectedCourse.id) ? '❤️' : '🤍'}
+          </button>
+        </div>
         
         <p className="text-slate-300 text-sm leading-relaxed">
           {selectedCourse.description}
@@ -785,6 +866,19 @@ export default function Home() {
           ) : (
             <span className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none">🔍</span>
           )}
+        </div>
+        <div className="flex justify-end mb-4 -mt-2 px-1">
+          <button 
+            onClick={handleSortByDistance}
+            className={`text-xs font-bold px-4 py-2 rounded-full transition-all border shadow-sm flex items-center gap-1 ${
+              isSortedByDistance 
+                ? 'bg-red-500 text-white border-red-400 shadow-red-500/30' 
+                : 'bg-slate-800 text-slate-300 border-slate-700 hover:bg-slate-700'
+            }`}
+          >
+            📍 {isSortedByDistance ? '내 주변순 정렬 해제' : '내 주변순 정렬'}
+          </button>
+        </div>
 
           {/* 검색결과 자동완성 드롭다운 (모바일 전용) */}
           <AnimatePresence>
@@ -811,10 +905,24 @@ export default function Home() {
                         ) : (
                           <div className="w-12 h-12 rounded-lg bg-slate-700 shrink-0 flex items-center justify-center text-xl border border-slate-600">🚗</div>
                         )}
-                        <div className="flex-1 overflow-hidden">
-                          <div className="text-sm font-bold text-white truncate">{course.title}</div>
+                        <div className="flex-1 overflow-hidden pr-2">
+                          <div className="text-sm font-bold text-white truncate flex items-center gap-1">
+                            {favorites.includes(course.id) && <span className="text-[10px]">❤️</span>}
+                            {course.title}
+                          </div>
                           <div className="text-xs text-slate-400 truncate">{course.description}</div>
+                          {course._distanceToUser !== undefined && (
+                            <div className="text-[10px] text-red-400 font-bold mt-0.5">
+                              현재 위치에서 약 {course._distanceToUser.toFixed(1)}km
+                            </div>
+                          )}
                         </div>
+                        <button 
+                          onClick={(e) => toggleFavorite(course.id, e)}
+                          className="p-2 text-lg hover:scale-110 active:scale-95 transition-transform"
+                        >
+                          {favorites.includes(course.id) ? '❤️' : '🤍'}
+                        </button>
                       </button>
                     ))}
                   </div>
@@ -945,11 +1053,27 @@ export default function Home() {
                     }}
                     className="p-4 rounded-xl bg-slate-800/50 border border-slate-600/80 hover:bg-slate-700/80 hover:border-slate-500 transition-all cursor-pointer group shadow-sm"
                   >
-                    <h3 className="text-white font-bold mb-1 group-hover:text-indigo-400 transition-colors">{course.title}</h3>
+                    <div className="flex justify-between items-start mb-1">
+                      <h3 className="text-white font-bold group-hover:text-indigo-400 transition-colors flex-1 pr-2">
+                        {favorites.includes(course.id) && <span className="text-xs mr-1">❤️</span>}
+                        {course.title}
+                      </h3>
+                      <button 
+                        onClick={(e) => toggleFavorite(course.id, e)}
+                        className="text-lg hover:scale-110 active:scale-95 transition-transform p-1 -mt-1 -mr-1"
+                      >
+                        {favorites.includes(course.id) ? '❤️' : '🤍'}
+                      </button>
+                    </div>
                     <p className="text-slate-300 text-xs line-clamp-2 mb-2">{course.description}</p>
-                    <div className="flex gap-2">
+                    <div className="flex flex-wrap gap-2 items-center">
                       <span className="text-xs text-indigo-400 font-bold">{course.distance}</span>
                       <span className="text-xs text-slate-400">{course.duration}</span>
+                      {course._distanceToUser !== undefined && (
+                        <span className="text-[10px] bg-red-500/20 text-red-400 px-1.5 py-0.5 rounded-sm font-bold border border-red-500/30">
+                          약 {course._distanceToUser.toFixed(1)}km
+                        </span>
+                      )}
                     </div>
                   </div>
                 ))}
