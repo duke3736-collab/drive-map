@@ -620,7 +620,7 @@ export default function Home() {
 
     fetchRoutesSequentially();
 
-  }, [courses, mapLoaded, activeTheme, selectedCourse, searchQuery, isSortedByDistance, favorites, userLocation]);
+  }, [courses, mapLoaded, activeTheme, activeRegion, selectedCourse, searchQuery, isSortedByDistance, favorites, userLocation]);
 
   // 코스 목록이 변경될 때(초기 로드, 검색, 테마 필터 등) 검색된 코스들이 모두 화면에 들어오도록 지도 이동 (자동 줌/패닝)
   useEffect(() => {
@@ -647,7 +647,7 @@ export default function Home() {
         }
       }
     }
-  }, [searchQuery, activeTheme, mapLoaded, selectedCourse, isSortedByDistance, courses.length]); // courses.length를 추가하여 초기 로딩 완료 시점에 자동 패닝되도록 수정
+  }, [searchQuery, activeTheme, activeRegion, mapLoaded, selectedCourse, isSortedByDistance, courses.length]); // courses.length를 추가하여 초기 로딩 완료 시점에 자동 패닝되도록 수정
 
   // 거리순 정렬 시 내 위치로 자동 패닝
   useEffect(() => {
