@@ -1588,24 +1588,36 @@ export default function Home() {
 
 
 
-                <div>
-                  <label className="block text-xs font-bold text-slate-300 mb-2">문의 내용</label>
-                  <textarea
-                    required
-                    value={inquiryContent}
-                    onChange={e => setInquiryContent(e.target.value)}
-                    placeholder="어떤 점을 개선하면 좋을까요?"
-                    className="w-full bg-slate-800 border border-slate-700 text-white px-4 py-3 rounded-xl h-32 resize-none focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all placeholder:text-slate-500 custom-scrollbar"
-                  />
-                </div>
+                {inquiryType === '광고/제휴 제안' ? (
+                  <div className="bg-slate-800/50 border border-slate-700 p-6 rounded-xl text-center flex flex-col items-center justify-center gap-3 mt-4">
+                    <span className="text-3xl">🤝</span>
+                    <p className="text-slate-300 text-sm">광고 및 비즈니스 제휴 문의는<br/>아래 대표 이메일로 연락 부탁드립니다.</p>
+                    <a href="mailto:admin@weknews.com" className="text-indigo-400 font-bold text-lg hover:text-indigo-300 transition-colors bg-indigo-500/10 px-4 py-2 rounded-lg mt-1">
+                      admin@weknews.com
+                    </a>
+                  </div>
+                ) : (
+                  <>
+                    <div>
+                      <label className="block text-xs font-bold text-slate-300 mb-2">문의 내용</label>
+                      <textarea
+                        required
+                        value={inquiryContent}
+                        onChange={e => setInquiryContent(e.target.value)}
+                        placeholder="어떤 점을 개선하면 좋을까요?"
+                        className="w-full bg-slate-800 border border-slate-700 text-white px-4 py-3 rounded-xl h-32 resize-none focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all placeholder:text-slate-500 custom-scrollbar"
+                      />
+                    </div>
 
-                <button
-                  type="submit"
-                  disabled={isSubmitting || !inquiryContent.trim()}
-                  className="w-full bg-gradient-to-r from-indigo-600 to-blue-600 text-white font-black text-lg py-4 rounded-xl shadow-[0_4px_20px_rgba(79,70,229,0.4)] hover:shadow-[0_8px_30px_rgba(79,70,229,0.6)] hover:-translate-y-0.5 active:scale-[0.98] transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0"
-                >
-                  {isSubmitting ? '전송 중...' : '의견 보내기 🚀'}
-                </button>
+                    <button
+                      type="submit"
+                      disabled={isSubmitting || !inquiryContent.trim()}
+                      className="w-full bg-gradient-to-r from-indigo-600 to-blue-600 text-white font-black text-lg py-4 rounded-xl shadow-[0_4px_20px_rgba(79,70,229,0.4)] hover:shadow-[0_8px_30px_rgba(79,70,229,0.6)] hover:-translate-y-0.5 active:scale-[0.98] transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0"
+                    >
+                      {isSubmitting ? '전송 중...' : '의견 보내기 🚀'}
+                    </button>
+                  </>
+                )}
               </form>
             </motion.div>
           </motion.div>
