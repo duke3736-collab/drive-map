@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useRef } from "react";
 import Script from "next/script";
-import { motion, AnimatePresence, useDragControls } from "framer-motion";
+import { motion, AnimatePresence, useMotionValue, animate } from "framer-motion";
 import AdBanner from "@/components/AdBanner";
 import PWAInstallButton from "@/components/PWAInstallButton";
 
@@ -56,8 +56,13 @@ export default function Home() {
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [showSplash, setShowSplash] = useState(true);
 
-  // 드래그 컨트롤 (손잡이 부분만 드래그 가능하게 설정)
-  const dragControls = useDragControls();
+  // 바텀 시트 스와이프를 위한 Motion Value 및 Ref
+  const sheetY = useMotionValue(0);
+  const scrollRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (selectedCourse) sheetY.set(0);
+  }, [selectedCourse, sheetY]);
 
   // 뒤로가기 및 닫기 공통 함수
   const closeCourse = () => {
@@ -757,27 +762,44 @@ export default function Home() {
             animate={{ y: 0 }}
             exit={{ y: "100%" }}
             transition={{ type: "spring", damping: 25, stiffness: 200 }}
-            drag="y"
-            dragControls={dragControls}
-            dragListener={false}
-            dragConstraints={{ top: 0 }}
-            dragElastic={0.2}
-            onDragEnd={(e, info) => {
-              if (info.offset.y > 80 || info.velocity.y > 300) {
-                closeCourse();
+            style={{ y: sheetY }}
+            onTouchStart={(e) => {
+              (window as any).sheetStartY = e.touches[0].clientY;
+              (window as any).sheetIsAtTop = scrollRef.current ? scrollRef.current.scrollTop <= 0 : true;
+              (window as any).isDraggingSheet = false;
+            }}
+            onTouchMove={(e) => {
+              const startY = (window as any).sheetStartY;
+              if (!startY) return;
+              const deltaY = e.touches[0].clientY - startY;
+
+              if ((window as any).sheetIsAtTop && deltaY > 0) {
+                (window as any).isDraggingSheet = true;
+                sheetY.set(deltaY);
               }
             }}
-            className="md:hidden absolute bottom-0 left-0 w-full bg-slate-900/95 backdrop-blur-xl border-t border-slate-800 rounded-t-[32px] p-6 pt-2 shadow-[0_-10px_40px_rgba(0,0,0,0.5)] z-30 flex flex-col max-h-[85vh]"
+            onTouchEnd={() => {
+              const startY = (window as any).sheetStartY;
+              if (!startY) return;
+              
+              if ((window as any).isDraggingSheet) {
+                if (sheetY.get() > 100) {
+                  closeCourse();
+                } else {
+                  animate(sheetY, 0, { type: "spring", damping: 25, stiffness: 200 });
+                }
+              }
+              (window as any).sheetStartY = null;
+              (window as any).isDraggingSheet = false;
+            }}
+            className="md:hidden absolute bottom-0 left-0 w-full bg-slate-900/95 backdrop-blur-xl border-t border-slate-800 rounded-t-[32px] p-6 pt-2 shadow-[0_-10px_40px_rgba(0,0,0,0.5)] z-30 flex flex-col max-h-[85vh] touch-pan-x touch-pan-y"
           >
-            {/* 드래그 손잡이 (Pill) - 모바일 스와이프 전용 */}
-            <div 
-              className="w-full flex justify-center pb-4 pt-2 cursor-grab active:cursor-grabbing shrink-0 touch-none"
-              onPointerDown={(e) => dragControls.start(e)}
-            >
+            {/* 드래그 손잡이 (Pill) */}
+            <div className="w-full flex justify-center pb-4 pt-2 cursor-grab shrink-0">
               <div className="w-16 h-1.5 bg-slate-600 rounded-full"></div>
             </div>
             
-            <div className="overflow-y-auto custom-scrollbar flex-1 pb-4">
+            <div ref={scrollRef} className="overflow-y-auto custom-scrollbar flex-1 pb-4">
               {renderCourseDetails(false)}
             </div>
           </motion.div>
