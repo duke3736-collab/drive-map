@@ -58,12 +58,12 @@ export default function PWAInstallButton() {
           <span className="text-2xl drop-shadow-md">🏎️</span>
           <span className="absolute -top-1 -right-1 text-xs animate-pulse">⚡</span>
         </div>
-        <div className="text-left flex-1">
-          <div className="text-white font-black flex items-center gap-2 tracking-tight text-base">
-            앱으로 1초만에 접속하기
-            <span className="bg-cyan-500/20 text-cyan-400 border border-cyan-500/30 text-[10px] px-2 py-0.5 rounded-full uppercase tracking-wider animate-pulse font-bold">무료</span>
+        <div className="text-left flex-1 min-w-0">
+          <div className="text-white font-black flex flex-wrap items-center gap-1.5 tracking-tight text-[15px]">
+            <span className="whitespace-nowrap">앱으로 1초만에 접속하기</span>
+            <span className="bg-cyan-500/20 text-cyan-400 border border-cyan-500/30 text-[10px] px-1.5 py-0.5 rounded-full uppercase tracking-wider animate-pulse font-bold shrink-0">무료</span>
           </div>
-          <div className="text-zinc-400 text-xs mt-0.5 font-medium leading-relaxed">
+          <div className="text-zinc-400 text-xs mt-1 font-medium leading-tight break-keep">
             바탕화면에 설치하고 언제든 바로 꺼내보세요!
           </div>
         </div>
