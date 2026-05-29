@@ -377,6 +377,33 @@ export default function Home() {
 
   }, [courses, mapLoaded, activeTheme, selectedCourse, searchQuery]);
 
+  // 검색어 입력 시, 검색된 코스들이 모두 화면에 들어오도록 지도 이동 (자동 줌/패닝)
+  useEffect(() => {
+    if (mapLoaded && mapRef.current && searchQuery.trim() !== '' && filteredCourses.length > 0 && !selectedCourse) {
+      const bounds = new window.kakao.maps.LatLngBounds();
+      let hasValidCoords = false;
+      filteredCourses.forEach(course => {
+        const wps = parseWaypoints(course.waypoints);
+        if (wps.length > 0) {
+          bounds.extend(new window.kakao.maps.LatLng(wps[0].lat, wps[0].lng));
+          hasValidCoords = true;
+        }
+      });
+      
+      if (hasValidCoords) {
+        if (filteredCourses.length === 1) {
+           const wps = parseWaypoints(filteredCourses[0].waypoints);
+           mapRef.current.setCenter(new window.kakao.maps.LatLng(wps[0].lat, wps[0].lng));
+           mapRef.current.setLevel(7);
+        } else {
+           // 좌측 사이드바(PC) 영역을 피해 마커들이 잘 보이도록 여백(padding) 조정
+           const paddingLeft = window.innerWidth > 768 ? 450 : 50;
+           mapRef.current.setBounds(bounds, 50, 50, 50, paddingLeft);
+        }
+      }
+    }
+  }, [searchQuery, filteredCourses, mapLoaded, selectedCourse]);
+
   const drawPolyline = (course: Course, path: any[], waypoints: ParsedWaypoint[], isSelected: boolean) => {
     if (!mapRef.current) return;
     
