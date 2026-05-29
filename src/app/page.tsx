@@ -204,99 +204,110 @@ export default function Home() {
     polylinesRef.current = [];
     markersRef.current = [];
 
-    filteredCourses.forEach(async (course) => {
-      const waypoints = parseWaypoints(course.waypoints);
-      if (waypoints.length < 2) return;
-      
-      const isSelected = selectedCourse?.id === course.id;
+    const fetchRoutesSequentially = async () => {
+      for (const course of filteredCourses) {
+        const waypoints = parseWaypoints(course.waypoints);
+        if (waypoints.length < 2) continue;
+        
+        const isSelected = selectedCourse?.id === course.id;
 
-      // 1. 마커 그리기
-      [waypoints[0], waypoints[waypoints.length - 1]].forEach((wp, idx) => {
-        const isStart = idx === 0;
-        const contentNode = document.createElement('div');
-        contentNode.innerHTML = `
-          <div class="relative flex flex-col items-center cursor-pointer transition-transform hover:scale-110 z-10 ${isSelected ? 'scale-125 z-20' : ''}" style="transform: scale(var(--marker-scale, 1)); transform-origin: bottom center;">
-            <div class="bg-slate-900 border-2 ${isStart ? 'border-indigo-400' : 'border-rose-400'} text-white text-xs md:text-sm font-bold px-3 py-1 rounded-full shadow-lg mb-1 whitespace-nowrap">
-              ${wp.name}
+        // 1. 마커 그리기
+        [waypoints[0], waypoints[waypoints.length - 1]].forEach((wp, idx) => {
+          const isStart = idx === 0;
+          const contentNode = document.createElement('div');
+          contentNode.innerHTML = `
+            <div class="relative flex flex-col items-center cursor-pointer transition-transform hover:scale-110 z-10 ${isSelected ? 'scale-125 z-20' : ''}" style="transform: scale(var(--marker-scale, 1)); transform-origin: bottom center;">
+              <div class="bg-slate-900 border-2 ${isStart ? 'border-indigo-400' : 'border-rose-400'} text-white text-xs md:text-sm font-bold px-3 py-1 rounded-full shadow-lg mb-1 whitespace-nowrap">
+                ${wp.name}
+              </div>
+              <div class="w-5 h-5 rounded-full ${isStart ? 'bg-indigo-500' : 'bg-rose-500'} border-[3px] border-white shadow-md"></div>
             </div>
-            <div class="w-5 h-5 rounded-full ${isStart ? 'bg-indigo-500' : 'bg-rose-500'} border-[3px] border-white shadow-md"></div>
-          </div>
-        `;
-        contentNode.onclick = () => handleCourseClick(course, waypoints);
+          `;
+          contentNode.onclick = () => handleCourseClick(course, waypoints);
 
-        const customOverlay = new window.kakao.maps.CustomOverlay({
-          position: new window.kakao.maps.LatLng(wp.lat, wp.lng),
-          content: contentNode,
-          yAnchor: 1
-        });
-        customOverlay.setMap(mapRef.current);
-        markersRef.current.push(customOverlay);
-      });
-
-      // 2. 도로에 밀착된 선(Polyline) 그리기
-      let pathCoordinates: any[] = [];
-      let realDistance: number | undefined;
-      let realDuration: number | undefined;
-      
-      if (cachedPathsRef.current[course.id]) {
-        // 이미 한 번 구한 적 있으면 캐시 사용 (빠름)
-        pathCoordinates = cachedPathsRef.current[course.id].path;
-        drawPolyline(course, pathCoordinates, waypoints, isSelected);
-      } else {
-        // 없으면 카카오 서버에서 길찾기 연산 받아오기
-        try {
-          const res = await fetch('/api/directions', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ waypoints })
+          const customOverlay = new window.kakao.maps.CustomOverlay({
+            position: new window.kakao.maps.LatLng(wp.lat, wp.lng),
+            content: contentNode,
+            yAnchor: 1
           });
-          const naviData = await res.json();
-          
-          if (naviData.routes && naviData.routes.length > 0) {
-            const route = naviData.routes[0];
-            realDistance = route.summary.distance; // 미터 단위
-            realDuration = route.summary.duration; // 초 단위
+          customOverlay.setMap(mapRef.current);
+          markersRef.current.push(customOverlay);
+        });
 
-            // 데이터 오류(산꼭대기 등 차량 불가 지역)로 인해 전국을 우회하는 200km 이상 비정상 경로 방어
-            const testPolyline = new window.kakao.maps.Polyline({ 
-              path: waypoints.map(wp => new window.kakao.maps.LatLng(wp.lat, wp.lng)) 
+        // 2. 도로에 밀착된 선(Polyline) 그리기
+        let pathCoordinates: any[] = [];
+        let realDistance: number | undefined;
+        let realDuration: number | undefined;
+        
+        if (cachedPathsRef.current[course.id]) {
+          // 이미 한 번 구한 적 있으면 캐시 사용 (빠름)
+          pathCoordinates = cachedPathsRef.current[course.id].path;
+          drawPolyline(course, pathCoordinates, waypoints, isSelected);
+        } else {
+          // 카카오 API 속도 제한(Rate Limit)을 피하기 위해 딜레이 추가
+          await new Promise(resolve => setTimeout(resolve, 200));
+
+          try {
+            const res = await fetch('/api/directions', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ waypoints })
             });
-            const straightDist = testPolyline.getLength();
-            if (realDistance && realDistance > straightDist * 5) {
-              console.warn("Unreasonable route distance detected, falling back to straight line.");
-              throw new Error("Unreasonable route distance");
+            const naviData = await res.json();
+            
+            if (naviData.routes && naviData.routes.length > 0) {
+              const route = naviData.routes[0];
+              realDistance = route.summary.distance; // 미터 단위
+              realDuration = route.summary.duration; // 초 단위
+
+              // 데이터 오류(산꼭대기 등 차량 불가 지역)로 인해 전국을 우회하는 200km 이상 비정상 경로 방어
+              const testPolyline = new window.kakao.maps.Polyline({ 
+                path: waypoints.map((wp: any) => new window.kakao.maps.LatLng(wp.lat, wp.lng)) 
+              });
+              const straightDist = testPolyline.getLength();
+              if (realDistance && realDistance > straightDist * 5) {
+                console.warn("Unreasonable route distance detected, falling back to straight line.");
+                throw new Error("Unreasonable route distance");
+              }
+
+              const sections = route.sections;
+              sections.forEach((section: any) => {
+                section.roads.forEach((road: any) => {
+                  for (let i = 0; i < road.vertexes.length; i += 2) {
+                    const lng = road.vertexes[i];
+                    const lat = road.vertexes[i+1];
+                    pathCoordinates.push(new window.kakao.maps.LatLng(lat, lng));
+                  }
+                });
+              });
+            } else {
+              // 실패 시 직선 폴백 및 가상 거리/시간 계산
+              pathCoordinates = waypoints.map((wp: any) => new window.kakao.maps.LatLng(wp.lat, wp.lng));
+              const polyline = new window.kakao.maps.Polyline({ path: pathCoordinates });
+              const straightDist = polyline.getLength(); // 미터 단위
+              realDistance = straightDist * 1.3; // 직선거리의 1.3배를 실제 도로 거리로 보정 추정
+              realDuration = (realDistance / 40000) * 3600; // 평균 시속 40km 기준으로 초 단위 시간 추정
             }
 
-            const sections = route.sections;
-            sections.forEach((section: any) => {
-              section.roads.forEach((road: any) => {
-                for (let i = 0; i < road.vertexes.length; i += 2) {
-                  // 카카오 API는 [lng, lat] 순서로 줍니다. LatLng 에는 (lat, lng) 순서로 넣습니다.
-                  const lng = road.vertexes[i];
-                  const lat = road.vertexes[i+1];
-                  pathCoordinates.push(new window.kakao.maps.LatLng(lat, lng));
-                }
-              });
-            });
-          } else {
-            // 실패 시 직선 폴백 및 가상 거리/시간 계산
-            pathCoordinates = waypoints.map(wp => new window.kakao.maps.LatLng(wp.lat, wp.lng));
+            cachedPathsRef.current[course.id] = { path: pathCoordinates, distance: realDistance, duration: realDuration };
+            drawPolyline(course, pathCoordinates, waypoints, isSelected);
+
+          } catch (e) {
+            console.error("Directions API failed, using fallback", e);
+            pathCoordinates = waypoints.map((wp: any) => new window.kakao.maps.LatLng(wp.lat, wp.lng));
             const polyline = new window.kakao.maps.Polyline({ path: pathCoordinates });
-            const straightDist = polyline.getLength(); // 미터 단위
-            realDistance = straightDist * 1.3; // 직선거리의 1.3배를 실제 도로 거리로 보정 추정
-            realDuration = (realDistance / 40000) * 3600; // 평균 시속 40km 기준으로 초 단위 시간 추정
+            const straightDist = polyline.getLength();
+            const fallbackDistance = straightDist * 1.3;
+            const fallbackDuration = (fallbackDistance / 40000) * 3600;
+            
+            cachedPathsRef.current[course.id] = { path: pathCoordinates, distance: fallbackDistance, duration: fallbackDuration };
+            drawPolyline(course, pathCoordinates, waypoints, isSelected);
           }
-
-          cachedPathsRef.current[course.id] = { path: pathCoordinates, distance: realDistance, duration: realDuration };
-          drawPolyline(course, pathCoordinates, waypoints, isSelected);
-
-        } catch (e) {
-          console.error(e);
-          pathCoordinates = waypoints.map(wp => new window.kakao.maps.LatLng(wp.lat, wp.lng));
-          drawPolyline(course, pathCoordinates, waypoints, isSelected);
         }
       }
-    });
+    };
+
+    fetchRoutesSequentially();
 
   }, [courses, mapLoaded, activeTheme, selectedCourse, searchQuery]);
 
