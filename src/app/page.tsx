@@ -250,19 +250,11 @@ export default function Home() {
 
   // 거리순 정렬 로직 적용
   if (isSortedByDistance && userLocation) {
-    filteredCourses = [...filteredCourses].sort((a, b) => {
-      const wpA = parseWaypoints(a.waypoints);
-      const wpB = parseWaypoints(b.waypoints);
-      if (wpA.length === 0 || wpB.length === 0) return 0;
-      
-      const distA = calculateDistance(userLocation.lat, userLocation.lng, wpA[0].lat, wpA[0].lng);
-      const distB = calculateDistance(userLocation.lat, userLocation.lng, wpB[0].lat, wpB[0].lng);
-      
-      a._distanceToUser = distA;
-      b._distanceToUser = distB;
-      
-      return distA - distB;
-    });
+    filteredCourses = filteredCourses.map(course => {
+      const wp = parseWaypoints(course.waypoints);
+      const dist = wp.length > 0 ? calculateDistance(userLocation.lat, userLocation.lng, wp[0].lat, wp[0].lng) : 999999;
+      return { ...course, _distanceToUser: dist };
+    }).sort((a, b) => (a._distanceToUser || 0) - (b._distanceToUser || 0));
   }
 
   const themes = [
