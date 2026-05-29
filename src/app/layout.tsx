@@ -42,7 +42,10 @@ export default function RootLayout({
         className="bg-slate-900 text-slate-100 font-sans antialiased selection:bg-indigo-500 selection:text-white overscroll-none"
         style={{ position: 'fixed', inset: 0, overflow: 'hidden', backgroundColor: '#0f172a', width: '100vw', height: '100vh', touchAction: 'none' }}
       >
-        <main className="w-full h-full bg-slate-950 relative overflow-hidden">
+        <main 
+          className="fixed inset-0 w-full h-full bg-slate-950 overflow-hidden"
+          style={{ position: 'fixed', inset: 0, width: '100vw', height: '100vh', overflow: 'hidden' }}
+        >
           {children}
         </main>
       </body>
