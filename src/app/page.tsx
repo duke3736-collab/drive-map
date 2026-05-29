@@ -74,6 +74,15 @@ const REGION_MAP_VIEWS: Record<string, { lat: number, lng: number, level: number
   'jeju': { lat: 33.3833, lng: 126.5500, level: 10 }
 };
 
+const EDITOR_PICKS = [1, 2, 3, 4, 7, 16, 17, 21, 25, 8];
+
+const CURATION_CATEGORIES = [
+  { id: 'spring', icon: '🌸', name: '봄꽃 드라이브', keywords: ['벚꽃', '봄꽃', '꽃놀이'] },
+  { id: 'beginner', icon: '🚗', name: '초보운전 안심', keywords: ['직진', '방조제', '초보', '초보운전', '시화방조제', '새만금'] },
+  { id: 'romantic', icon: '👩‍❤️‍👨', name: '로맨틱 노을 데이트', keywords: ['노을맛집', '낙조', '데이트', '야경', '연인'] },
+  { id: 'alone', icon: '🎧', name: '혼자 떠나는 사색', keywords: ['사색', '한적한', '조용한', '옛길', '오지', '숲멍', '물멍', '힐링'] }
+];
+
 const REGIONS = [
   { id: 'all', name: '전국' },
   { id: 'seoul', name: '서울/경기' },
@@ -113,6 +122,7 @@ export default function Home() {
   const [selectedCourse, setSelectedCourse] = useState<Course | null>(null);
   const [activeTheme, setActiveTheme] = useState<string>("all");
   const [activeRegion, setActiveRegion] = useState<string>("all");
+  const [activeCuration, setActiveCuration] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [showSplash, setShowSplash] = useState(true);
   const [isHeaderVisible, setIsHeaderVisible] = useState(true);
@@ -333,6 +343,22 @@ export default function Home() {
 
   // Derived state for filtering
   let filteredCourses = courses.filter(c => {
+    // 1. 에디터 추천 명예의 전당
+    if (activeCuration === 'ranking') {
+      return EDITOR_PICKS.includes(c.id);
+    }
+    
+    // 2. 상황별 맞춤 큐레이션 (기획전)
+    if (activeCuration && activeCuration !== 'ranking') {
+      const category = CURATION_CATEGORIES.find(cat => cat.id === activeCuration);
+      if (category) {
+        const matches = category.keywords.some(kw => 
+          c.title.includes(kw) || c.tags.includes(kw) || c.description.includes(kw) || (c.waypoints && c.waypoints.includes(kw))
+        );
+        if (!matches) return false;
+      }
+    }
+
     if (activeTheme === 'favorites') {
       if (!favorites.includes(c.id)) return false;
     } else if (activeTheme !== 'all' && c.theme !== activeTheme) {
@@ -373,8 +399,10 @@ export default function Home() {
     return true;
   });
 
-  // 거리순 정렬 로직 적용
-  if (isSortedByDistance && userLocation) {
+  // 거리순 및 랭킹 정렬 로직 적용
+  if (activeCuration === 'ranking') {
+    filteredCourses.sort((a, b) => EDITOR_PICKS.indexOf(a.id) - EDITOR_PICKS.indexOf(b.id));
+  } else if (isSortedByDistance && userLocation) {
     filteredCourses = filteredCourses.map(course => {
       const wp = parseWaypoints(course.waypoints);
       const dist = wp.length > 0 ? calculateDistance(userLocation.lat, userLocation.lng, wp[0].lat, wp[0].lng) : 999999;
@@ -1214,7 +1242,7 @@ export default function Home() {
 
           {/* 검색결과 자동완성 드롭다운 (모바일 전용) */}
           <AnimatePresence>
-            {(searchQuery || isSortedByDistance || activeTheme === 'favorites') && !selectedCourse && (
+            {(searchQuery || isSortedByDistance || activeTheme === 'favorites' || activeCuration !== null) && !selectedCourse && (
               <motion.div 
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -1224,7 +1252,7 @@ export default function Home() {
                 {filteredCourses.length > 0 ? (
                   <div className="p-2 space-y-1">
                     <p className="text-xs text-indigo-400 font-bold px-2 pt-2 pb-1">총 {filteredCourses.length}개의 코스 발견!</p>
-                    {filteredCourses.map(course => (
+                    {filteredCourses.map((course, index) => (
                       <button
                         key={course.id}
                         onClick={() => {
@@ -1239,6 +1267,11 @@ export default function Home() {
                         )}
                         <div className="flex-1 overflow-hidden pr-2">
                           <div className="text-sm font-bold text-white truncate flex items-center gap-1">
+                            {activeCuration === 'ranking' && (
+                              <span className="text-lg mr-1 drop-shadow-md">
+                                {index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : <span className="bg-slate-700 text-slate-300 text-[10px] px-1.5 py-0.5 rounded-sm">{index + 1}위</span>}
+                              </span>
+                            )}
                             {favorites.includes(course.id) && <span className="text-[10px]">❤️</span>}
                             {course.title}
                           </div>
@@ -1387,10 +1420,10 @@ export default function Home() {
           <div className="flex-1 pb-4">
             {selectedCourse ? (
               renderCourseDetails(true)
-            ) : filteredCourses.length > 0 && (searchQuery || activeTheme !== 'all' || isSortedByDistance) ? (
+            ) : filteredCourses.length > 0 && (searchQuery || activeTheme !== 'all' || isSortedByDistance || activeCuration !== null) ? (
               <div className="space-y-3">
                 <p className="text-slate-300 text-sm font-bold px-2">총 {filteredCourses.length}개의 코스</p>
-                {filteredCourses.map(course => (
+                {filteredCourses.map((course, index) => (
                   <div 
                     key={course.id} 
                     onClick={() => {
@@ -1406,7 +1439,12 @@ export default function Home() {
                     className="p-4 rounded-xl bg-slate-800/50 border border-slate-600/80 hover:bg-slate-700/80 hover:border-slate-500 transition-all cursor-pointer group shadow-sm"
                   >
                     <div className="flex justify-between items-start mb-1">
-                      <h3 className="text-white font-bold group-hover:text-indigo-400 transition-colors flex-1 pr-2">
+                      <h3 className="text-white font-bold group-hover:text-indigo-400 transition-colors flex-1 pr-2 flex items-center gap-1">
+                        {activeCuration === 'ranking' && (
+                          <span className="text-2xl mr-1 drop-shadow-md -mt-1">
+                            {index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : <span className="bg-slate-700 text-slate-300 text-xs px-2 py-1 rounded-md align-middle">{index + 1}위</span>}
+                          </span>
+                        )}
                         {favorites.includes(course.id) && <span className="text-xs mr-1">❤️</span>}
                         {course.title}
                       </h3>
