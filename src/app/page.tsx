@@ -540,8 +540,13 @@ export default function Home() {
   // 거리순 정렬 시 내 위치로 자동 패닝
   useEffect(() => {
     if (mapLoaded && mapRef.current && isSortedByDistance && userLocation) {
-      mapRef.current.panTo(new window.kakao.maps.LatLng(userLocation.lat, userLocation.lng));
-      mapRef.current.setLevel(8);
+      const bounds = new window.kakao.maps.LatLngBounds();
+      bounds.extend(new window.kakao.maps.LatLng(userLocation.lat, userLocation.lng));
+      bounds.extend(new window.kakao.maps.LatLng(userLocation.lat + 0.005, userLocation.lng + 0.005));
+      bounds.extend(new window.kakao.maps.LatLng(userLocation.lat - 0.005, userLocation.lng - 0.005));
+      
+      const paddingLeft = window.innerWidth > 768 ? 450 : 50;
+      mapRef.current.setBounds(bounds, 50, 50, 50, paddingLeft);
     }
   }, [isSortedByDistance, userLocation, mapLoaded]);
 
@@ -585,8 +590,13 @@ export default function Home() {
       const lng = position.coords.longitude;
       if (mapRef.current) {
         const moveLatLon = new window.kakao.maps.LatLng(lat, lng);
-        mapRef.current.panTo(moveLatLon);
-        mapRef.current.setLevel(5);
+        const bounds = new window.kakao.maps.LatLngBounds();
+        bounds.extend(moveLatLon);
+        bounds.extend(new window.kakao.maps.LatLng(lat + 0.005, lng + 0.005));
+        bounds.extend(new window.kakao.maps.LatLng(lat - 0.005, lng - 0.005));
+        
+        const paddingLeft = window.innerWidth > 768 ? 450 : 50;
+        mapRef.current.setBounds(bounds, 50, 50, 50, paddingLeft);
         
         if (myLocationMarkerRef.current) {
           myLocationMarkerRef.current.setMap(null);
