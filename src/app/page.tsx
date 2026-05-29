@@ -54,7 +54,7 @@ declare global {
 }
 
 const KAKAO_APP_KEY = "11032eefd7d0111cb94d93c0ab41eb01";
-const GOOGLE_SHEET_URL = "https://script.google.com/macros/s/AKfycbzfw4oZwWHAan-m8F4-l0eq5JBZFyvfRQmvvl5PqQTCEhlDsNiGxmi0n_aUxzYjrV6W/exec";
+const GOOGLE_SHEET_URL = "https://script.google.com/macros/s/AKfycbx6rYLlow4_IARR7ry9q863mVm3d4Fl-Eswhkx41geL1CwYoJiU6gvA737ZYmvg-jUw/exec";
 
 export default function Home() {
   const mapContainerRef = useRef<HTMLDivElement>(null);
