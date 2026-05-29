@@ -557,7 +557,7 @@ export default function Home() {
   };
 
   return (
-    <div className="w-full h-[100dvh] flex flex-col md:flex-row relative bg-slate-950 overflow-hidden">
+    <div className="w-full h-full flex flex-col md:flex-row relative bg-slate-950 overflow-hidden">
       {/* 이니셜 D 감성의 메인 스플래시 화면 */}
       {showSplash && (
         <div className="absolute inset-0 z-50 bg-slate-950 flex flex-col items-center justify-center overflow-hidden">
