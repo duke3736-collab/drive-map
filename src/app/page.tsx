@@ -577,9 +577,9 @@ export default function Home() {
 
   }, [courses, mapLoaded, activeTheme, selectedCourse, searchQuery, isSortedByDistance, favorites, userLocation]);
 
-  // 검색어 입력 시, 검색된 코스들이 모두 화면에 들어오도록 지도 이동 (자동 줌/패닝)
+  // 코스 목록이 변경될 때(초기 로드, 검색, 테마 필터 등) 검색된 코스들이 모두 화면에 들어오도록 지도 이동 (자동 줌/패닝)
   useEffect(() => {
-    if (mapLoaded && mapRef.current && searchQuery.trim() !== '' && filteredCourses.length > 0 && !selectedCourse) {
+    if (mapLoaded && mapRef.current && filteredCourses.length > 0 && !selectedCourse && !isSortedByDistance) {
       const bounds = new window.kakao.maps.LatLngBounds();
       let hasValidCoords = false;
       filteredCourses.forEach(course => {
@@ -602,7 +602,7 @@ export default function Home() {
         }
       }
     }
-  }, [searchQuery, mapLoaded, selectedCourse]); // removed filteredCourses to avoid re-renders
+  }, [searchQuery, activeTheme, mapLoaded, selectedCourse, isSortedByDistance, courses.length]); // courses.length를 추가하여 초기 로딩 완료 시점에 자동 패닝되도록 수정
 
   // 거리순 정렬 시 내 위치로 자동 패닝
   useEffect(() => {
