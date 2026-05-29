@@ -100,7 +100,12 @@ export default function Home() {
     if (activeTheme !== 'all' && c.theme !== activeTheme) return false;
     if (searchQuery.trim() !== '') {
       const q = searchQuery.toLowerCase().trim();
-      if (!c.title.toLowerCase().includes(q) && !c.description.toLowerCase().includes(q) && !c.tags.toLowerCase().includes(q)) {
+      if (
+        !c.title.toLowerCase().includes(q) && 
+        !c.description.toLowerCase().includes(q) && 
+        !c.tags.toLowerCase().includes(q) &&
+        !(c.waypoints && c.waypoints.toLowerCase().includes(q))
+      ) {
         return false;
       }
     }
