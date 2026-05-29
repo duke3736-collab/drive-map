@@ -1588,11 +1588,12 @@ export default function Home() {
               setSearchQuery('');
               setIsSortedByDistance(false);
               setSelectedCourse(null);
+              setIsHeaderVisible(false);
             }}
-            className={`px-5 py-2.5 rounded-full font-black text-sm flex items-center gap-2 shadow-lg backdrop-blur-md transition-all border ${
+            className={`px-5 py-2.5 rounded-full font-black text-sm flex items-center gap-2 backdrop-blur-md transition-all border ${
               activeCuration === 'ranking'
                 ? 'bg-gradient-to-r from-amber-500 to-orange-500 text-white border-amber-400 shadow-amber-500/40 ring-2 ring-amber-300'
-                : 'bg-slate-900/80 text-white border-slate-700 hover:bg-slate-800 hover:border-amber-500/50'
+                : 'bg-white/40 text-slate-800 border-white/60 hover:bg-white/60 hover:border-white shadow-[0_4px_20px_rgba(0,0,0,0.1)]'
             }`}
           >
             <span className={activeCuration === 'ranking' ? 'animate-bounce' : ''}>👑</span> 명예의 전당
@@ -1613,12 +1614,13 @@ export default function Home() {
                     setSearchQuery('');
                     setIsSortedByDistance(false);
                     setSelectedCourse(null);
+                    setIsHeaderVisible(false);
                   }
                 }}
-                className={`px-4 py-2.5 rounded-full font-bold text-sm flex items-center gap-1.5 shadow-lg backdrop-blur-md transition-all border ${
+                className={`px-4 py-2.5 rounded-full font-bold text-sm flex items-center gap-1.5 backdrop-blur-md transition-all border ${
                   isActive
                     ? 'bg-indigo-600 text-white border-indigo-400 shadow-indigo-500/40 ring-2 ring-indigo-300'
-                    : 'bg-slate-900/80 text-white border-slate-700 hover:bg-slate-800 hover:border-indigo-400/50'
+                    : 'bg-white/40 text-slate-800 border-white/60 hover:bg-white/60 hover:border-white shadow-[0_4px_20px_rgba(0,0,0,0.1)]'
                 }`}
               >
                 <span className="text-lg">{cat.icon}</span>
