@@ -866,19 +866,19 @@ export default function Home() {
           ) : (
             <span className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none">🔍</span>
           )}
-        </div>
-        <div className="flex justify-end mb-4 -mt-2 px-1">
-          <button 
-            onClick={handleSortByDistance}
-            className={`text-xs font-bold px-4 py-2 rounded-full transition-all border shadow-sm flex items-center gap-1 ${
-              isSortedByDistance 
-                ? 'bg-red-500 text-white border-red-400 shadow-red-500/30' 
-                : 'bg-slate-800 text-slate-300 border-slate-700 hover:bg-slate-700'
-            }`}
-          >
-            📍 {isSortedByDistance ? '내 주변순 정렬 해제' : '내 주변순 정렬'}
-          </button>
-        </div>
+
+          <div className="flex justify-end mt-2 px-1">
+            <button 
+              onClick={handleSortByDistance}
+              className={`text-xs font-bold px-4 py-2 rounded-full transition-all border shadow-sm flex items-center gap-1 ${
+                isSortedByDistance 
+                  ? 'bg-red-500 text-white border-red-400 shadow-red-500/30' 
+                  : 'bg-slate-800 text-slate-300 border-slate-700 hover:bg-slate-700'
+              }`}
+            >
+              📍 {isSortedByDistance ? '내 주변순 정렬 해제' : '내 주변순 정렬'}
+            </button>
+          </div>
 
           {/* 검색결과 자동완성 드롭다운 (모바일 전용) */}
           <AnimatePresence>
