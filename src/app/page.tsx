@@ -1328,6 +1328,75 @@ export default function Home() {
               transition={{ duration: 0.3, ease: "easeInOut" }}
               className="overflow-hidden w-full flex flex-col shrink-0 relative"
             >
+              {/* 👑 에디터 추천 명예의 전당 TOP 10 배너 */}
+              <button
+                onClick={() => {
+                  setActiveCuration('ranking');
+                  setActiveTheme('all');
+                  setActiveRegion('all');
+                  setSearchQuery('');
+                  setIsSortedByDistance(false);
+                  setSelectedCourse(null);
+                }}
+                className={`relative w-full overflow-hidden rounded-2xl p-5 mb-4 text-left transition-all group border shadow-xl flex items-center justify-between ${
+                  activeCuration === 'ranking' 
+                    ? 'bg-gradient-to-r from-amber-500 to-orange-500 border-amber-400 shadow-amber-500/40 ring-2 ring-amber-300 ring-offset-2 ring-offset-slate-900 scale-[0.98]' 
+                    : 'bg-gradient-to-r from-slate-800 to-slate-900 border-slate-700 hover:border-amber-500/50 hover:shadow-amber-500/20'
+                }`}
+              >
+                <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1517524008697-84bbe3c3fd98?q=80&w=800&auto=format&fit=crop')] bg-cover bg-center opacity-20 mix-blend-overlay group-hover:scale-110 transition-transform duration-700"></div>
+                <div className={`absolute inset-0 bg-gradient-to-r ${activeCuration === 'ranking' ? 'from-amber-600/80 to-transparent' : 'from-slate-900/90 to-transparent'}`}></div>
+                
+                <div className="relative z-10">
+                  <p className={`text-[10px] font-black tracking-widest mb-1 ${activeCuration === 'ranking' ? 'text-amber-100' : 'text-amber-500'}`}>EDITOR'S PICK</p>
+                  <h3 className="text-white font-black text-xl leading-tight">
+                    👑 명예의 전당<br/>TOP 10 코스
+                  </h3>
+                </div>
+                <div className={`relative z-10 w-10 h-10 rounded-full flex items-center justify-center font-black shadow-lg transition-transform ${activeCuration === 'ranking' ? 'bg-white text-amber-600 scale-110' : 'bg-slate-800 text-amber-500 group-hover:scale-110 border border-slate-700'}`}>
+                  ➔
+                </div>
+              </button>
+
+              {/* 💡 상황별 맞춤 큐레이션 기획전 (가로 스크롤) */}
+              <div className="mb-6">
+                <p className="text-slate-400 text-xs font-bold mb-2 flex items-center gap-1">
+                  <span>💡</span> 이런 드라이브 어때요?
+                </p>
+                <div className="flex overflow-x-auto gap-3 pb-2 scrollbar-hide snap-x">
+                  {CURATION_CATEGORIES.filter(c => c.id !== 'ranking').map(cat => {
+                    const isActive = activeCuration === cat.id;
+                    return (
+                      <button
+                        key={cat.id}
+                        onClick={() => {
+                          if (isActive) {
+                            setActiveCuration(null);
+                          } else {
+                            setActiveCuration(cat.id);
+                            setActiveTheme('all');
+                            setActiveRegion('all');
+                            setSearchQuery('');
+                            setIsSortedByDistance(false);
+                            setSelectedCourse(null);
+                          }
+                        }}
+                        className={`shrink-0 snap-start w-[140px] p-3 rounded-xl transition-all border flex flex-col gap-2 ${
+                          isActive
+                            ? 'bg-indigo-600 border-indigo-500 shadow-lg shadow-indigo-500/30 ring-1 ring-indigo-400'
+                            : 'bg-slate-800/80 border-slate-700 hover:bg-slate-700 hover:border-slate-600'
+                        }`}
+                      >
+                        <span className="text-2xl">{cat.icon}</span>
+                        <span className={`text-sm font-bold text-left leading-tight ${isActive ? 'text-white' : 'text-slate-200'}`}>
+                          {cat.name}
+                        </span>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
               {/* 자사 서비스(씨맵) 크로스 프로모션 배너 및 PWA 설치 */}
               <div className="mb-6">
                 <a 
@@ -1355,7 +1424,7 @@ export default function Home() {
               {/* 테마 필터 */}
               <div className="flex md:flex-wrap overflow-x-auto gap-2 pb-2 scrollbar-hide shrink-0 border-b border-slate-700/50 mb-2">
                 <button 
-                  onClick={() => setActiveTheme("all")}
+                  onClick={() => { setActiveTheme("all"); setActiveCuration(null); }}
                   className={`shrink-0 px-4 py-2 rounded-full text-sm font-bold transition-all border ${
                     activeTheme === "all" 
                       ? 'bg-indigo-600 text-white border-indigo-500 shadow-lg shadow-indigo-500/30' 
@@ -1369,6 +1438,7 @@ export default function Home() {
                     key={t.id}
                     onClick={() => {
                       setActiveTheme(t.id);
+                      setActiveCuration(null);
                       setSelectedCourse(null);
                     }}
                     className={`shrink-0 px-4 py-2 rounded-full text-sm font-bold transition-all border ${
@@ -1389,6 +1459,7 @@ export default function Home() {
                     key={region.id}
                     onClick={() => {
                       setActiveRegion(region.id);
+                      setActiveCuration(null);
                       setSelectedCourse(null);
                     }}
                     className={`shrink-0 px-3 py-1.5 rounded-full text-xs font-bold transition-all border ${
