@@ -912,7 +912,7 @@ export default function Home() {
 
           {/* 세 번째 커스텀 배너 (쿠팡 파트너스 호텔/여행 수동 배너) */}
           <a
-            href="https://travel.coupang.com" 
+            href="https://link.coupang.com/a/d9adnYXKtE" 
             target="_blank"
             rel="noopener noreferrer" 
             className="group relative w-full h-[250px] bg-slate-900/80 backdrop-blur-lg rounded-2xl border border-slate-700/80 p-5 shadow-[0_10px_30px_rgba(0,0,0,0.5)] overflow-hidden flex flex-col justify-end shrink-0 transition-all hover:-translate-y-1 hover:shadow-rose-500/20"
