@@ -94,6 +94,7 @@ export default function Home() {
   // 위치 기반 정렬 상태
   const [userLocation, setUserLocation] = useState<{lat: number, lng: number} | null>(null);
   const [isSortedByDistance, setIsSortedByDistance] = useState(false);
+  const [isLocating, setIsLocating] = useState(false);
 
   // 초기 렌더링 시 localStorage에서 찜 목록 불러오기
   useEffect(() => {
@@ -135,6 +136,7 @@ export default function Home() {
     }
 
     if (navigator.geolocation) {
+      setIsLocating(true);
       navigator.geolocation.getCurrentPosition(
         (position) => {
           setUserLocation({
@@ -142,12 +144,15 @@ export default function Home() {
             lng: position.coords.longitude
           });
           setIsSortedByDistance(true);
-          setSelectedCourse(null); // 목록 보기 위해 선택 해제
+          setSelectedCourse(null);
+          setIsLocating(false);
         },
         (error) => {
-          console.error(error);
-          alert("위치 권한을 허용해주시면 가장 가까운 코스를 찾아드립니다!");
-        }
+          console.error("Geolocation error:", error);
+          alert("위치 정보를 가져올 수 없습니다. 권한을 확인해주세요.");
+          setIsLocating(false);
+        },
+        { enableHighAccuracy: true, timeout: 5000, maximumAge: 0 }
       );
     } else {
       alert("이 브라우저에서는 위치 기능을 지원하지 않습니다.");
@@ -862,13 +867,22 @@ export default function Home() {
           <div className="flex justify-end mt-2 px-1">
             <button 
               onClick={handleSortByDistance}
+              disabled={isLocating}
               className={`text-xs font-bold px-4 py-2 rounded-full transition-all border shadow-sm flex items-center gap-1 ${
-                isSortedByDistance 
-                  ? 'bg-red-500 text-white border-red-400 shadow-red-500/30' 
-                  : 'bg-slate-800 text-slate-300 border-slate-700 hover:bg-slate-700'
+                isLocating
+                  ? 'bg-slate-700 text-slate-400 border-slate-600 cursor-wait'
+                  : isSortedByDistance 
+                    ? 'bg-red-500 text-white border-red-400 shadow-red-500/30' 
+                    : 'bg-slate-800 text-slate-300 border-slate-700 hover:bg-slate-700'
               }`}
             >
-              📍 {isSortedByDistance ? '내 주변순 정렬 해제' : '내 주변순 정렬'}
+              {isLocating ? (
+                <>
+                  <span className="animate-spin mr-1">🌀</span> 위치 파악 중...
+                </>
+              ) : (
+                <>📍 {isSortedByDistance ? '내 주변순 정렬 해제' : '내 주변순 정렬'}</>
+              )}
             </button>
           </div>
 
