@@ -488,7 +488,7 @@ export default function Home() {
 
     fetchRoutesSequentially();
 
-  }, [courses, mapLoaded, activeTheme, selectedCourse, searchQuery]);
+  }, [courses, mapLoaded, activeTheme, selectedCourse, searchQuery, isSortedByDistance, favorites]);
 
   // 검색어 입력 시, 검색된 코스들이 모두 화면에 들어오도록 지도 이동 (자동 줌/패닝)
   useEffect(() => {
@@ -882,7 +882,7 @@ export default function Home() {
 
           {/* 검색결과 자동완성 드롭다운 (모바일 전용) */}
           <AnimatePresence>
-            {searchQuery && !selectedCourse && (
+            {(searchQuery || isSortedByDistance || activeTheme === 'favorites') && !selectedCourse && (
               <motion.div 
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -1035,7 +1035,7 @@ export default function Home() {
           <div className="flex-1 pb-4">
             {selectedCourse ? (
               renderCourseDetails(true)
-            ) : filteredCourses.length > 0 && (searchQuery || activeTheme !== 'all') ? (
+            ) : filteredCourses.length > 0 && (searchQuery || activeTheme !== 'all' || isSortedByDistance) ? (
               <div className="space-y-3">
                 <p className="text-slate-300 text-sm font-bold px-2">총 {filteredCourses.length}개의 코스</p>
                 {filteredCourses.map(course => (
