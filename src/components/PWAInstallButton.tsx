@@ -41,20 +41,26 @@ export default function PWAInstallButton() {
   };
 
   return (
-    <div className="relative w-full flex flex-col items-center mt-4">
+    <div className="relative w-full flex flex-col items-center mb-6">
       <button 
         onClick={handleInstallClick}
-        className="w-full group inline-flex flex-row items-center gap-4 bg-slate-800/80 hover:bg-slate-700/80 backdrop-blur-md border border-slate-700 p-4 rounded-2xl cursor-pointer transition-all hover:scale-[1.02] active:scale-[0.98] shadow-lg"
+        className="w-full group inline-flex flex-row items-center gap-4 bg-gradient-to-r from-slate-800 to-slate-900 border border-slate-700 p-4 rounded-2xl cursor-pointer transition-all hover:scale-[1.02] active:scale-[0.98] shadow-xl hover:shadow-indigo-500/10 hover:border-indigo-500/50"
       >
-        <div className="text-3xl group-hover:animate-bounce">📱</div>
+        <div className="relative w-12 h-12 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center shrink-0 shadow-lg shadow-indigo-500/30 group-hover:rotate-12 transition-transform duration-300">
+          <span className="text-2xl drop-shadow-md">📱</span>
+          <span className="absolute -top-1 -right-1 text-xs animate-pulse">✨</span>
+        </div>
         <div className="text-left flex-1">
-          <div className="text-slate-100 font-bold flex items-center gap-2">
-            드라이브 맵 앱 설치하기
-            <span className="bg-indigo-500 text-white text-xs px-2 py-0.5 rounded-full shadow-sm animate-pulse">무료</span>
+          <div className="text-white font-black flex items-center gap-2 tracking-tight text-base">
+            앱으로 1초만에 접속하기
+            <span className="bg-indigo-500/20 text-indigo-400 border border-indigo-500/30 text-[10px] px-2 py-0.5 rounded-full uppercase tracking-wider animate-pulse font-bold">무료</span>
           </div>
-          <div className="text-slate-400 text-xs mt-1">
-            홈 화면에 추가하고 주말마다 편하게 꺼내보세요!
+          <div className="text-slate-400 text-xs mt-0.5 font-medium leading-relaxed">
+            바탕화면에 설치하고 언제든 바로 꺼내보세요!
           </div>
+        </div>
+        <div className="w-8 h-8 rounded-full bg-slate-800 border border-slate-600 flex items-center justify-center text-slate-300 group-hover:bg-indigo-500 group-hover:text-white group-hover:border-indigo-400 transition-colors shrink-0 shadow-inner">
+          <span className="text-sm font-black">➔</span>
         </div>
       </button>
 
