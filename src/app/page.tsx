@@ -99,7 +99,36 @@ export default function Home() {
   const filteredCourses = courses.filter(c => {
     if (activeTheme !== 'all' && c.theme !== activeTheme) return false;
     if (searchQuery.trim() !== '') {
-      const q = searchQuery.toLowerCase().trim();
+      let q = searchQuery.toLowerCase().trim();
+      
+      // 지역명 검색어 유연화 (예: '제주도' -> '제주', '강원도' -> '강원')
+      const aliases: Record<string, string> = {
+        '제주도': '제주',
+        '강원도': '강원',
+        '경기도': '경기',
+        '충청도': '충청',
+        '전라도': '전라',
+        '경상도': '경상',
+        '서울특별시': '서울',
+        '서울시': '서울',
+        '부산광역시': '부산',
+        '부산시': '부산',
+        '대구광역시': '대구',
+        '대구시': '대구',
+        '인천광역시': '인천',
+        '인천시': '인천',
+        '광주광역시': '광주',
+        '광주시': '광주',
+        '대전광역시': '대전',
+        '대전시': '대전',
+        '울산광역시': '울산',
+        '울산시': '울산'
+      };
+      
+      if (aliases[q]) {
+        q = aliases[q];
+      }
+
       if (
         !c.title.toLowerCase().includes(q) && 
         !c.description.toLowerCase().includes(q) && 
