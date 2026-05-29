@@ -153,8 +153,7 @@ export default function Home() {
           console.error("Geolocation error:", error);
           alert("위치 정보를 가져올 수 없습니다. 권한을 확인해주세요.");
           setIsLocating(false);
-        },
-        { enableHighAccuracy: true, timeout: 5000, maximumAge: 0 }
+        }
       );
     } else {
       alert("이 브라우저에서는 위치 기능을 지원하지 않습니다.");
