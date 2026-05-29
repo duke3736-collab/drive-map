@@ -1071,7 +1071,7 @@ export default function Home() {
               
               <button 
                 onClick={() => {
-                  window.open('https://saju.weknews.com', '_blank');
+                  window.open('https://mystic-ai.vercel.app', '_blank');
                   setShowDriveCompleteModal(false);
                 }}
                 className="w-full bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-bold py-4 rounded-xl transition-all shadow-lg shadow-purple-500/30 text-lg flex items-center justify-center gap-2"
