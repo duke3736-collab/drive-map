@@ -1331,7 +1331,7 @@ export default function Home() {
               transition={{ duration: 0.3, ease: "easeInOut" }}
               className="overflow-hidden w-full flex flex-col shrink-0 relative"
             >
-              {/* 👑 에디터 추천 명예의 전당 TOP 10 배너 */}
+              {/* 👑 에디터 추천 명예의 전당 TOP 10 배너 (모바일에서만 표시) */}
               <button
                 onClick={() => {
                   setActiveCuration('ranking');
@@ -1341,7 +1341,7 @@ export default function Home() {
                   setIsSortedByDistance(false);
                   setSelectedCourse(null);
                 }}
-                className={`relative w-full overflow-hidden rounded-2xl p-5 mb-4 text-left transition-all group border shadow-xl flex items-center justify-between ${
+                className={`md:hidden relative w-full overflow-hidden rounded-2xl p-5 mb-4 text-left transition-all group border shadow-xl flex items-center justify-between ${
                   activeCuration === 'ranking' 
                     ? 'bg-gradient-to-r from-amber-500 to-orange-500 border-amber-400 shadow-amber-500/40 ring-2 ring-amber-300 ring-offset-2 ring-offset-slate-900 scale-[0.98]' 
                     : 'bg-gradient-to-r from-slate-800 to-slate-900 border-slate-700 hover:border-amber-500/50 hover:shadow-amber-500/20'
@@ -1361,8 +1361,8 @@ export default function Home() {
                 </div>
               </button>
 
-              {/* 💡 상황별 맞춤 큐레이션 기획전 (가로 스크롤) */}
-              <div className="mb-6">
+              {/* 💡 상황별 맞춤 큐레이션 기획전 (가로 스크롤) - 모바일에서만 표시 */}
+              <div className="mb-6 md:hidden">
                 <p className="text-slate-400 text-xs font-bold mb-2 flex items-center gap-1">
                   <span>💡</span> 이런 드라이브 어때요?
                 </p>
@@ -1577,6 +1577,56 @@ export default function Home() {
           </div>
         )}
         <div id="map" ref={mapContainerRef} className="w-full h-full bg-slate-900"></div>
+
+        {/* 🗺️ PC 전용: 플로팅 큐레이션 위젯 (지도 위) */}
+        <div className="hidden md:flex absolute top-6 left-6 z-20 flex-wrap gap-2 max-w-[calc(100vw-450px)]">
+          <button
+            onClick={() => {
+              setActiveCuration('ranking');
+              setActiveTheme('all');
+              setActiveRegion('all');
+              setSearchQuery('');
+              setIsSortedByDistance(false);
+              setSelectedCourse(null);
+            }}
+            className={`px-5 py-2.5 rounded-full font-black text-sm flex items-center gap-2 shadow-lg backdrop-blur-md transition-all border ${
+              activeCuration === 'ranking'
+                ? 'bg-gradient-to-r from-amber-500 to-orange-500 text-white border-amber-400 shadow-amber-500/40 ring-2 ring-amber-300'
+                : 'bg-slate-900/80 text-white border-slate-700 hover:bg-slate-800 hover:border-amber-500/50'
+            }`}
+          >
+            <span className={activeCuration === 'ranking' ? 'animate-bounce' : ''}>👑</span> 명예의 전당
+          </button>
+
+          {CURATION_CATEGORIES.filter(c => c.id !== 'ranking').map(cat => {
+            const isActive = activeCuration === cat.id;
+            return (
+              <button
+                key={cat.id}
+                onClick={() => {
+                  if (isActive) {
+                    setActiveCuration(null);
+                  } else {
+                    setActiveCuration(cat.id);
+                    setActiveTheme('all');
+                    setActiveRegion('all');
+                    setSearchQuery('');
+                    setIsSortedByDistance(false);
+                    setSelectedCourse(null);
+                  }
+                }}
+                className={`px-4 py-2.5 rounded-full font-bold text-sm flex items-center gap-1.5 shadow-lg backdrop-blur-md transition-all border ${
+                  isActive
+                    ? 'bg-indigo-600 text-white border-indigo-400 shadow-indigo-500/40 ring-2 ring-indigo-300'
+                    : 'bg-slate-900/80 text-white border-slate-700 hover:bg-slate-800 hover:border-indigo-400/50'
+                }`}
+              >
+                <span className="text-lg">{cat.icon}</span>
+                <span>{cat.name}</span>
+              </button>
+            );
+          })}
+        </div>
 
         {/* PC 우측 플로팅 배너 영역 */}
         <div className="hidden md:flex absolute top-6 right-6 z-20 flex-col gap-4 w-[280px] max-h-[calc(100dvh-48px)] overflow-y-auto custom-scrollbar pb-6">
