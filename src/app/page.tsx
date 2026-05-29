@@ -36,6 +36,7 @@ interface ParsedWaypoint {
 declare global {
   interface Window {
     kakao: any;
+    __pathsLoaded?: boolean;
   }
 }
 
@@ -205,6 +206,25 @@ export default function Home() {
     markersRef.current = [];
 
     const fetchRoutesSequentially = async () => {
+      // 0. 프리페칭된 정적 캐시(precalculated_paths.json) 로드
+      if (!window.__pathsLoaded) {
+        try {
+          const res = await fetch('/precalculated_paths.json');
+          if (res.ok) {
+            const data = await res.json();
+            Object.keys(data).forEach(id => {
+              const { path, distance, duration } = data[id];
+              const latLngPath = path.map((p: any) => new window.kakao.maps.LatLng(p.lat, p.lng));
+              cachedPathsRef.current[Number(id)] = { path: latLngPath, distance, duration };
+            });
+            window.__pathsLoaded = true;
+            console.log("Precalculated paths loaded successfully, API calls will be skipped!");
+          }
+        } catch (e) {
+          console.warn("Could not load precalculated paths", e);
+        }
+      }
+
       for (const course of filteredCourses) {
         const waypoints = parseWaypoints(course.waypoints);
         if (waypoints.length < 2) continue;
