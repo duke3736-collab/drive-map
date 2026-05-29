@@ -77,10 +77,10 @@ const REGION_MAP_VIEWS: Record<string, { lat: number, lng: number, level: number
 const EDITOR_PICKS = [1, 2, 3, 4, 7, 16, 17, 21, 25, 8];
 
 const CURATION_CATEGORIES = [
-  { id: 'spring', icon: '🌸', name: '봄꽃 드라이브', keywords: ['벚꽃', '봄꽃', '꽃놀이'] },
-  { id: 'beginner', icon: '🚗', name: '초보운전 안심', keywords: ['직진', '방조제', '초보', '초보운전', '시화방조제', '새만금'] },
-  { id: 'romantic', icon: '👩‍❤️‍👨', name: '로맨틱 노을 데이트', keywords: ['노을맛집', '낙조', '데이트', '야경', '연인'] },
-  { id: 'alone', icon: '🎧', name: '혼자 떠나는 사색', keywords: ['사색', '한적한', '조용한', '옛길', '오지', '숲멍', '물멍', '힐링'] }
+  { id: 'spring', icon: '🌸', name: '봄꽃 드라이브', keywords: ['벚꽃', '봄꽃', '꽃놀이', '개나리', '유채꽃', '봄바람'] },
+  { id: 'beginner', icon: '🚗', name: '초보운전 안심', keywords: ['직진', '방조제', '초보', '초보운전', '시화방조제', '새만금', '주차장', '넓은'] },
+  { id: 'romantic', icon: '👩‍❤️‍👨', name: '로맨틱 노을 데이트', keywords: ['노을', '노을맛집', '낙조', '데이트', '야경', '연인', '드라이브코스추천'] },
+  { id: 'alone', icon: '🎧', name: '혼자 떠나는 사색', keywords: ['사색', '한적한', '조용한', '옛길', '오지', '숲멍', '물멍', '힐링', '혼자'] }
 ];
 
 const REGIONS = [

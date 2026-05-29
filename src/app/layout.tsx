@@ -42,6 +42,26 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ko" style={{ position: 'fixed', inset: 0, overflow: 'hidden', backgroundColor: '#0f172a', width: '100vw', height: '100vh', touchAction: 'none' }}>
+      <head>
+        <Script
+          strategy="afterInteractive"
+          src={`https://www.googletagmanager.com/gtag/js?id=G-HXGF6RRRQT`}
+        />
+        <Script
+          id="google-analytics"
+          strategy="afterInteractive"
+          dangerouslySetInnerHTML={{
+            __html: `
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+              gtag('config', 'G-HXGF6RRRQT', {
+                page_path: window.location.pathname,
+              });
+            `,
+          }}
+        />
+      </head>
       <body 
         suppressHydrationWarning 
         className="bg-slate-900 text-slate-100 font-sans antialiased selection:bg-indigo-500 selection:text-white overscroll-none"
