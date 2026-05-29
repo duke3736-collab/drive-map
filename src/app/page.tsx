@@ -269,8 +269,12 @@ export default function Home() {
               });
             });
           } else {
-            // 실패 시 직선 폴백
+            // 실패 시 직선 폴백 및 가상 거리/시간 계산
             pathCoordinates = waypoints.map(wp => new window.kakao.maps.LatLng(wp.lat, wp.lng));
+            const polyline = new window.kakao.maps.Polyline({ path: pathCoordinates });
+            const straightDist = polyline.getLength(); // 미터 단위
+            realDistance = straightDist * 1.3; // 직선거리의 1.3배를 실제 도로 거리로 보정 추정
+            realDuration = (realDistance / 40000) * 3600; // 평균 시속 40km 기준으로 초 단위 시간 추정
           }
 
           cachedPathsRef.current[course.id] = { path: pathCoordinates, distance: realDistance, duration: realDuration };
