@@ -57,6 +57,7 @@ export default function Home() {
   const [activeTheme, setActiveTheme] = useState<string>("all");
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [showSplash, setShowSplash] = useState(true);
+  const [isHeaderVisible, setIsHeaderVisible] = useState(true);
 
   // 뒤로가기 및 닫기 공통 함수
   const closeCourse = () => {
@@ -142,6 +143,11 @@ export default function Home() {
       };
       const map = new window.kakao.maps.Map(mapContainerRef.current, options);
       mapRef.current = map;
+      
+      // 지도 드래그(이동) 시작 시 상단 메뉴 자동으로 숨기기
+      window.kakao.maps.event.addListener(map, 'dragstart', () => {
+        setIsHeaderVisible(false);
+      });
       
       const updateMarkerScale = () => {
         const level = map.getLevel();
@@ -572,9 +578,21 @@ export default function Home() {
           <span className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400">🔍</span>
         </div>
 
+        {/* 상단 메뉴 토글 버튼 */}
+        {!selectedCourse && (
+          <div className="flex justify-end mb-2 z-10 relative">
+            <button 
+              onClick={() => setIsHeaderVisible(!isHeaderVisible)}
+              className="bg-slate-800/80 backdrop-blur-md text-xs text-slate-300 font-bold px-4 py-1.5 rounded-full border border-slate-700 shadow-md flex items-center gap-1 active:scale-95 transition-transform"
+            >
+              {isHeaderVisible ? "지도 넓게 보기 🔼" : "메뉴 열기 🔽"}
+            </button>
+          </div>
+        )}
+
         {/* 선택된 코스가 없을 때만 헤더 요소들(배너, 테마필터)을 보여줍니다 */}
         <AnimatePresence initial={false}>
-          {!selectedCourse && (
+          {!selectedCourse && isHeaderVisible && (
             <motion.div
               initial={{ height: 0, opacity: 0, marginTop: 0 }}
               animate={{ height: "auto", opacity: 1, marginTop: 0 }}
