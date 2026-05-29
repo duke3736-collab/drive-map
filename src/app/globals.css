@@ -28,6 +28,14 @@ html, body {
   --rsbs-mr: env(safe-area-inset-right);
 }
 
+/* 카카오맵 타일 로딩 지연 시 나타나는 기본 흰색 배경 원천 차단 */
+#map {
+  background-color: #0f172a !important; /* slate-900 */
+}
+#map > div, 
+#map > div > div {
+  background-color: #0f172a !important;
+}
 .drive-map-bottom-sheet [data-rsbs-overlay] {
   backdrop-filter: blur(24px);
   border-top-left-radius: 32px;

@@ -855,7 +855,7 @@ export default function Home() {
             </p>
           </div>
         )}
-        <div ref={mapContainerRef} className="w-full h-full"></div>
+        <div id="map" ref={mapContainerRef} className="w-full h-full bg-slate-900"></div>
 
         {/* PC 우측 플로팅 배너 영역 */}
         <div className="hidden md:flex absolute top-6 right-6 z-20 flex-col gap-4 w-[280px] max-h-[calc(100dvh-48px)] overflow-y-auto custom-scrollbar pb-6">
