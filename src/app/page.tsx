@@ -785,13 +785,12 @@ export default function Home() {
       <BottomSheet
         open={!!selectedCourse}
         onDismiss={closeCourse}
-        snapPoints={({ maxHeight }) => [maxHeight * 0.85]}
+        snapPoints={({ maxHeight }) => [maxHeight * 0.85, maxHeight * 0.4]}
+        defaultSnap={({ maxHeight }) => maxHeight * 0.4}
         className="md:hidden drive-map-bottom-sheet"
       >
-        <div className="p-6 pt-0 h-full flex flex-col">
-          <div className="overflow-y-auto custom-scrollbar flex-1 pb-4">
-            {selectedCourse && renderCourseDetails(false)}
-          </div>
+        <div className="p-6 pt-0 pb-12">
+          {selectedCourse && renderCourseDetails(false)}
         </div>
       </BottomSheet>
 
