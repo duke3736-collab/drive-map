@@ -25,3 +25,24 @@ body {
   font-family: Arial, Helvetica, sans-serif;
   overscroll-behavior-y: none;
 }
+
+/* react-spring-bottom-sheet 다크 테마 커스텀 */
+:root {
+  --rsbs-bg: rgba(15, 23, 42, 0.95); /* bg-slate-900/95 */
+  --rsbs-handle-bg: #475569; /* bg-slate-600 */
+  --rsbs-backdrop-bg: rgba(0, 0, 0, 0.5);
+  --rsbs-max-w: auto;
+  --rsbs-ml: env(safe-area-inset-left);
+  --rsbs-mr: env(safe-area-inset-right);
+}
+
+.drive-map-bottom-sheet [data-rsbs-overlay] {
+  backdrop-filter: blur(24px);
+  border-top-left-radius: 32px;
+  border-top-right-radius: 32px;
+  border-top: 1px solid #1e293b; /* border-slate-800 */
+}
+
+.drive-map-bottom-sheet [data-rsbs-header] {
+  padding-top: 12px;
+}
