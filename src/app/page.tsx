@@ -576,6 +576,47 @@ export default function Home() {
             className="w-full bg-slate-800/80 border border-slate-700 text-white px-4 py-3 rounded-xl focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all placeholder:text-slate-500 shadow-inner"
           />
           <span className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400">🔍</span>
+
+          {/* 검색결과 자동완성 드롭다운 (모바일 전용) */}
+          <AnimatePresence>
+            {searchQuery && !selectedCourse && (
+              <motion.div 
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                className="absolute top-full left-0 right-0 mt-2 bg-slate-800/95 backdrop-blur-xl border border-slate-700 rounded-2xl shadow-[0_10px_40px_rgba(0,0,0,0.8)] z-50 max-h-72 overflow-y-auto custom-scrollbar md:hidden"
+              >
+                {filteredCourses.length > 0 ? (
+                  <div className="p-2 space-y-1">
+                    <p className="text-xs text-indigo-400 font-bold px-2 pt-2 pb-1">총 {filteredCourses.length}개의 코스 발견!</p>
+                    {filteredCourses.map(course => (
+                      <button
+                        key={course.id}
+                        onClick={() => {
+                           setSelectedCourse(course);
+                        }}
+                        className="w-full text-left p-2 hover:bg-slate-700 rounded-xl transition-colors flex gap-3 items-center active:scale-[0.98]"
+                      >
+                        {course.imageUrl ? (
+                          <div className="w-12 h-12 rounded-lg bg-slate-700 bg-cover bg-center shrink-0 border border-slate-600" style={{ backgroundImage: `url("${course.imageUrl}")` }}></div>
+                        ) : (
+                          <div className="w-12 h-12 rounded-lg bg-slate-700 shrink-0 flex items-center justify-center text-xl border border-slate-600">🚗</div>
+                        )}
+                        <div className="flex-1 overflow-hidden">
+                          <div className="text-sm font-bold text-white truncate">{course.title}</div>
+                          <div className="text-xs text-slate-400 truncate">{course.description}</div>
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="p-6 text-center text-slate-400 text-sm font-bold">
+                    검색 결과가 없습니다 🥲
+                  </div>
+                )}
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
 
         {/* 사이드 메뉴 플로팅 버튼 (헤더가 숨겨졌을 때만 우측에 나타남) */}
