@@ -1058,20 +1058,25 @@ export default function Home() {
               initial={{ scale: 0.8, y: 50 }} animate={{ scale: 1, y: 0 }}
               className="bg-slate-800 border border-slate-600 p-8 rounded-3xl max-w-sm w-full text-center shadow-2xl relative z-10"
             >
-              <div className="text-6xl mb-4 drop-shadow-lg">🏆</div>
+              <div className="text-6xl mb-4 drop-shadow-lg">🔮</div>
               <h2 className="text-3xl font-black text-white mb-2 tracking-tight">수고하셨습니다!</h2>
-              <p className="text-sky-400 font-bold text-lg mb-6">코스 완주를 축하합니다</p>
+              <p className="text-sky-400 font-bold text-lg mb-6">코스 미리보기를 완료했습니다</p>
               
-              <div className="bg-slate-700/50 rounded-2xl p-4 mb-6 border border-slate-600">
-                <p className="text-slate-300 text-sm mb-1 font-bold">획득한 드라이브 포인트</p>
-                <p className="text-5xl font-black text-white drop-shadow-md">+100<span className="text-2xl text-indigo-400 ml-1">P</span></p>
+              <div className="bg-gradient-to-b from-indigo-900/50 to-purple-900/50 rounded-2xl p-5 mb-6 border border-purple-500/30">
+                <p className="text-purple-300 text-sm mb-2 font-bold tracking-widest">MYSTIC SAJU</p>
+                <p className="text-xl font-black text-white drop-shadow-md leading-tight">
+                  드라이브 가기 전,<br/>오늘 당신의 운명은?
+                </p>
               </div>
               
               <button 
-                onClick={() => setShowDriveCompleteModal(false)}
-                className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-4 rounded-xl transition-colors shadow-lg shadow-indigo-500/30 text-lg"
+                onClick={() => {
+                  window.open('https://saju.weknews.com', '_blank');
+                  setShowDriveCompleteModal(false);
+                }}
+                className="w-full bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-bold py-4 rounded-xl transition-all shadow-lg shadow-purple-500/30 text-lg flex items-center justify-center gap-2"
               >
-                리뷰 남기고 포인트 받기
+                <span>오늘 당신의 운명을 시험해 보세요!</span>
               </button>
               <button 
                 onClick={() => setShowDriveCompleteModal(false)}
