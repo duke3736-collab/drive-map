@@ -401,6 +401,14 @@ export default function Home() {
     if (!selectedCourse) return null;
     return (
       <div className="space-y-4">
+        {/* 뒤로가기 버튼 */}
+        <button 
+          onClick={() => setSelectedCourse(null)}
+          className="flex items-center gap-2 text-slate-400 hover:text-white transition-colors mb-2 font-bold w-fit bg-slate-800/50 px-3 py-1.5 rounded-lg border border-slate-700/50"
+        >
+          <span>←</span> <span>목록으로 돌아가기</span>
+        </button>
+
         {/* 코스 풍경 사진 (이미지 URL이 있을 경우에만 렌더링) */}
         {selectedCourse.imageUrl && (
           <div 

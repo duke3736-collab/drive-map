@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 
 interface AdBannerProps {
   dataAdSlot: string;
@@ -13,10 +13,16 @@ export default function AdBanner({
   dataAdFormat,
   dataFullWidthResponsive,
 }: AdBannerProps) {
+  const isPushed = useRef(false);
+
   useEffect(() => {
+    // 이미 푸시되었거나, 브라우저 환경이 아니면 실행하지 않음
+    if (isPushed.current || typeof window === 'undefined') return;
+
     try {
       // @ts-ignore
       (window.adsbygoogle = window.adsbygoogle || []).push({});
+      isPushed.current = true;
     } catch (error) {
       console.error("AdSense error:", error);
     }
