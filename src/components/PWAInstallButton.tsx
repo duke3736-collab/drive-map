@@ -8,6 +8,14 @@ export default function PWAInstallButton() {
   const [showIOSInstruction, setShowIOSInstruction] = useState(false);
 
   useEffect(() => {
+    // 1. Service Worker 등록 (PWA 필수 조건)
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/sw.js')
+        .then((reg) => console.log('Service Worker registered', reg))
+        .catch((err) => console.error('Service Worker registration failed', err));
+    }
+
+    // 2. 설치 프롬프트 이벤트 리스너 등록
     const handleBeforeInstallPrompt = (e: any) => {
       e.preventDefault();
       setDeferredPrompt(e);
