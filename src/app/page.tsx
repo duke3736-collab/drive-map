@@ -171,53 +171,70 @@ export default function Home() {
   };
 
   const startDriveMode = async () => {
-    if (!navigator.geolocation) {
-      alert("이 브라우저에서는 주행 모드를 지원하지 않습니다.");
-      return;
+    if (!selectedCourse) return;
+
+    let path = cachedPathsRef.current[selectedCourse.id]?.path;
+    if (!path || path.length === 0) {
+      const wps = parseWaypoints(selectedCourse.waypoints);
+      path = wps.map((wp: any) => new window.kakao.maps.LatLng(wp.lat, wp.lng));
     }
     
-    // Request Wake Lock if supported
-    if ('wakeLock' in navigator) {
-      try {
-        wakeLockRef.current = await (navigator as any).wakeLock.request('screen');
-      } catch (err) {
-        console.warn('Wake Lock error:', err);
-      }
+    if (!path || path.length < 2) {
+      alert("경로 데이터가 부족하여 가상 주행을 시작할 수 없습니다.");
+      return;
     }
 
     setIsDriveMode(true);
     
-    // Start watching position
-    watchIdRef.current = navigator.geolocation.watchPosition(
-      (position) => {
-        const lat = position.coords.latitude;
-        const lng = position.coords.longitude;
-        setDriveLocation({ lat, lng });
-        
-        // Pan map automatically in drive mode
-        if (mapRef.current) {
-          const moveLatLon = new window.kakao.maps.LatLng(lat, lng);
-          mapRef.current.panTo(moveLatLon);
-        }
-      },
-      (error) => {
-        console.error("WatchPosition error:", error);
-      },
-      { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
-    );
+    // 약 10초(10000ms) 동안 코스 완주 애니메이션 (50ms마다 업데이트 = 총 200 프레임)
+    const stepTime = 50;
+    const totalSteps = 200;
+    let currentStep = 0;
+    
+    if (watchIdRef.current !== null) {
+      clearInterval(watchIdRef.current as any);
+    }
+
+    watchIdRef.current = setInterval(() => {
+      currentStep++;
+      if (currentStep >= totalSteps) {
+        stopDriveMode();
+        return;
+      }
+      
+      // 전체 경로 중 현재 진행도 계산 (0.0 ~ 1.0)
+      const progress = currentStep / totalSteps;
+      const exactIndex = progress * (path.length - 1);
+      const index1 = Math.floor(exactIndex);
+      const index2 = Math.ceil(exactIndex);
+      const fraction = exactIndex - index1;
+      
+      const p1 = path[index1];
+      const p2 = path[index2] || p1;
+      
+      const lat = p1.getLat() + (p2.getLat() - p1.getLat()) * fraction;
+      const lng = p1.getLng() + (p2.getLng() - p1.getLng()) * fraction;
+      
+      setDriveLocation({ lat, lng });
+      
+      // 애니메이션 중 자연스러운 패닝
+      if (mapRef.current) {
+        const moveLatLon = new window.kakao.maps.LatLng(lat, lng);
+        mapRef.current.panTo(moveLatLon);
+      }
+    }, stepTime) as any;
   };
 
   const stopDriveMode = () => {
     if (watchIdRef.current !== null) {
-      navigator.geolocation.clearWatch(watchIdRef.current);
+      clearInterval(watchIdRef.current as any);
       watchIdRef.current = null;
     }
     if (wakeLockRef.current) {
-      wakeLockRef.current.release();
+      wakeLockRef.current.release().catch(() => {});
       wakeLockRef.current = null;
     }
     
-    // Remove drive marker if it exists
     if (driveMarkerRef.current) {
       driveMarkerRef.current.setMap(null);
       driveMarkerRef.current = null;
@@ -871,8 +888,8 @@ export default function Home() {
           className="w-full mt-2 bg-gradient-to-r from-sky-500 to-indigo-500 hover:from-sky-600 hover:to-indigo-600 text-white font-bold py-4 rounded-xl transition-all shadow-[0_0_20px_rgba(56,189,248,0.4)] flex items-center justify-center gap-2 relative overflow-hidden group"
         >
           <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
-          <span className="text-xl relative z-10">🚙</span>
-          <span className="relative z-10 tracking-tight">자체 주행 모드 (화면 유지)</span>
+          <span className="text-xl relative z-10">▶️</span>
+          <span className="relative z-10 tracking-tight">10초 만에 코스 미리보기 (가상 주행)</span>
         </button>
 
         {/* 카카오톡 공유 버튼 */}
@@ -995,12 +1012,12 @@ export default function Home() {
         </div>
       </div>
 
-      {/* 자체 주행 모드 HUD */}
+      {/* 가상 주행 모드 HUD */}
       {isDriveMode && (
         <div className="absolute top-0 left-0 w-full p-4 z-50 pointer-events-none flex flex-col justify-between h-full pb-8">
           <div className="bg-slate-900/90 backdrop-blur-md rounded-2xl p-4 border border-slate-700 shadow-2xl pointer-events-auto">
-            <h2 className="text-white font-black text-xl mb-1">{selectedCourse?.title || '주행 모드'}</h2>
-            <p className="text-sky-400 font-bold text-sm">파란색 경로를 따라 안전하게 주행하세요</p>
+            <h2 className="text-white font-black text-xl mb-1">{selectedCourse?.title || '코스 미리보기'}</h2>
+            <p className="text-sky-400 font-bold text-sm">코스를 따라 가상 주행을 진행 중입니다...</p>
           </div>
           <div className="pointer-events-auto flex gap-4 md:w-[400px] md:mx-auto">
             <button 
@@ -1018,7 +1035,7 @@ export default function Home() {
               onClick={stopDriveMode}
               className="flex-1 bg-red-600 hover:bg-red-700 text-white font-black py-4 rounded-full shadow-[0_0_15px_rgba(220,38,38,0.5)] active:scale-95 transition-all text-xl border-2 border-red-400"
             >
-              주행 종료 🏁
+              미리보기 종료 ⏹️
             </button>
           </div>
         </div>
