@@ -257,6 +257,16 @@ export default function Home() {
             realDistance = route.summary.distance; // 미터 단위
             realDuration = route.summary.duration; // 초 단위
 
+            // 데이터 오류(산꼭대기 등 차량 불가 지역)로 인해 전국을 우회하는 200km 이상 비정상 경로 방어
+            const testPolyline = new window.kakao.maps.Polyline({ 
+              path: waypoints.map(wp => new window.kakao.maps.LatLng(wp.lat, wp.lng)) 
+            });
+            const straightDist = testPolyline.getLength();
+            if (realDistance && realDistance > straightDist * 5) {
+              console.warn("Unreasonable route distance detected, falling back to straight line.");
+              throw new Error("Unreasonable route distance");
+            }
+
             const sections = route.sections;
             sections.forEach((section: any) => {
               section.roads.forEach((road: any) => {
