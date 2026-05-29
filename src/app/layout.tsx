@@ -36,9 +36,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="ko">
-      <body suppressHydrationWarning className="bg-slate-900 text-slate-100 font-sans antialiased selection:bg-indigo-500 selection:text-white overscroll-none">
-        <main className="w-full h-[100dvh] bg-slate-950 relative overflow-hidden">
+    <html lang="ko" style={{ position: 'fixed', inset: 0, overflow: 'hidden', backgroundColor: '#0f172a', width: '100vw', height: '100vh', touchAction: 'none' }}>
+      <body 
+        suppressHydrationWarning 
+        className="bg-slate-900 text-slate-100 font-sans antialiased selection:bg-indigo-500 selection:text-white overscroll-none"
+        style={{ position: 'fixed', inset: 0, overflow: 'hidden', backgroundColor: '#0f172a', width: '100vw', height: '100vh', touchAction: 'none' }}
+      >
+        <main className="w-full h-full bg-slate-950 relative overflow-hidden">
           {children}
         </main>
       </body>
