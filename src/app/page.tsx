@@ -347,7 +347,7 @@ export default function Home() {
         {/* 코스 풍경 사진 (이미지 URL이 있을 경우에만 렌더링) */}
         {selectedCourse.imageUrl && (
           <div 
-            className="w-full h-36 md:h-48 bg-slate-800 rounded-2xl bg-cover bg-center shadow-inner mb-4 border border-slate-700"
+            className="w-full h-32 md:h-48 bg-slate-800 rounded-2xl bg-cover bg-center shadow-inner mb-4 border border-slate-700"
             style={{ backgroundImage: `url("${selectedCourse.imageUrl}")` }}
           ></div>
         )}
@@ -826,8 +826,8 @@ export default function Home() {
       <BottomSheet
         open={!!selectedCourse}
         onDismiss={closeCourse}
-        snapPoints={({ maxHeight }) => [maxHeight * 0.85, maxHeight * 0.45]}
-        defaultSnap={({ maxHeight }) => maxHeight * 0.45}
+        snapPoints={({ maxHeight }) => [maxHeight * 0.85, maxHeight * 0.5]}
+        defaultSnap={({ maxHeight }) => maxHeight * 0.5}
         className="md:hidden drive-map-bottom-sheet"
       >
         <div className="p-6 pt-0 pb-12">
