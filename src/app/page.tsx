@@ -582,12 +582,12 @@ export default function Home() {
         <AnimatePresence>
           {!selectedCourse && !isHeaderVisible && (
             <motion.button
-              initial={{ x: 100, opacity: 0 }}
-              animate={{ x: 0, opacity: 1 }}
-              exit={{ x: 100, opacity: 0 }}
+              initial={{ y: 50, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              exit={{ y: 50, opacity: 0 }}
               transition={{ type: "spring", stiffness: 300, damping: 25 }}
               onClick={() => setIsHeaderVisible(true)}
-              className="absolute top-20 right-4 z-20 bg-indigo-600/95 backdrop-blur-md text-white px-4 py-3 rounded-full shadow-[0_4px_20px_rgba(79,70,229,0.4)] border border-indigo-500 flex items-center justify-center gap-2 active:scale-95 transition-all"
+              className="absolute bottom-8 right-4 z-20 bg-indigo-600/95 backdrop-blur-md text-white px-5 py-3.5 rounded-full shadow-[0_4px_20px_rgba(79,70,229,0.4)] border border-indigo-500 flex items-center justify-center gap-2 active:scale-95 transition-all"
             >
               <span className="text-lg font-black leading-none">☰</span>
               <span className="text-sm font-bold tracking-tight">테마 코스</span>
@@ -605,15 +605,6 @@ export default function Home() {
               transition={{ duration: 0.3, ease: "easeInOut" }}
               className="overflow-hidden w-full flex flex-col shrink-0 relative"
             >
-              {/* 헤더 닫기(접기) 버튼 - 헤더가 열려있을 때 우측 상단에 표시 */}
-              <div className="absolute -top-2 right-0 z-10">
-                <button 
-                  onClick={() => setIsHeaderVisible(false)}
-                  className="bg-slate-800/80 backdrop-blur text-xs text-slate-300 font-bold px-3 py-1.5 rounded-full border border-slate-700 shadow-md flex items-center gap-1 active:scale-95"
-                >
-                  접기 🔼
-                </button>
-              </div>
               {/* 자사 서비스(씨맵) 크로스 프로모션 배너 및 PWA 설치 */}
               <div className="mb-6">
                 <a 
@@ -666,6 +657,16 @@ export default function Home() {
                     {t.icon} {t.label}
                   </button>
                 ))}
+              </div>
+
+              {/* 헤더 하단 닫기(접기) 버튼 - 아주 크고 눈에 띄게 배치 */}
+              <div className="w-full flex justify-center pb-2 mb-2">
+                <button 
+                  onClick={() => setIsHeaderVisible(false)}
+                  className="bg-slate-800/90 backdrop-blur-md text-sm text-slate-300 font-bold px-6 py-2.5 rounded-full border border-slate-700 shadow-md flex items-center gap-2 active:scale-95 transition-all hover:bg-slate-700 hover:text-white"
+                >
+                  메뉴 접어두기 🔼
+                </button>
               </div>
             </motion.div>
           )}
