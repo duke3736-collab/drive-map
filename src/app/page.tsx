@@ -672,9 +672,22 @@ export default function Home() {
               setSearchQuery(e.target.value);
               closeCourse();
             }}
-            className="w-full bg-slate-800/80 border border-slate-700 text-white px-4 py-3 rounded-xl focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all placeholder:text-slate-500 shadow-inner"
+            className="w-full bg-slate-800/80 border border-slate-700 text-white pl-4 pr-10 py-3 rounded-xl focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all placeholder:text-slate-500 shadow-inner"
           />
-          <span className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400">🔍</span>
+          {searchQuery ? (
+            <button
+              onClick={() => {
+                setSearchQuery('');
+                closeCourse();
+              }}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white bg-slate-700/80 hover:bg-slate-600 rounded-full w-6 h-6 flex items-center justify-center transition-colors text-[10px] font-black"
+              aria-label="검색어 지우기"
+            >
+              ✕
+            </button>
+          ) : (
+            <span className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none">🔍</span>
+          )}
 
           {/* 검색결과 자동완성 드롭다운 (모바일 전용) */}
           <AnimatePresence>
