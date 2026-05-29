@@ -731,7 +731,8 @@ export default function Home() {
               const wps = parseWaypoints(selectedCourse.waypoints);
               if (wps.length > 0) {
                 const dest = wps[wps.length - 1];
-                window.location.href = `tmap://search?name=${encodeURIComponent(dest.name)}`;
+                // window.location.href 대신 window.open을 사용하여 기존 탭(우리 사이트)을 살려둡니다.
+                window.open(`tmap://search?name=${encodeURIComponent(dest.name)}`, '_blank');
               }
             }}
             className="w-full bg-[#111111] border border-slate-600 hover:bg-slate-800 text-white font-bold py-3 rounded-xl transition-colors flex items-center justify-center gap-2 shadow-md"
@@ -759,7 +760,7 @@ export default function Home() {
                     coordType: 'wgs84'
                   });
                 } else {
-                  window.location.href = `https://map.kakao.com/link/to/${encodeURIComponent(dest.name)},${dest.lat},${dest.lng}`;
+                  window.open(`https://map.kakao.com/link/to/${encodeURIComponent(dest.name)},${dest.lat},${dest.lng}`, '_blank');
                 }
               }
             }}
