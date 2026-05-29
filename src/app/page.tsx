@@ -378,6 +378,27 @@ export default function Home() {
         }
       }
 
+      if (userLocation && isSortedByDistance) {
+        const userContent = document.createElement('div');
+        userContent.innerHTML = `
+          <div class="relative flex flex-col items-center pointer-events-none animate-bounce" style="z-index: 100;">
+            <div class="bg-red-600 border-2 border-white text-white text-xs font-black px-3 py-1 rounded-full shadow-lg mb-1 whitespace-nowrap">
+              내 위치 📍
+            </div>
+            <div class="w-6 h-6 rounded-full bg-red-600 border-[3px] border-white shadow-[0_0_15px_rgba(220,38,38,0.8)] flex items-center justify-center">
+              <div class="w-2 h-2 bg-white rounded-full animate-pulse"></div>
+            </div>
+          </div>
+        `;
+        const userMarker = new window.kakao.maps.CustomOverlay({
+          position: new window.kakao.maps.LatLng(userLocation.lat, userLocation.lng),
+          content: userContent,
+          yAnchor: 1
+        });
+        userMarker.setMap(mapRef.current);
+        markersRef.current.push(userMarker);
+      }
+
       for (const course of filteredCourses) {
         const waypoints = parseWaypoints(course.waypoints);
         if (waypoints.length < 2) continue;
@@ -512,7 +533,15 @@ export default function Home() {
         }
       }
     }
-  }, [searchQuery, filteredCourses, mapLoaded, selectedCourse]);
+  }, [searchQuery, mapLoaded, selectedCourse]); // removed filteredCourses to avoid re-renders
+
+  // 거리순 정렬 시 내 위치로 자동 패닝
+  useEffect(() => {
+    if (mapLoaded && mapRef.current && isSortedByDistance && userLocation) {
+      mapRef.current.panTo(new window.kakao.maps.LatLng(userLocation.lat, userLocation.lng));
+      mapRef.current.setLevel(8);
+    }
+  }, [isSortedByDistance, userLocation, mapLoaded]);
 
   const drawPolyline = (course: Course, path: any[], waypoints: ParsedWaypoint[], isSelected: boolean) => {
     if (!mapRef.current) return;
