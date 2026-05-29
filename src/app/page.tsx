@@ -890,7 +890,7 @@ export default function Home() {
           
           {/* 두 번째 커스텀 배너 (쿠팡 파트너스 자동차용품 수동 배너) */}
           <a
-            href="https://pages.coupang.com/f/s19315" // 쿠팡 자동차용품 기획전 임시 링크
+            href="https://link.coupang.com/a/d9aFVtygcC" 
             target="_blank"
             rel="noopener noreferrer" 
             className="group relative w-full h-[250px] bg-slate-900/80 backdrop-blur-lg rounded-2xl border border-slate-700/80 p-5 shadow-[0_10px_30px_rgba(0,0,0,0.5)] overflow-hidden flex flex-col justify-end shrink-0 transition-all hover:-translate-y-1 hover:shadow-sky-500/20"
@@ -931,6 +931,13 @@ export default function Home() {
               </p>
             </div>
           </a>
+          
+          {/* 쿠팡 파트너스 대가성 문구 (법적 의무) */}
+          <div className="w-full text-center py-3 px-3 bg-slate-900/60 backdrop-blur-lg rounded-xl border border-slate-700/50 shrink-0 mt-2">
+            <p className="text-[11px] text-slate-400 leading-relaxed">
+              이 포스팅은 쿠팡 파트너스 활동의 일환으로,<br/>이에 따른 일정액의 수수료를 제공받습니다.
+            </p>
+          </div>
         </div>
       </div>
 
