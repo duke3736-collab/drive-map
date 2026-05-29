@@ -1592,8 +1592,8 @@ export default function Home() {
                   <div className="bg-slate-800/50 border border-slate-700 p-6 rounded-xl text-center flex flex-col items-center justify-center gap-3 mt-4">
                     <span className="text-3xl">🤝</span>
                     <p className="text-slate-300 text-sm">광고 및 비즈니스 제휴 문의는<br/>아래 대표 이메일로 연락 부탁드립니다.</p>
-                    <a href="mailto:admin@weknews.com" className="text-indigo-400 font-bold text-lg hover:text-indigo-300 transition-colors bg-indigo-500/10 px-4 py-2 rounded-lg mt-1">
-                      admin@weknews.com
+                    <a href="mailto:duke3736@gmail.com" className="text-indigo-400 font-bold text-lg hover:text-indigo-300 transition-colors bg-indigo-500/10 px-4 py-2 rounded-lg mt-1">
+                      duke3736@gmail.com
                     </a>
                   </div>
                 ) : (
