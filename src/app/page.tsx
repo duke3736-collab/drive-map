@@ -69,6 +69,47 @@ export default function Home() {
   const [showSplash, setShowSplash] = useState(true);
   const [isHeaderVisible, setIsHeaderVisible] = useState(true);
 
+  // 문의하기 모달 상태
+  const [isInquiryModalOpen, setIsInquiryModalOpen] = useState(false);
+  const [inquiryType, setInquiryType] = useState('코스 제안/오류 수정');
+  const [inquiryContent, setInquiryContent] = useState('');
+  const [inquiryContact, setInquiryContact] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleInquirySubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!inquiryContent.trim()) return;
+    
+    setIsSubmitting(true);
+    
+    try {
+      // 추후 대표님이 설정할 구글 앱스 스크립트 웹앱 URL (임시 플레이스홀더)
+      const scriptUrl = process.env.NEXT_PUBLIC_INQUIRY_API_URL || "https://script.google.com/macros/s/AKfycbyc914KzZ87wUu9QzR5T5Fqj4J9A8tC8xX3_g33_g/exec";
+      
+      await fetch(scriptUrl, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: new URLSearchParams({
+          type: inquiryType,
+          contact: inquiryContact,
+          content: inquiryContent,
+          timestamp: new Date().toISOString()
+        })
+      });
+      
+      alert("성공적으로 전송되었습니다! 소중한 의견 감사합니다.");
+      setIsInquiryModalOpen(false);
+      setInquiryContent('');
+      setInquiryContact('');
+    } catch (error) {
+      alert("전송에 실패했습니다. 관리자에게 이메일로 직접 문의해주세요.");
+      console.error(error);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   // 뒤로가기 및 닫기 공통 함수
   const closeCourse = () => {
     setSelectedCourse(null);
@@ -1029,6 +1070,98 @@ export default function Home() {
           </div>
         </BottomSheet>
       )}
+
+      {/* 좌측 하단 제안 및 문의 플로팅 버튼 */}
+      <button
+        onClick={() => setIsInquiryModalOpen(true)}
+        className="fixed bottom-6 left-6 z-50 bg-slate-800/90 backdrop-blur-md text-slate-300 hover:text-white px-4 py-3 rounded-full shadow-[0_4px_20px_rgba(0,0,0,0.5)] border border-slate-700 flex items-center justify-center gap-2 transition-all hover:-translate-y-1 hover:shadow-indigo-500/20 active:scale-95 group"
+      >
+        <span className="text-xl group-hover:animate-bounce">💡</span>
+        <span className="text-sm font-bold tracking-tight">제안 및 문의</span>
+      </button>
+
+      {/* 문의하기 팝업 모달 */}
+      <AnimatePresence>
+        {isInquiryModalOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-950/80 backdrop-blur-sm p-4"
+          >
+            <motion.div
+              initial={{ scale: 0.95, opacity: 0, y: 20 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.95, opacity: 0, y: 20 }}
+              className="bg-slate-900 border border-slate-700 rounded-3xl p-6 w-full max-w-md shadow-2xl relative"
+            >
+              <button
+                onClick={() => setIsInquiryModalOpen(false)}
+                className="absolute top-4 right-4 text-slate-400 hover:text-white w-8 h-8 flex items-center justify-center rounded-full bg-slate-800 hover:bg-slate-700 transition-colors"
+              >
+                ✕
+              </button>
+              
+              <h2 className="text-2xl font-black text-white mb-1 flex items-center gap-2">
+                <span className="text-indigo-400">💬</span> 제안 및 문의하기
+              </h2>
+              <p className="text-sm text-slate-400 mb-6">코스 추가, 정보 수정, 광고/제휴 등 무엇이든 편하게 남겨주세요.</p>
+
+              <form onSubmit={handleInquirySubmit} className="space-y-4">
+                <div>
+                  <label className="block text-xs font-bold text-slate-300 mb-2">문의 유형</label>
+                  <div className="flex gap-2">
+                    {['코스 제안/오류 수정', '광고/제휴 제안'].map(type => (
+                      <button
+                        key={type}
+                        type="button"
+                        onClick={() => setInquiryType(type)}
+                        className={`flex-1 py-2.5 rounded-xl text-sm font-bold transition-all border ${
+                          inquiryType === type 
+                            ? 'bg-indigo-600 border-indigo-500 text-white shadow-lg shadow-indigo-500/30' 
+                            : 'bg-slate-800 border-slate-700 text-slate-400 hover:bg-slate-700/50'
+                        }`}
+                      >
+                        {type}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-slate-300 mb-2">연락처 / 이메일 <span className="text-slate-500 font-normal">(선택)</span></label>
+                  <input
+                    type="text"
+                    value={inquiryContact}
+                    onChange={e => setInquiryContact(e.target.value)}
+                    placeholder="답변을 원하실 경우 남겨주세요"
+                    className="w-full bg-slate-800 border border-slate-700 text-white px-4 py-3 rounded-xl focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all placeholder:text-slate-500"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-slate-300 mb-2">문의 내용</label>
+                  <textarea
+                    required
+                    value={inquiryContent}
+                    onChange={e => setInquiryContent(e.target.value)}
+                    placeholder="어떤 점을 개선하면 좋을까요?"
+                    className="w-full bg-slate-800 border border-slate-700 text-white px-4 py-3 rounded-xl h-32 resize-none focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all placeholder:text-slate-500 custom-scrollbar"
+                  />
+                </div>
+
+                <button
+                  type="submit"
+                  disabled={isSubmitting || !inquiryContent.trim()}
+                  className="w-full bg-gradient-to-r from-indigo-600 to-blue-600 text-white font-black text-lg py-4 rounded-xl shadow-[0_4px_20px_rgba(79,70,229,0.4)] hover:shadow-[0_8px_30px_rgba(79,70,229,0.6)] hover:-translate-y-0.5 active:scale-[0.98] transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0"
+                >
+                  {isSubmitting ? '전송 중...' : '의견 보내기 🚀'}
+                </button>
+              </form>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
     </div>
   );
