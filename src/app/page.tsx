@@ -56,6 +56,25 @@ declare global {
 const KAKAO_APP_KEY = "11032eefd7d0111cb94d93c0ab41eb01";
 const GOOGLE_SHEET_URL = "https://script.google.com/macros/s/AKfycbyQ-vhk6Kj6uIFyxugwoHC19OU8XIPRzNc8AbMWbJ3AVoCcGjNZBuc_QVMcAsy9qFOwkA/exec";
 
+const REGION_KEYWORDS: Record<string, string[]> = {
+  'seoul': ['서울', '인천', '경기', '파주', '남양주', '가평', '양평', '일산', '강화', '포천', '수원', '용인'],
+  'gangwon': ['강원', '강릉', '속초', '동해', '삼척', '평창', '양양', '고성', '춘천', '원주'],
+  'chungcheong': ['충청', '대전', '세종', '천안', '보령', '당진', '태안', '제천', '단양', '공주'],
+  'jeolla': ['전라', '광주', '전주', '군산', '목포', '여수', '순천', '담양', '고창', '부안'],
+  'gyeongsang': ['경상', '대구', '부산', '울산', '경주', '포항', '통영', '거제', '남해', '창원'],
+  'jeju': ['제주', '서귀포', '애월', '중문']
+};
+
+const REGIONS = [
+  { id: 'all', name: '전국' },
+  { id: 'seoul', name: '서울/경기' },
+  { id: 'gangwon', name: '강원' },
+  { id: 'chungcheong', name: '충청/대전' },
+  { id: 'jeolla', name: '전라/광주' },
+  { id: 'gyeongsang', name: '경상/부산' },
+  { id: 'jeju', name: '제주' }
+];
+
 export default function Home() {
   const mapContainerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<any>(null);
@@ -84,6 +103,7 @@ export default function Home() {
   const [isLoading, setIsLoading] = useState(true);
   const [selectedCourse, setSelectedCourse] = useState<Course | null>(null);
   const [activeTheme, setActiveTheme] = useState<string>("all");
+  const [activeRegion, setActiveRegion] = useState<string>("all");
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [showSplash, setShowSplash] = useState(true);
   const [isHeaderVisible, setIsHeaderVisible] = useState(true);
@@ -311,6 +331,14 @@ export default function Home() {
       if (!favorites.includes(c.id)) return false;
     } else if (activeTheme !== 'all' && c.theme !== activeTheme) {
       return false;
+    }
+
+    if (activeRegion !== 'all') {
+      const keywords = REGION_KEYWORDS[activeRegion] || [];
+      const matchesRegion = keywords.some(kw => 
+        c.title.includes(kw) || c.tags.includes(kw) || (c.waypoints && c.waypoints.includes(kw)) || c.description.includes(kw)
+      );
+      if (!matchesRegion) return false;
     }
 
     if (searchQuery.trim() !== '') {
@@ -882,7 +910,29 @@ export default function Home() {
           </button>
         </div>
         
-        {/* 자체 주행 모드 버튼 */}
+        {/* 쿠팡 파트너스 배너 (수익화) */}
+        <div className="mt-6 mb-2">
+          <a 
+            href="https://link.coupang.com/a/d6qUzhMlMa" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="block w-full bg-gradient-to-r from-pink-500 to-rose-500 rounded-xl p-4 shadow-lg hover:-translate-y-1 transition-transform relative overflow-hidden group"
+          >
+            <div className="absolute -right-4 -top-4 w-20 h-20 bg-white/20 rounded-full blur-xl group-hover:bg-white/30 transition-colors"></div>
+            <div className="flex items-center justify-between relative z-10">
+              <div>
+                <p className="text-white font-black text-sm mb-1">드라이브 갈 때 이거 챙겼어? 👀</p>
+                <p className="text-pink-100 text-xs font-semibold">차량 필수템 / 간식 로켓배송</p>
+              </div>
+              <div className="bg-white text-rose-500 w-8 h-8 rounded-full flex items-center justify-center font-black shadow-md group-hover:scale-110 transition-transform">
+                ➔
+              </div>
+            </div>
+            <p className="text-[8px] text-white/50 mt-2 text-right">이 포스팅은 쿠팡 파트너스 활동의 일환으로, 이에 따른 일정액의 수수료를 제공받습니다.</p>
+          </a>
+        </div>
+
+        {/* 가상 주행 모드 버튼 */}
         <button 
           onClick={startDriveMode}
           className="w-full mt-2 bg-gradient-to-r from-sky-500 to-indigo-500 hover:from-sky-600 hover:to-indigo-600 text-white font-bold py-4 rounded-xl transition-all shadow-[0_0_20px_rgba(56,189,248,0.4)] flex items-center justify-center gap-2 relative overflow-hidden group"
@@ -1255,7 +1305,7 @@ export default function Home() {
               </div>
 
               {/* 테마 필터 */}
-              <div className="flex md:flex-wrap overflow-x-auto gap-2 pb-4 scrollbar-hide shrink-0">
+              <div className="flex md:flex-wrap overflow-x-auto gap-2 pb-2 scrollbar-hide shrink-0 border-b border-slate-700/50 mb-2">
                 <button 
                   onClick={() => setActiveTheme("all")}
                   className={`shrink-0 px-4 py-2 rounded-full text-sm font-bold transition-all border ${
@@ -1280,6 +1330,26 @@ export default function Home() {
                     }`}
                   >
                     {t.icon} {t.label}
+                  </button>
+                ))}
+              </div>
+
+              {/* 지역 필터 */}
+              <div className="flex md:flex-wrap overflow-x-auto gap-2 pb-4 scrollbar-hide shrink-0">
+                {REGIONS.map((region) => (
+                  <button 
+                    key={region.id}
+                    onClick={() => {
+                      setActiveRegion(region.id);
+                      setSelectedCourse(null);
+                    }}
+                    className={`shrink-0 px-3 py-1.5 rounded-full text-xs font-bold transition-all border ${
+                      activeRegion === region.id 
+                        ? 'bg-sky-600 text-white border-sky-500 shadow-lg shadow-sky-500/30' 
+                        : 'bg-slate-800/50 text-slate-400 border-slate-700 hover:bg-slate-700'
+                    }`}
+                  >
+                    {region.name}
                   </button>
                 ))}
               </div>
