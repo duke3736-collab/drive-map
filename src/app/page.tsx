@@ -95,11 +95,10 @@ export default function Home() {
   });
 
   const themes = [
-    { id: "all", icon: "🌌", label: "전체보기" },
-    { id: "night", icon: "🌃", label: "야경 드라이브" },
-    { id: "coastal", icon: "🌊", label: "해안도로" },
-    { id: "nature", icon: "🌲", label: "숲속/계곡" },
-    { id: "date", icon: "☕", label: "카페/데이트" },
+    { id: "야경 드라이브", icon: "🌃", label: "야경 드라이브" },
+    { id: "해안도로", icon: "🌊", label: "해안도로" },
+    { id: "숲속/계곡", icon: "🌲", label: "숲속/계곡" },
+    { id: "카페/데이트", icon: "☕", label: "카페/데이트" },
   ];
 
   // 구글 시트 데이터 로드
