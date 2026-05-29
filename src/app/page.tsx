@@ -83,8 +83,8 @@ export default function Home() {
     setIsSubmitting(true);
     
     try {
-      // 추후 대표님이 설정할 구글 앱스 스크립트 웹앱 URL (임시 플레이스홀더)
-      const scriptUrl = process.env.NEXT_PUBLIC_INQUIRY_API_URL || "https://script.google.com/macros/s/AKfycbyc914KzZ87wUu9QzR5T5Fqj4J9A8tC8xX3_g33_g/exec";
+      // 대표님이 직접 생성하신 실제 구글 앱스 스크립트 웹앱 URL 연동 완료!
+      const scriptUrl = process.env.NEXT_PUBLIC_INQUIRY_API_URL || "https://script.google.com/macros/s/AKfycbx6rYLlow4_IARR7ry9q863mVm3d4Fl-Eswhkx41geL1CwYoJiU6gvA737ZYmvg-jUw/exec";
       
       await fetch(scriptUrl, {
         method: 'POST',
