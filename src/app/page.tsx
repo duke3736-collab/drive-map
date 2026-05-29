@@ -901,18 +901,27 @@ export default function Home() {
             ></iframe>
           </div>
 
-          {/* 세 번째 플로팅 광고 (쿠팡 파트너스 2번 - 신규) */}
-          <div className="w-full bg-slate-900/80 backdrop-blur-lg rounded-2xl border border-slate-700/80 p-3 shadow-[0_10px_30px_rgba(0,0,0,0.5)] overflow-hidden flex justify-center items-center shrink-0">
-            <iframe 
-              src="https://ads-partners.coupang.com/widgets.html?id=992806&template=carousel&trackingCode=AF2374736&subId=&width=250&height=300" 
-              width="250" 
-              height="300" 
-              frameBorder="0" 
-              scrolling="no" 
-              referrerPolicy="unsafe-url"
-              className="rounded-lg bg-white shrink-0"
-            ></iframe>
-          </div>
+          {/* 세 번째 커스텀 배너 (쿠팡 파트너스 호텔/여행 수동 배너) */}
+          <a
+            href="https://travel.coupang.com" 
+            target="_blank"
+            rel="noopener noreferrer" 
+            className="group relative w-full h-[250px] bg-slate-900/80 backdrop-blur-lg rounded-2xl border border-slate-700/80 p-5 shadow-[0_10px_30px_rgba(0,0,0,0.5)] overflow-hidden flex flex-col justify-end shrink-0 transition-all hover:-translate-y-1 hover:shadow-rose-500/20"
+          >
+            {/* 호캉스 배경 이미지 (어둡게 처리) */}
+            <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1566073771259-6a8506099945?q=80&w=800&auto=format&fit=crop')] bg-cover bg-center opacity-40 group-hover:opacity-60 group-hover:scale-110 transition-all duration-700"></div>
+            <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-900/70 to-transparent"></div>
+            
+            <div className="relative z-10 flex flex-col gap-1.5">
+              <span className="bg-rose-500 text-white text-[10px] font-black px-2 py-1 rounded w-fit tracking-wider shadow-lg">HOTEL & RESORT</span>
+              <h3 className="text-white font-black text-xl leading-tight mt-1 group-hover:text-rose-100 transition-colors drop-shadow-md">
+                드라이브 후 꿀맛 휴식!<br/>전국 호캉스 특가 예약
+              </h3>
+              <p className="text-slate-300 text-xs font-medium mt-1 flex items-center gap-1">
+                쿠팡 트래블 특가 보러가기 <span className="group-hover:translate-x-1 transition-transform">→</span>
+              </p>
+            </div>
+          </a>
         </div>
       </div>
 
