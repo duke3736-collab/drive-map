@@ -64,6 +64,11 @@ export default function Home() {
   const myLocationMarkerRef = useRef<any>(null);
   // 이미 서버에서 받아온 도로 좌표 및 실시간 거리/시간 캐싱
   const cachedPathsRef = useRef<Record<number, { path: any[], distance?: number, duration?: number }>>({});
+  
+  // 주행 모드용 Refs
+  const driveMarkerRef = useRef<any>(null);
+  const watchIdRef = useRef<number | null>(null);
+  const wakeLockRef = useRef<any>(null);
 
   // 모바일 여부 체크 (PC에서 BottomSheet 마운트 해제용)
   useEffect(() => {
@@ -97,6 +102,11 @@ export default function Home() {
   const [isSortedByDistance, setIsSortedByDistance] = useState(false);
   const [isLocating, setIsLocating] = useState(false);
   const [isLocatingMap, setIsLocatingMap] = useState(false);
+
+  // 주행 모드 상태
+  const [isDriveMode, setIsDriveMode] = useState(false);
+  const [showDriveCompleteModal, setShowDriveCompleteModal] = useState(false);
+  const [driveLocation, setDriveLocation] = useState<{lat: number, lng: number} | null>(null);
 
   // 초기 렌더링 시 localStorage에서 찜 목록 불러오기
   useEffect(() => {
@@ -158,6 +168,64 @@ export default function Home() {
     } else {
       alert("이 브라우저에서는 위치 기능을 지원하지 않습니다.");
     }
+  };
+
+  const startDriveMode = async () => {
+    if (!navigator.geolocation) {
+      alert("이 브라우저에서는 주행 모드를 지원하지 않습니다.");
+      return;
+    }
+    
+    // Request Wake Lock if supported
+    if ('wakeLock' in navigator) {
+      try {
+        wakeLockRef.current = await (navigator as any).wakeLock.request('screen');
+      } catch (err) {
+        console.warn('Wake Lock error:', err);
+      }
+    }
+
+    setIsDriveMode(true);
+    
+    // Start watching position
+    watchIdRef.current = navigator.geolocation.watchPosition(
+      (position) => {
+        const lat = position.coords.latitude;
+        const lng = position.coords.longitude;
+        setDriveLocation({ lat, lng });
+        
+        // Pan map automatically in drive mode
+        if (mapRef.current) {
+          const moveLatLon = new window.kakao.maps.LatLng(lat, lng);
+          mapRef.current.panTo(moveLatLon);
+        }
+      },
+      (error) => {
+        console.error("WatchPosition error:", error);
+      },
+      { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+    );
+  };
+
+  const stopDriveMode = () => {
+    if (watchIdRef.current !== null) {
+      navigator.geolocation.clearWatch(watchIdRef.current);
+      watchIdRef.current = null;
+    }
+    if (wakeLockRef.current) {
+      wakeLockRef.current.release();
+      wakeLockRef.current = null;
+    }
+    
+    // Remove drive marker if it exists
+    if (driveMarkerRef.current) {
+      driveMarkerRef.current.setMap(null);
+      driveMarkerRef.current = null;
+    }
+    
+    setIsDriveMode(false);
+    setDriveLocation(null);
+    setShowDriveCompleteModal(true);
   };
 
   const handleInquirySubmit = async (e: React.FormEvent) => {
@@ -549,6 +617,33 @@ export default function Home() {
     }
   }, [isSortedByDistance, userLocation, mapLoaded]);
 
+  // 주행 모드 내 위치 마커 렌더링
+  useEffect(() => {
+    if (mapLoaded && mapRef.current && isDriveMode && driveLocation) {
+      const moveLatLon = new window.kakao.maps.LatLng(driveLocation.lat, driveLocation.lng);
+      
+      if (!driveMarkerRef.current) {
+        const carContent = document.createElement('div');
+        carContent.innerHTML = `
+          <div class="relative flex flex-col items-center pointer-events-none" style="z-index: 100;">
+            <div class="w-12 h-12 bg-white rounded-full border-4 border-sky-500 shadow-[0_0_20px_rgba(14,165,233,0.6)] flex items-center justify-center animate-pulse">
+              <span class="text-2xl">🚙</span>
+            </div>
+          </div>
+        `;
+        const customOverlay = new window.kakao.maps.CustomOverlay({
+          position: moveLatLon,
+          content: carContent,
+          yAnchor: 0.5
+        });
+        customOverlay.setMap(mapRef.current);
+        driveMarkerRef.current = customOverlay;
+      } else {
+        driveMarkerRef.current.setPosition(moveLatLon);
+      }
+    }
+  }, [driveLocation, isDriveMode, mapLoaded]);
+
   const drawPolyline = (course: Course, path: any[], waypoints: ParsedWaypoint[], isSelected: boolean) => {
     if (!mapRef.current) return;
     
@@ -769,6 +864,16 @@ export default function Home() {
             <span className="text-lg">🚕</span> 카카오내비
           </button>
         </div>
+        
+        {/* 자체 주행 모드 버튼 */}
+        <button 
+          onClick={startDriveMode}
+          className="w-full mt-2 bg-gradient-to-r from-sky-500 to-indigo-500 hover:from-sky-600 hover:to-indigo-600 text-white font-bold py-4 rounded-xl transition-all shadow-[0_0_20px_rgba(56,189,248,0.4)] flex items-center justify-center gap-2 relative overflow-hidden group"
+        >
+          <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
+          <span className="text-xl relative z-10">🚙</span>
+          <span className="relative z-10 tracking-tight">자체 주행 모드 (화면 유지)</span>
+        </button>
 
         {/* 카카오톡 공유 버튼 */}
         <button 
@@ -890,11 +995,84 @@ export default function Home() {
         </div>
       </div>
 
+      {/* 자체 주행 모드 HUD */}
+      {isDriveMode && (
+        <div className="absolute top-0 left-0 w-full p-4 z-50 pointer-events-none flex flex-col justify-between h-full pb-8">
+          <div className="bg-slate-900/90 backdrop-blur-md rounded-2xl p-4 border border-slate-700 shadow-2xl pointer-events-auto">
+            <h2 className="text-white font-black text-xl mb-1">{selectedCourse?.title || '주행 모드'}</h2>
+            <p className="text-sky-400 font-bold text-sm">파란색 경로를 따라 안전하게 주행하세요</p>
+          </div>
+          <div className="pointer-events-auto flex gap-4 md:w-[400px] md:mx-auto">
+            <button 
+              onClick={() => {
+                if(mapRef.current && driveLocation) {
+                  mapRef.current.panTo(new window.kakao.maps.LatLng(driveLocation.lat, driveLocation.lng));
+                  mapRef.current.setLevel(3);
+                }
+              }}
+              className="w-16 h-16 bg-white text-sky-500 rounded-full flex items-center justify-center shadow-[0_0_15px_rgba(255,255,255,0.5)] text-2xl font-black border-4 border-slate-200 active:scale-95 transition-transform shrink-0"
+            >
+              📍
+            </button>
+            <button 
+              onClick={stopDriveMode}
+              className="flex-1 bg-red-600 hover:bg-red-700 text-white font-black py-4 rounded-full shadow-[0_0_15px_rgba(220,38,38,0.5)] active:scale-95 transition-all text-xl border-2 border-red-400"
+            >
+              주행 종료 🏁
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* 완주 축하 팝업 */}
+      <AnimatePresence>
+        {showDriveCompleteModal && (
+          <motion.div 
+            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+            className="absolute inset-0 z-[9999] bg-slate-950/90 backdrop-blur-sm flex items-center justify-center p-6"
+          >
+            <div className="absolute inset-0 overflow-hidden pointer-events-none">
+               <div className="absolute top-1/4 left-1/4 animate-bounce text-6xl drop-shadow-2xl">🎉</div>
+               <div className="absolute top-1/3 right-1/4 animate-ping text-5xl drop-shadow-2xl">✨</div>
+               <div className="absolute bottom-1/3 left-1/3 animate-pulse text-4xl drop-shadow-2xl">🎊</div>
+            </div>
+            
+            <motion.div 
+              initial={{ scale: 0.8, y: 50 }} animate={{ scale: 1, y: 0 }}
+              className="bg-slate-800 border border-slate-600 p-8 rounded-3xl max-w-sm w-full text-center shadow-2xl relative z-10"
+            >
+              <div className="text-6xl mb-4 drop-shadow-lg">🏆</div>
+              <h2 className="text-3xl font-black text-white mb-2 tracking-tight">수고하셨습니다!</h2>
+              <p className="text-sky-400 font-bold text-lg mb-6">코스 완주를 축하합니다</p>
+              
+              <div className="bg-slate-700/50 rounded-2xl p-4 mb-6 border border-slate-600">
+                <p className="text-slate-300 text-sm mb-1 font-bold">획득한 드라이브 포인트</p>
+                <p className="text-5xl font-black text-white drop-shadow-md">+100<span className="text-2xl text-indigo-400 ml-1">P</span></p>
+              </div>
+              
+              <button 
+                onClick={() => setShowDriveCompleteModal(false)}
+                className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-4 rounded-xl transition-colors shadow-lg shadow-indigo-500/30 text-lg"
+              >
+                리뷰 남기고 포인트 받기
+              </button>
+              <button 
+                onClick={() => setShowDriveCompleteModal(false)}
+                className="mt-4 text-slate-400 hover:text-white text-sm font-semibold transition-colors underline underline-offset-4"
+              >
+                다음에 할게요
+              </button>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       {/* PC 사이드바 / 모바일 상단 헤더 */}
-      <div className="
+      <div className={`
         md:relative md:w-[400px] md:h-full md:bg-slate-900 md:border-r md:border-slate-800 md:flex md:flex-col md:p-6 md:z-20
         absolute top-0 left-0 w-full z-10 p-4 bg-gradient-to-b from-slate-950/80 to-transparent md:bg-none
-      ">
+        ${isDriveMode ? 'hidden md:hidden' : ''}
+      `}>
         <h1 className="text-xl md:text-3xl font-black text-white mb-3 md:mb-6 tracking-tight flex items-center gap-2">
           <span>🚗</span> Drive Map
         </h1>
