@@ -37,7 +37,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ko">
-      <body className="bg-slate-900 text-slate-100 font-sans antialiased selection:bg-indigo-500 selection:text-white overscroll-none">
+      <body suppressHydrationWarning className="bg-slate-900 text-slate-100 font-sans antialiased selection:bg-indigo-500 selection:text-white overscroll-none">
         <main className="w-full h-[100dvh] bg-slate-950 relative overflow-hidden">
           {children}
         </main>

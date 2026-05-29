@@ -564,7 +564,7 @@ export default function Home() {
           ></div>
           <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/40 to-transparent"></div>
           
-          <div className="relative z-10 text-center px-6 mt-32">
+          <div className="relative z-[999] text-center px-6 mt-32 pointer-events-auto">
             <span className="inline-block bg-indigo-600 text-white font-black px-5 py-2 rounded-full text-sm mb-6 shadow-lg shadow-indigo-500/50">
               전국 감성 드라이브 코스
             </span>
@@ -576,7 +576,7 @@ export default function Home() {
             </p>
             <button 
               onClick={() => setShowSplash(false)}
-              className="bg-white text-slate-900 font-black text-xl px-12 py-5 rounded-full shadow-2xl hover:scale-105 hover:bg-slate-100 transition-all border-4 border-slate-200"
+              className="relative z-[1000] cursor-pointer bg-white text-slate-900 font-black text-xl px-12 py-5 rounded-full shadow-2xl hover:scale-105 hover:bg-slate-100 transition-all border-4 border-slate-200"
             >
               드라이브 시작하기 🏁
             </button>
