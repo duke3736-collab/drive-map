@@ -34,6 +34,18 @@ interface ParsedWaypoint {
   lng: number;
 }
 
+const parseWaypoints = (str: string): ParsedWaypoint[] => {
+  if (!str) return [];
+  return str.split('|').map(pt => {
+    const parts = pt.split(',');
+    return {
+      name: parts[0] || "",
+      lat: parseFloat(parts[1] || "0"),
+      lng: parseFloat(parts[2] || "0")
+    };
+  });
+};
+
 declare global {
   interface Window {
     kakao: any;
@@ -338,18 +350,6 @@ export default function Home() {
     }, 500);
     return () => clearInterval(interval);
   }, [mapLoaded]);
-
-  const parseWaypoints = (str: string): ParsedWaypoint[] => {
-    if (!str) return [];
-    return str.split('|').map(pt => {
-      const parts = pt.split(',');
-      return {
-        name: parts[0] || "",
-        lat: parseFloat(parts[1] || "0"),
-        lng: parseFloat(parts[2] || "0")
-      };
-    });
-  };
 
   // 코스 그리기 (도로망 연동 반영)
   useEffect(() => {
