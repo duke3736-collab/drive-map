@@ -61,6 +61,7 @@ export default function Home() {
   const mapRef = useRef<any>(null);
   const polylinesRef = useRef<any[]>([]);
   const markersRef = useRef<any[]>([]);
+  const myLocationMarkerRef = useRef<any>(null);
   // 이미 서버에서 받아온 도로 좌표 및 실시간 거리/시간 캐싱
   const cachedPathsRef = useRef<Record<number, { path: any[], distance?: number, duration?: number }>>({});
 
@@ -95,6 +96,7 @@ export default function Home() {
   const [userLocation, setUserLocation] = useState<{lat: number, lng: number} | null>(null);
   const [isSortedByDistance, setIsSortedByDistance] = useState(false);
   const [isLocating, setIsLocating] = useState(false);
+  const [isLocatingMap, setIsLocatingMap] = useState(false);
 
   // 초기 렌더링 시 localStorage에서 찜 목록 불러오기
   useEffect(() => {
@@ -577,6 +579,7 @@ export default function Home() {
       alert("현재 브라우저에서는 위치 정보를 지원하지 않습니다.");
       return;
     }
+    setIsLocatingMap(true);
     navigator.geolocation.getCurrentPosition((position) => {
       const lat = position.coords.latitude;
       const lng = position.coords.longitude;
@@ -585,15 +588,33 @@ export default function Home() {
         mapRef.current.panTo(moveLatLon);
         mapRef.current.setLevel(5);
         
-        const content = `<div class="w-4 h-4 bg-red-500 rounded-full border-2 border-white shadow-md animate-pulse"></div>`;
+        if (myLocationMarkerRef.current) {
+          myLocationMarkerRef.current.setMap(null);
+        }
+        
+        const userContent = document.createElement('div');
+        userContent.innerHTML = `
+          <div class="relative flex flex-col items-center pointer-events-none animate-bounce" style="z-index: 100;">
+            <div class="bg-red-600 border-2 border-white text-white text-xs font-black px-3 py-1 rounded-full shadow-lg mb-1 whitespace-nowrap">
+              내 위치 📍
+            </div>
+            <div class="w-6 h-6 rounded-full bg-red-600 border-[3px] border-white shadow-[0_0_15px_rgba(220,38,38,0.8)] flex items-center justify-center">
+              <div class="w-2 h-2 bg-white rounded-full animate-pulse"></div>
+            </div>
+          </div>
+        `;
         const customOverlay = new window.kakao.maps.CustomOverlay({
           position: moveLatLon,
-          content: content,
+          content: userContent,
+          yAnchor: 1
         });
         customOverlay.setMap(mapRef.current);
+        myLocationMarkerRef.current = customOverlay;
       }
+      setIsLocatingMap(false);
     }, () => {
-      alert("스마트폰/브라우저의 위치 접근 권한을 허용해주세요!");
+      alert("위치 정보를 가져올 수 없습니다. 브라우저 설정에서 위치 권한을 허용해주세요!");
+      setIsLocatingMap(false);
     });
   };
 
@@ -837,10 +858,11 @@ export default function Home() {
       <div className="absolute z-20 top-1/2 -translate-y-1/2 right-4 md:transform-none md:top-auto md:bottom-20 md:right-auto md:left-[424px] flex flex-col gap-2 shadow-[0_5px_15px_rgba(0,0,0,0.3)]">
         <button 
           onClick={findMyLocation}
+          disabled={isLocatingMap}
           className="w-10 h-10 bg-white/90 backdrop-blur-sm rounded-xl border border-slate-200 flex items-center justify-center text-slate-700 hover:bg-white hover:text-sky-600 transition-colors shadow-sm"
           title="내 위치"
         >
-          🎯
+          {isLocatingMap ? <span className="animate-spin text-sm">🌀</span> : "🎯"}
         </button>
         <div className="bg-white/90 backdrop-blur-sm rounded-xl border border-slate-200 overflow-hidden flex flex-col shadow-sm">
           <button 
