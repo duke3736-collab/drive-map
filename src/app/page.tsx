@@ -376,17 +376,46 @@ export default function Home() {
           <div className="flex items-center gap-2">
             <span className="text-slate-400 text-xs">총 거리</span>
             <span className="font-bold text-slate-100">
-              {cachedPathsRef.current[selectedCourse.id]?.distance 
-                ? `${(cachedPathsRef.current[selectedCourse.id].distance! / 1000).toFixed(1)}km` 
-                : selectedCourse.distance}
+              {(() => {
+                const cached = cachedPathsRef.current[selectedCourse.id];
+                if (cached?.distance) return `${(cached.distance / 1000).toFixed(1)}km`;
+                if (selectedCourse.distance) return selectedCourse.distance;
+                
+                const wps = parseWaypoints(selectedCourse.waypoints);
+                if (wps.length < 2) return "계산중";
+                let straightDist = 0;
+                for(let i=0; i<wps.length-1; i++) {
+                  const p1 = new window.kakao.maps.LatLng(wps[i].lat, wps[i].lng);
+                  const p2 = new window.kakao.maps.LatLng(wps[i+1].lat, wps[i+1].lng);
+                  const poly = new window.kakao.maps.Polyline({ path: [p1, p2] });
+                  straightDist += poly.getLength();
+                }
+                const dist = straightDist * 1.3;
+                return `약 ${(dist / 1000).toFixed(1)}km`;
+              })()}
             </span>
           </div>
           <div className="flex items-center gap-2">
             <span className="text-slate-400 text-xs">예상 시간</span>
             <span className="font-bold text-slate-100">
-              {cachedPathsRef.current[selectedCourse.id]?.duration
-                ? `${Math.ceil(cachedPathsRef.current[selectedCourse.id].duration! / 60)}분`
-                : selectedCourse.duration}
+              {(() => {
+                const cached = cachedPathsRef.current[selectedCourse.id];
+                if (cached?.duration) return `${Math.ceil(cached.duration / 60)}분`;
+                if (selectedCourse.duration) return selectedCourse.duration;
+                
+                const wps = parseWaypoints(selectedCourse.waypoints);
+                if (wps.length < 2) return "계산중";
+                let straightDist = 0;
+                for(let i=0; i<wps.length-1; i++) {
+                  const p1 = new window.kakao.maps.LatLng(wps[i].lat, wps[i].lng);
+                  const p2 = new window.kakao.maps.LatLng(wps[i+1].lat, wps[i+1].lng);
+                  const poly = new window.kakao.maps.Polyline({ path: [p1, p2] });
+                  straightDist += poly.getLength();
+                }
+                const dist = straightDist * 1.3;
+                const dur = (dist / 40000) * 3600;
+                return `약 ${Math.ceil(dur / 60)}분`;
+              })()}
             </span>
           </div>
         </div>
