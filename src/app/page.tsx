@@ -57,7 +57,7 @@ export default function Home() {
   const [activeTheme, setActiveTheme] = useState<string>("all");
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [showSplash, setShowSplash] = useState(true);
-  const [isHeaderVisible, setIsHeaderVisible] = useState(true);
+  const [isHeaderVisible, setIsHeaderVisible] = useState(false);
 
   // 뒤로가기 및 닫기 공통 함수
   const closeCourse = () => {
