@@ -6,6 +6,8 @@
 }
 
 html, body {
+  position: fixed;
+  inset: 0;
   width: 100%;
   height: 100%;
   margin: 0;
@@ -13,6 +15,7 @@ html, body {
   background-color: #0f172a; /* slate-900 */
   overflow: hidden; /* 원천 차단 */
   overscroll-behavior: none; /* 고무줄 당김 방지 */
+  touch-action: none; /* 핀치 줌 등 방지 */
 }
 
 /* react-spring-bottom-sheet 다크 테마 커스텀 */
