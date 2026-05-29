@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useRef } from "react";
 import Script from "next/script";
+import { motion, AnimatePresence } from "framer-motion";
 import AdBanner from "@/components/AdBanner";
 import PWAInstallButton from "@/components/PWAInstallButton";
 
@@ -54,12 +55,6 @@ export default function Home() {
   const [activeTheme, setActiveTheme] = useState<string>("all");
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [showSplash, setShowSplash] = useState(true);
-  const [dragY, setDragY] = useState(0);
-
-  // selectedCourse가 닫히면 드래그 상태 초기화
-  useEffect(() => {
-    if (!selectedCourse) setDragY(0);
-  }, [selectedCourse]);
 
   // 뒤로가기 및 닫기 공통 함수
   const closeCourse = () => {
@@ -396,7 +391,7 @@ export default function Home() {
               const wps = parseWaypoints(selectedCourse.waypoints);
               if (wps.length > 0) {
                 const dest = wps[wps.length - 1];
-                window.location.href = `tmap://route?goalname=${encodeURIComponent(dest.name)}&goalx=${dest.lng}&goaly=${dest.lat}`;
+                window.location.href = `tmap://search?name=${encodeURIComponent(dest.name)}`;
               }
             }}
             className="w-full bg-[#111111] border border-slate-600 hover:bg-slate-800 text-white font-bold py-3 rounded-xl transition-colors flex items-center justify-center gap-2 shadow-md"
@@ -413,7 +408,10 @@ export default function Home() {
               const wps = parseWaypoints(selectedCourse.waypoints);
               if (wps.length > 0) {
                 const dest = wps[wps.length - 1];
-                if (window.Kakao && window.Kakao.isInitialized()) {
+                if (window.Kakao) {
+                  if (!window.Kakao.isInitialized()) {
+                    window.Kakao.init(KAKAO_APP_KEY);
+                  }
                   window.Kakao.Navi.start({
                     name: dest.name,
                     x: dest.lng,
@@ -573,51 +571,72 @@ export default function Home() {
           <span className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400">🔍</span>
         </div>
 
-        {/* 자사 서비스(씨맵) 크로스 프로모션 배너 및 PWA 설치 */}
-        {!selectedCourse && (
-          <div className="mb-6">
-            <a 
-              href="https://map.weknews.com" 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="block w-full bg-gradient-to-r from-sky-500 to-blue-600 rounded-2xl p-4 shadow-lg shadow-sky-500/20 hover:shadow-sky-500/40 hover:-translate-y-1 transition-all group relative overflow-hidden"
+        {/* 선택된 코스가 없을 때만 헤더 요소들(배너, 테마필터)을 보여줍니다 */}
+        <AnimatePresence initial={false}>
+          {!selectedCourse && (
+            <motion.div
+              initial={{ height: 0, opacity: 0, marginTop: 0 }}
+              animate={{ height: "auto", opacity: 1, marginTop: 0 }}
+              exit={{ height: 0, opacity: 0, marginTop: -16 }}
+              transition={{ duration: 0.3, ease: "easeInOut" }}
+              className="overflow-hidden w-full flex flex-col shrink-0"
             >
-              <div className="absolute -right-4 -top-4 w-24 h-24 bg-white/20 rounded-full blur-xl group-hover:bg-white/30 transition-colors"></div>
-              <div className="relative z-10 flex items-center justify-between">
-                <div>
-                  <h3 className="text-white font-black text-lg mb-1 flex items-center gap-2 tracking-tight">
-                    <span className="text-2xl group-hover:animate-bounce">🌊</span> 여름 물놀이 스팟 찾기
-                  </h3>
-                  <p className="text-sky-100 text-xs font-semibold">전국 계곡, 해수욕장, 수영장을 씨맵에서 한눈에!</p>
-                </div>
-                <div className="bg-white text-blue-600 w-8 h-8 rounded-full flex items-center justify-center font-black shadow-md group-hover:scale-110 transition-transform shrink-0">
-                  ➔
-                </div>
+              {/* 자사 서비스(씨맵) 크로스 프로모션 배너 및 PWA 설치 */}
+              <div className="mb-6">
+                <a 
+                  href="https://map.weknews.com" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="block w-full bg-gradient-to-r from-sky-500 to-blue-600 rounded-2xl p-4 shadow-lg shadow-sky-500/20 hover:shadow-sky-500/40 hover:-translate-y-1 transition-all group relative overflow-hidden mb-4"
+                >
+                  <div className="absolute -right-4 -top-4 w-24 h-24 bg-white/20 rounded-full blur-xl group-hover:bg-white/30 transition-colors"></div>
+                  <div className="relative z-10 flex items-center justify-between">
+                    <div>
+                      <h3 className="text-white font-black text-lg mb-1 flex items-center gap-2 tracking-tight">
+                        <span className="text-2xl group-hover:animate-bounce">🌊</span> 여름 물놀이 스팟 찾기
+                      </h3>
+                      <p className="text-sky-100 text-xs font-semibold">전국 계곡, 해수욕장, 수영장을 씨맵에서 한눈에!</p>
+                    </div>
+                    <div className="bg-white text-blue-600 w-8 h-8 rounded-full flex items-center justify-center font-black shadow-md group-hover:scale-110 transition-transform shrink-0">
+                      ➔
+                    </div>
+                  </div>
+                </a>
+                <PWAInstallButton />
               </div>
-            </a>
-            
-            <PWAInstallButton />
-          </div>
-        )}
 
-        <div className="flex md:flex-wrap overflow-x-auto gap-2 pb-2 scrollbar-hide shrink-0">
-          {themes.map(t => (
-            <button
-              key={t.id}
-              onClick={() => {
-                setActiveTheme(t.id);
-                setSelectedCourse(null);
-              }}
-              className={`shrink-0 px-4 py-2 rounded-full text-sm font-bold transition-all border ${
-                activeTheme === t.id 
-                  ? 'bg-indigo-600 text-white border-indigo-500 shadow-lg shadow-indigo-500/30' 
-                  : 'bg-slate-800/80 text-slate-300 border-slate-700 backdrop-blur-md'
-              }`}
-            >
-              {t.icon} {t.label}
-            </button>
-          ))}
-        </div>
+              {/* 테마 필터 */}
+              <div className="flex md:flex-wrap overflow-x-auto gap-2 pb-4 scrollbar-hide shrink-0">
+                <button 
+                  onClick={() => setActiveTheme("all")}
+                  className={`shrink-0 px-4 py-2 rounded-full text-sm font-bold transition-all border ${
+                    activeTheme === "all" 
+                      ? 'bg-indigo-600 text-white border-indigo-500 shadow-lg shadow-indigo-500/30' 
+                      : 'bg-slate-800/80 text-slate-300 border-slate-700 backdrop-blur-md'
+                  }`}
+                >
+                  🚙 전체보기
+                </button>
+                {themes.map(t => (
+                  <button
+                    key={t.id}
+                    onClick={() => {
+                      setActiveTheme(t.id);
+                      setSelectedCourse(null);
+                    }}
+                    className={`shrink-0 px-4 py-2 rounded-full text-sm font-bold transition-all border ${
+                      activeTheme === t.id 
+                        ? 'bg-indigo-600 text-white border-indigo-500 shadow-lg shadow-indigo-500/30' 
+                        : 'bg-slate-800/80 text-slate-300 border-slate-700 backdrop-blur-md'
+                    }`}
+                  >
+                    {t.icon} {t.label}
+                  </button>
+                ))}
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
 
         {/* PC 전용: 사이드바 코스 디테일 및 광고 영역 */}
         <div className="hidden md:flex flex-col flex-1 overflow-y-auto mt-6 pr-2 custom-scrollbar relative">
@@ -729,45 +748,34 @@ export default function Home() {
       </div>
 
       {/* 모바일 하단 코스 디테일 바텀 시트 */}
-      <div 
-        className={`
-          md:hidden absolute bottom-0 left-0 w-full bg-slate-900/95 backdrop-blur-xl border-t border-slate-800 rounded-t-[32px] p-6 pt-2 shadow-[0_-10px_40px_rgba(0,0,0,0.5)] z-30 custom-scrollbar overflow-y-auto max-h-[85vh]
-        `}
-        style={{
-          transform: selectedCourse ? `translateY(${dragY}px)` : 'translateY(100%)',
-          transition: dragY > 0 ? 'none' : 'transform 0.5s cubic-bezier(0.32, 0.72, 0, 1)'
-        }}
-      >
-        {/* 드래그 손잡이 (Pill) */}
-        <div 
-          className="w-full flex justify-center pb-6 pt-2 cursor-pointer"
-          onClick={closeCourse}
-          onTouchStart={(e) => {
-            (window as any).pillTouchStartY = e.touches[0].clientY;
-          }}
-          onTouchMove={(e) => {
-            const startY = (window as any).pillTouchStartY;
-            if (!startY) return;
-            const currentY = e.touches[0].clientY;
-            const deltaY = currentY - startY;
-            if (deltaY > 0) {
-              setDragY(deltaY);
-            }
-          }}
-          onTouchEnd={(e) => {
-            if (dragY > 80) {
-              closeCourse();
-            } else {
-              setDragY(0);
-            }
-            (window as any).pillTouchStartY = null;
-          }}
-        >
-          <div className="w-16 h-1.5 bg-slate-600 rounded-full"></div>
-        </div>
-        
-        {renderCourseDetails(false)}
-      </div>
+      <AnimatePresence>
+        {selectedCourse && (
+          <motion.div 
+            initial={{ y: "100%" }}
+            animate={{ y: 0 }}
+            exit={{ y: "100%" }}
+            transition={{ type: "spring", damping: 25, stiffness: 200 }}
+            drag="y"
+            dragConstraints={{ top: 0 }}
+            dragElastic={0.2}
+            onDragEnd={(e, info) => {
+              if (info.offset.y > 80 || info.velocity.y > 300) {
+                closeCourse();
+              }
+            }}
+            className="md:hidden absolute bottom-0 left-0 w-full bg-slate-900/95 backdrop-blur-xl border-t border-slate-800 rounded-t-[32px] p-6 pt-2 shadow-[0_-10px_40px_rgba(0,0,0,0.5)] z-30 flex flex-col max-h-[85vh]"
+          >
+            {/* 드래그 손잡이 (Pill) - 모바일 스와이프 전용 */}
+            <div className="w-full flex justify-center pb-4 pt-2 cursor-grab active:cursor-grabbing shrink-0">
+              <div className="w-16 h-1.5 bg-slate-600 rounded-full"></div>
+            </div>
+            
+            <div className="overflow-y-auto custom-scrollbar flex-1 pb-4">
+              {renderCourseDetails(false)}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
     </div>
   );
