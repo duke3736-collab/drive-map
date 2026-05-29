@@ -58,11 +58,20 @@ const GOOGLE_SHEET_URL = "https://script.google.com/macros/s/AKfycbyQ-vhk6Kj6uIF
 
 const REGION_KEYWORDS: Record<string, string[]> = {
   'seoul': ['서울', '인천', '경기', '파주', '남양주', '가평', '양평', '일산', '강화', '포천', '수원', '용인'],
-  'gangwon': ['강원', '강릉', '속초', '동해', '삼척', '평창', '양양', '고성', '춘천', '원주'],
+  'gangwon': ['강원', '강릉', '속초', '동해시', '삼척', '평창', '양양', '고성군', '춘천', '원주'],
   'chungcheong': ['충청', '대전', '세종', '천안', '보령', '당진', '태안', '제천', '단양', '공주'],
   'jeolla': ['전라', '광주', '전주', '군산', '목포', '여수', '순천', '담양', '고창', '부안'],
-  'gyeongsang': ['경상', '대구', '부산', '울산', '경주', '포항', '통영', '거제', '남해', '창원'],
+  'gyeongsang': ['경상', '대구', '부산', '울산', '경주', '포항', '통영', '거제', '남해군', '창원'],
   'jeju': ['제주', '서귀포', '애월', '중문']
+};
+
+const REGION_MAP_VIEWS: Record<string, { lat: number, lng: number, level: number }> = {
+  'seoul': { lat: 37.5665, lng: 126.9780, level: 11 },
+  'gangwon': { lat: 37.7518, lng: 128.8760, level: 11 },
+  'chungcheong': { lat: 36.5184, lng: 127.2000, level: 11 },
+  'jeolla': { lat: 35.1595, lng: 126.8526, level: 11 },
+  'gyeongsang': { lat: 35.5383, lng: 129.3113, level: 11 },
+  'jeju': { lat: 33.3833, lng: 126.5500, level: 10 }
 };
 
 const REGIONS = [
@@ -622,25 +631,34 @@ export default function Home() {
   // 코스 목록이 변경될 때(초기 로드, 검색, 테마 필터 등) 검색된 코스들이 모두 화면에 들어오도록 지도 이동 (자동 줌/패닝)
   useEffect(() => {
     if (mapLoaded && mapRef.current && filteredCourses.length > 0 && !selectedCourse && !isSortedByDistance) {
-      const bounds = new window.kakao.maps.LatLngBounds();
-      let hasValidCoords = false;
-      filteredCourses.forEach(course => {
-        const wps = parseWaypoints(course.waypoints);
-        if (wps.length > 0) {
-          bounds.extend(new window.kakao.maps.LatLng(wps[0].lat, wps[0].lng));
-          hasValidCoords = true;
+      if (activeRegion !== 'all' && !searchQuery) {
+        // 지역 필터일 경우 지정된 고정 뷰로 이동
+        const view = REGION_MAP_VIEWS[activeRegion];
+        if (view) {
+          mapRef.current.setCenter(new window.kakao.maps.LatLng(view.lat, view.lng));
+          mapRef.current.setLevel(view.level);
         }
-      });
-      
-      if (hasValidCoords) {
-        if (filteredCourses.length === 1) {
-           const wps = parseWaypoints(filteredCourses[0].waypoints);
-           mapRef.current.setCenter(new window.kakao.maps.LatLng(wps[0].lat, wps[0].lng));
-           mapRef.current.setLevel(7);
-        } else {
-           // 좌측 사이드바(PC) 영역을 피해 마커들이 잘 보이도록 여백(padding) 조정
-           const paddingLeft = window.innerWidth > 768 ? 450 : 50;
-           mapRef.current.setBounds(bounds, 50, 50, 50, paddingLeft);
+      } else {
+        // 전체보기, 검색, 테마 필터 등은 기존처럼 바운딩 처리
+        const bounds = new window.kakao.maps.LatLngBounds();
+        let hasValidCoords = false;
+        filteredCourses.forEach(course => {
+          const wps = parseWaypoints(course.waypoints);
+          if (wps.length > 0) {
+            bounds.extend(new window.kakao.maps.LatLng(wps[0].lat, wps[0].lng));
+            hasValidCoords = true;
+          }
+        });
+        
+        if (hasValidCoords) {
+          if (filteredCourses.length === 1) {
+             const wps = parseWaypoints(filteredCourses[0].waypoints);
+             mapRef.current.setCenter(new window.kakao.maps.LatLng(wps[0].lat, wps[0].lng));
+             mapRef.current.setLevel(7);
+          } else {
+             const paddingLeft = window.innerWidth > 768 ? 450 : 50;
+             mapRef.current.setBounds(bounds, 50, 50, 50, paddingLeft);
+          }
         }
       }
     }
