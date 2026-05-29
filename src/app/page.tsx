@@ -51,7 +51,16 @@ export default function Home() {
   // 이미 서버에서 받아온 도로 좌표 및 실시간 거리/시간 캐싱
   const cachedPathsRef = useRef<Record<number, { path: any[], distance?: number, duration?: number }>>({});
 
+  // 모바일 여부 체크 (PC에서 BottomSheet 마운트 해제용)
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile(); // 초기 체크
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
   const [mapLoaded, setMapLoaded] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
   const [courses, setCourses] = useState<Course[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [selectedCourse, setSelectedCourse] = useState<Course | null>(null);
@@ -900,17 +909,19 @@ export default function Home() {
       </div>
 
       {/* 모바일 하단 코스 디테일 바텀 시트 (100% 네이티브 느낌) */}
-      <BottomSheet
-        open={!!selectedCourse}
-        onDismiss={closeCourse}
-        snapPoints={({ maxHeight }) => [maxHeight * 0.85, maxHeight * 0.5]}
-        defaultSnap={({ maxHeight }) => maxHeight * 0.5}
-        className="md:hidden drive-map-bottom-sheet"
-      >
-        <div className="p-6 pt-0 pb-12">
-          {selectedCourse && renderCourseDetails(false)}
-        </div>
-      </BottomSheet>
+      {isMobile && (
+        <BottomSheet
+          open={!!selectedCourse}
+          onDismiss={closeCourse}
+          snapPoints={({ maxHeight }) => [maxHeight * 0.85, maxHeight * 0.5]}
+          defaultSnap={({ maxHeight }) => maxHeight * 0.5}
+          className="drive-map-bottom-sheet"
+        >
+          <div className="p-6 pt-0 pb-12">
+            {selectedCourse && renderCourseDetails(false)}
+          </div>
+        </BottomSheet>
+      )}
 
     </div>
   );
