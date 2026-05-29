@@ -112,7 +112,6 @@ export default function Home() {
   const [isInquiryModalOpen, setIsInquiryModalOpen] = useState(false);
   const [inquiryType, setInquiryType] = useState('코스 제안/오류 수정');
   const [inquiryContent, setInquiryContent] = useState('');
-  const [inquiryContact, setInquiryContact] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   // 즐겨찾기 상태 (localStorage 연동)
@@ -281,7 +280,6 @@ export default function Home() {
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         body: new URLSearchParams({
           type: inquiryType,
-          contact: inquiryContact,
           content: inquiryContent,
           timestamp: new Date().toISOString()
         })
@@ -290,7 +288,6 @@ export default function Home() {
       alert("성공적으로 전송되었습니다! 소중한 의견 감사합니다.");
       setIsInquiryModalOpen(false);
       setInquiryContent('');
-      setInquiryContact('');
     } catch (error) {
       alert("전송에 실패했습니다. 관리자에게 이메일로 직접 문의해주세요.");
       console.error(error);
@@ -1589,16 +1586,7 @@ export default function Home() {
                   </div>
                 </div>
 
-                <div>
-                  <label className="block text-xs font-bold text-slate-300 mb-2">연락처 / 이메일 <span className="text-slate-500 font-normal">(선택)</span></label>
-                  <input
-                    type="text"
-                    value={inquiryContact}
-                    onChange={e => setInquiryContact(e.target.value)}
-                    placeholder="답변을 원하실 경우 남겨주세요"
-                    className="w-full bg-slate-800 border border-slate-700 text-white px-4 py-3 rounded-xl focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all placeholder:text-slate-500"
-                  />
-                </div>
+
 
                 <div>
                   <label className="block text-xs font-bold text-slate-300 mb-2">문의 내용</label>
