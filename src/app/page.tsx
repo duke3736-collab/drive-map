@@ -578,17 +578,21 @@ export default function Home() {
           <span className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400">🔍</span>
         </div>
 
-        {/* 상단 메뉴 토글 버튼 */}
-        {!selectedCourse && (
-          <div className="flex justify-end mb-2 z-10 relative">
-            <button 
-              onClick={() => setIsHeaderVisible(!isHeaderVisible)}
-              className="bg-slate-800/80 backdrop-blur-md text-xs text-slate-300 font-bold px-4 py-1.5 rounded-full border border-slate-700 shadow-md flex items-center gap-1 active:scale-95 transition-transform"
+        {/* 사이드 메뉴 플로팅 버튼 (헤더가 숨겨졌을 때만 우측에 나타남) */}
+        <AnimatePresence>
+          {!selectedCourse && !isHeaderVisible && (
+            <motion.button
+              initial={{ x: 100, opacity: 0 }}
+              animate={{ x: 0, opacity: 1 }}
+              exit={{ x: 100, opacity: 0 }}
+              transition={{ type: "spring", stiffness: 300, damping: 25 }}
+              onClick={() => setIsHeaderVisible(true)}
+              className="absolute top-20 right-4 z-20 bg-slate-800/90 backdrop-blur-md text-white p-3 rounded-full shadow-lg border border-slate-700 flex items-center justify-center active:scale-95"
             >
-              {isHeaderVisible ? "지도 넓게 보기 🔼" : "메뉴 열기 🔽"}
-            </button>
-          </div>
-        )}
+              <span className="text-xl">🍔</span>
+            </motion.button>
+          )}
+        </AnimatePresence>
 
         {/* 선택된 코스가 없을 때만 헤더 요소들(배너, 테마필터)을 보여줍니다 */}
         <AnimatePresence initial={false}>
@@ -598,8 +602,17 @@ export default function Home() {
               animate={{ height: "auto", opacity: 1, marginTop: 0 }}
               exit={{ height: 0, opacity: 0, marginTop: -16 }}
               transition={{ duration: 0.3, ease: "easeInOut" }}
-              className="overflow-hidden w-full flex flex-col shrink-0"
+              className="overflow-hidden w-full flex flex-col shrink-0 relative"
             >
+              {/* 헤더 닫기(접기) 버튼 - 헤더가 열려있을 때 우측 상단에 표시 */}
+              <div className="absolute -top-2 right-0 z-10">
+                <button 
+                  onClick={() => setIsHeaderVisible(false)}
+                  className="bg-slate-800/80 backdrop-blur text-xs text-slate-300 font-bold px-3 py-1.5 rounded-full border border-slate-700 shadow-md flex items-center gap-1 active:scale-95"
+                >
+                  접기 🔼
+                </button>
+              </div>
               {/* 자사 서비스(씨맵) 크로스 프로모션 배너 및 PWA 설치 */}
               <div className="mb-6">
                 <a 
