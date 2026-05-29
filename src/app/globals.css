@@ -46,3 +46,11 @@ html, body {
 .drive-map-bottom-sheet [data-rsbs-header] {
   padding-top: 12px;
 }
+
+/* PC 화면(md 이상)에서는 바텀시트 루트 엘리먼트 자체를 물리적으로 파괴하여 이벤트 가로채기(드래그 시 흰화면) 방지 */
+@media (min-width: 768px) {
+  [data-rsbs-root] {
+    display: none !important;
+    pointer-events: none !important;
+  }
+}
