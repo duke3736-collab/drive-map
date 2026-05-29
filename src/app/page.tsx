@@ -1301,6 +1301,9 @@ export default function Home() {
           </AnimatePresence>
         </div>
 
+        {/* === SCROLLABLE WRAPPER START === */}
+        <div className="flex-1 overflow-y-auto custom-scrollbar flex flex-col relative pr-2 -mr-2">
+        
         {/* 사이드 메뉴 플로팅 버튼 (헤더가 숨겨졌을 때만 우측에 나타남) */}
         <AnimatePresence>
           {!selectedCourse && !isHeaderVisible && (
@@ -1487,7 +1490,7 @@ export default function Home() {
         </AnimatePresence>
 
         {/* PC 전용: 사이드바 코스 디테일 및 광고 영역 */}
-        <div className="hidden md:flex flex-col flex-1 overflow-y-auto mt-6 pr-2 custom-scrollbar relative">
+        <div className="hidden md:flex flex-col flex-1 mt-2 relative">
           <div className="flex-1 pb-4">
             {selectedCourse ? (
               renderCourseDetails(true)
@@ -1560,6 +1563,7 @@ export default function Home() {
               />
             </div>
           </div>
+        </div>
         </div>
       </div>
 
