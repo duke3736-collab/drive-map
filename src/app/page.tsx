@@ -958,7 +958,7 @@ export default function Home() {
         {/* 쿠팡 파트너스 배너 (수익화) */}
         <div className="mt-6 mb-2">
           <a 
-            href="https://link.coupang.com/a/d6qUzhMlMa" 
+            href="https://link.coupang.com/a/d9GFO0yULs" 
             target="_blank" 
             rel="noopener noreferrer"
             className="block w-full bg-gradient-to-r from-pink-500 to-rose-500 rounded-xl p-4 shadow-lg hover:-translate-y-1 transition-transform relative overflow-hidden group"
