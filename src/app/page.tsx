@@ -263,6 +263,9 @@ export default function Home() {
           // 이미 한 번 구한 적 있으면 캐시 사용 (빠름)
           pathCoordinates = cachedPathsRef.current[course.id].path;
           drawPolyline(course, pathCoordinates, waypoints, isSelected);
+          
+          // 모바일 기기에서 메인 스레드(UI) 프리징을 막고 부드러운 순차 렌더링(폭포수 효과)을 위해 아주 짧은 휴식(yield) 부여
+          await new Promise(resolve => setTimeout(resolve, 15));
         } else {
           // 카카오 API 속도 제한(Rate Limit)을 피하기 위해 딜레이 추가
           await new Promise(resolve => setTimeout(resolve, 200));
