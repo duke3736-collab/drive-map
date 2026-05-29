@@ -506,7 +506,7 @@ export default function Home() {
 
     fetchRoutesSequentially();
 
-  }, [courses, mapLoaded, activeTheme, selectedCourse, searchQuery, isSortedByDistance, favorites]);
+  }, [courses, mapLoaded, activeTheme, selectedCourse, searchQuery, isSortedByDistance, favorites, userLocation]);
 
   // 검색어 입력 시, 검색된 코스들이 모두 화면에 들어오도록 지도 이동 (자동 줌/패닝)
   useEffect(() => {
