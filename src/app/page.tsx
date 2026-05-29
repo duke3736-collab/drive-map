@@ -57,7 +57,7 @@ export default function Home() {
   const [activeTheme, setActiveTheme] = useState<string>("all");
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [showSplash, setShowSplash] = useState(true);
-  const [isHeaderVisible, setIsHeaderVisible] = useState(false);
+  const [isHeaderVisible, setIsHeaderVisible] = useState(true);
 
   // 뒤로가기 및 닫기 공통 함수
   const closeCourse = () => {
@@ -587,9 +587,10 @@ export default function Home() {
               exit={{ x: 100, opacity: 0 }}
               transition={{ type: "spring", stiffness: 300, damping: 25 }}
               onClick={() => setIsHeaderVisible(true)}
-              className="absolute top-20 right-4 z-20 bg-slate-800/90 backdrop-blur-md text-white p-3 rounded-full shadow-lg border border-slate-700 flex items-center justify-center active:scale-95"
+              className="absolute top-20 right-4 z-20 bg-indigo-600/95 backdrop-blur-md text-white px-4 py-3 rounded-full shadow-[0_4px_20px_rgba(79,70,229,0.4)] border border-indigo-500 flex items-center justify-center gap-2 active:scale-95 transition-all"
             >
-              <span className="text-xl">🍔</span>
+              <span className="text-lg font-black leading-none">☰</span>
+              <span className="text-sm font-bold tracking-tight">테마 코스</span>
             </motion.button>
           )}
         </AnimatePresence>
