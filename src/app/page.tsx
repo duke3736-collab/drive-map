@@ -1304,9 +1304,6 @@ export default function Home() {
           </AnimatePresence>
         </div>
 
-        {/* === SCROLLABLE WRAPPER START === */}
-        <div className="flex-1 overflow-y-auto custom-scrollbar flex flex-col relative pr-2 -mr-2">
-        
         {/* 사이드 메뉴 플로팅 버튼 (헤더가 숨겨졌을 때만 우측에 나타남) */}
         <AnimatePresence>
           {!selectedCourse && !isHeaderVisible && (
@@ -1316,13 +1313,18 @@ export default function Home() {
               exit={{ y: 50, opacity: 0 }}
               transition={{ type: "spring", stiffness: 300, damping: 25 }}
               onClick={() => setIsHeaderVisible(true)}
-              className="absolute bottom-8 right-4 z-20 bg-indigo-600/95 backdrop-blur-md text-white px-5 py-3.5 rounded-full shadow-[0_4px_20px_rgba(79,70,229,0.4)] border border-indigo-500 flex items-center justify-center gap-2 active:scale-95 transition-all"
+              className="fixed top-6 right-4 md:absolute md:top-auto md:bottom-8 md:right-4 z-50 md:z-20 bg-indigo-600/95 backdrop-blur-md text-white px-5 py-3.5 rounded-full shadow-[0_4px_20px_rgba(79,70,229,0.4)] border border-indigo-500 flex items-center justify-center gap-2 active:scale-95 transition-all"
             >
               <span className="text-lg font-black leading-none">☰</span>
               <span className="text-sm font-bold tracking-tight">테마 코스</span>
             </motion.button>
           )}
         </AnimatePresence>
+
+        {/* === SCROLLABLE WRAPPER START === */}
+        <div className="flex-1 overflow-y-auto custom-scrollbar flex flex-col relative pr-2 -mr-2">
+        
+
 
         {/* 선택된 코스가 없을 때만 헤더 요소들(배너, 테마필터)을 보여줍니다 */}
         <AnimatePresence initial={false}>
