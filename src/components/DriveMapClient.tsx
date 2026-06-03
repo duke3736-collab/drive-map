@@ -1161,6 +1161,17 @@ export default function Home() {
           </div>
         </div>
 
+        {/* 수익화 배너 영역 (구글 애드센스) - 데스크톱 상세뷰에서 티맵/카카오내비 버튼 위 */}
+        {isDesktop && (
+          <div className="w-full h-[250px] bg-slate-800/50 rounded-xl overflow-hidden shadow-sm mt-4">
+            <AdBanner 
+              dataAdSlot="4564542487" 
+              dataAdFormat="auto" 
+              dataFullWidthResponsive={true} 
+            />
+          </div>
+        )}
+
         <div className="grid grid-cols-2 gap-3 pt-4">
           <button 
             onClick={() => {
@@ -2058,16 +2069,18 @@ export default function Home() {
                 )}
               </div>
               
-              {/* 수익화 배너 영역 (구글 애드센스) - 항상 하단 고정 노출 */}
-              <div className="mt-auto pt-6 w-full shrink-0">
-                <div className="w-full h-[250px] bg-slate-800/50 rounded-xl overflow-hidden shadow-sm">
-                  <AdBanner 
-                    dataAdSlot="4564542487" 
-                    dataAdFormat="auto" 
-                    dataFullWidthResponsive={true} 
-                  />
+              {/* 수익화 배너 영역 (구글 애드센스) - 코스 미선택 시에만 하단 고정 노출 */}
+              {!selectedCourse && (
+                <div className="mt-auto pt-6 w-full shrink-0">
+                  <div className="w-full h-[250px] bg-slate-800/50 rounded-xl overflow-hidden shadow-sm">
+                    <AdBanner 
+                      dataAdSlot="4564542487" 
+                      dataAdFormat="auto" 
+                      dataFullWidthResponsive={true} 
+                    />
+                  </div>
                 </div>
-              </div>
+              )}
             </div>
           </div>
         </div>
