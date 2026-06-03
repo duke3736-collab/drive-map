@@ -1338,10 +1338,10 @@ export default function Home() {
       {showSplash && (
         <div className="absolute inset-0 z-50 bg-slate-950 flex flex-col items-center justify-center overflow-hidden">
           <div 
-            className="absolute inset-0 bg-cover bg-center opacity-70 scale-105"
+            className="absolute inset-0 bg-cover bg-center opacity-90 scale-105"
             style={{ backgroundImage: "url('/images/hero.png')" }}
           ></div>
-          <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/40 to-transparent"></div>
+          <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/20 to-transparent"></div>
           
           <div className="relative z-[999] text-center px-6 mt-32 pointer-events-auto">
             <span className="inline-block bg-indigo-600 text-white font-black px-5 py-2 rounded-full text-sm mb-6 shadow-lg shadow-indigo-500/50">
@@ -1368,7 +1368,7 @@ export default function Home() {
         <div className="w-full h-full overflow-y-auto bg-slate-950 flex flex-col scroll-smooth">
           {/* 모바일 상단 고정 헤더 */}
           <header className="sticky top-0 w-full z-50 bg-slate-950/85 backdrop-blur-xl border-b border-slate-900/50 flex justify-between items-center h-16 px-4 shrink-0">
-            <span className="font-extrabold italic text-xl tracking-tighter text-white-glare">DRIVE MAP</span>
+            <span className="font-black italic text-xl tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-sky-400 via-indigo-300 to-purple-400 drop-shadow-[0_2px_8px_rgba(56,189,248,0.3)]">DRIVE MAP</span>
             <button 
               onClick={() => setIsInquiryModalOpen(true)}
               className="bg-slate-900 border border-slate-800 hover:border-slate-700 text-slate-300 hover:text-white px-3.5 py-1.5 rounded-full text-xs font-bold transition-all"
@@ -1380,11 +1380,11 @@ export default function Home() {
           {/* 히어로 섹션 */}
           <div className="relative w-full h-[55vh] min-h-[360px] flex items-center justify-center overflow-hidden shrink-0">
             <div 
-              className="absolute inset-0 bg-cover bg-center opacity-50 scale-105"
+              className="absolute inset-0 bg-cover bg-center opacity-80 scale-105"
               style={{ backgroundImage: "url('/images/hero.png')" }}
             ></div>
-            <div className="absolute inset-0 bg-gradient-to-b from-slate-950/30 via-slate-950/10 to-slate-950"></div>
-            <div className="absolute inset-0 bg-slate-950/20 backdrop-blur-[1.5px]"></div>
+            <div className="absolute inset-0 bg-gradient-to-b from-slate-950/10 via-transparent to-slate-950/80"></div>
+            <div className="absolute inset-0 bg-slate-950/10 backdrop-blur-[0.5px]"></div>
             
             <div className="relative z-10 text-center px-6 max-w-md flex flex-col items-center">
               <div className="inline-block bg-sky-500/10 border border-sky-500/30 rounded-full px-4 py-1 mb-4 backdrop-blur-md">
@@ -1429,15 +1429,15 @@ export default function Home() {
                 className={`relative overflow-hidden rounded-2xl aspect-[4/3] border p-4 text-left flex flex-col justify-end transition-all active:scale-[0.98] group ${
                   activeCuration === 'ranking' 
                     ? 'border-sky-500 shadow-lg shadow-sky-500/20' 
-                    : 'border-slate-800 hover:border-slate-600'
+                    : 'border-slate-800/80 hover:border-sky-500/30 hover:shadow-md hover:shadow-sky-500/10'
                 }`}
               >
                 {/* 배경 이미지 */}
                 <div 
-                  className="absolute inset-0 bg-cover bg-center opacity-40 group-hover:scale-105 transition-transform duration-700 z-0"
+                  className="absolute inset-0 bg-cover bg-center opacity-75 group-hover:scale-105 transition-transform duration-700 z-0"
                   style={{ backgroundImage: "url('https://images.unsplash.com/photo-1503376780353-7e6692767b70?q=80&w=600&auto=format&fit=crop')" }}
                 ></div>
-                <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/60 to-transparent z-[1]"></div>
+                <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/20 to-transparent z-[1]"></div>
                 <div className="relative z-10">
                   <span className="text-2xl mb-1 block group-hover:animate-bounce transition-all">👑</span>
                   <h3 className="text-xs font-bold text-white">명예의 전당</h3>
@@ -1458,15 +1458,15 @@ export default function Home() {
                 className={`relative overflow-hidden rounded-2xl aspect-[4/3] border p-4 text-left flex flex-col justify-end transition-all active:scale-[0.98] group ${
                   activeCuration === 'spring' 
                     ? 'border-sky-500 shadow-lg shadow-sky-500/20' 
-                    : 'border-slate-800 hover:border-slate-600'
+                    : 'border-slate-800/80 hover:border-sky-500/30 hover:shadow-md hover:shadow-sky-500/10'
                 }`}
               >
                 {/* 배경 이미지 */}
                 <div 
-                  className="absolute inset-0 bg-cover bg-center opacity-40 group-hover:scale-105 transition-transform duration-700 z-0"
+                  className="absolute inset-0 bg-cover bg-center opacity-75 group-hover:scale-105 transition-transform duration-700 z-0"
                   style={{ backgroundImage: "url('https://images.unsplash.com/photo-1522383225653-ed111181a951?q=80&w=600&auto=format&fit=crop')" }}
                 ></div>
-                <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/60 to-transparent z-[1]"></div>
+                <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/20 to-transparent z-[1]"></div>
                 <div className="relative z-10">
                   <span className="text-2xl mb-1 block group-hover:animate-bounce transition-all">🌸</span>
                   <h3 className="text-xs font-bold text-white">봄꽃 드라이브</h3>
@@ -1487,15 +1487,15 @@ export default function Home() {
                 className={`relative overflow-hidden rounded-2xl aspect-[4/3] border p-4 text-left flex flex-col justify-end transition-all active:scale-[0.98] group ${
                   activeCuration === 'beginner' 
                     ? 'border-sky-500 shadow-lg shadow-sky-500/20' 
-                    : 'border-slate-800 hover:border-slate-600'
+                    : 'border-slate-800/80 hover:border-sky-500/30 hover:shadow-md hover:shadow-sky-500/10'
                 }`}
               >
                 {/* 배경 이미지 */}
                 <div 
-                  className="absolute inset-0 bg-cover bg-center opacity-40 group-hover:scale-105 transition-transform duration-700 z-0"
+                  className="absolute inset-0 bg-cover bg-center opacity-75 group-hover:scale-105 transition-transform duration-700 z-0"
                   style={{ backgroundImage: "url('https://images.unsplash.com/photo-1506015391300-4802dc74de2e?auto=format&fit=crop&w=600&q=80')" }}
                 ></div>
-                <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/60 to-transparent z-[1]"></div>
+                <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/20 to-transparent z-[1]"></div>
                 <div className="relative z-10">
                   <span className="text-2xl mb-1 block group-hover:animate-bounce transition-all">🚗</span>
                   <h3 className="text-xs font-bold text-white">초보운전 안심</h3>
@@ -1516,15 +1516,15 @@ export default function Home() {
                 className={`relative overflow-hidden rounded-2xl aspect-[4/3] border p-4 text-left flex flex-col justify-end transition-all active:scale-[0.98] group ${
                   activeTheme === '야경 드라이브' 
                     ? 'border-sky-500 shadow-lg shadow-sky-500/20' 
-                    : 'border-slate-800 hover:border-slate-600'
+                    : 'border-slate-800/80 hover:border-sky-500/30 hover:shadow-md hover:shadow-sky-500/10'
                 }`}
               >
                 {/* 배경 이미지 */}
                 <div 
-                  className="absolute inset-0 bg-cover bg-center opacity-40 group-hover:scale-105 transition-transform duration-700 z-0"
+                  className="absolute inset-0 bg-cover bg-center opacity-75 group-hover:scale-105 transition-transform duration-700 z-0"
                   style={{ backgroundImage: "url('/images/bukak_skyway.png')" }}
                 ></div>
-                <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/60 to-transparent z-[1]"></div>
+                <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/20 to-transparent z-[1]"></div>
                 <div className="relative z-10">
                   <span className="text-2xl mb-1 block group-hover:animate-bounce transition-all">🌃</span>
                   <h3 className="text-xs font-bold text-white">야경 드라이브</h3>
@@ -1838,8 +1838,9 @@ export default function Home() {
           ${isDriveMode ? 'hidden md:hidden' : ''}
         `}>
           <div className="flex justify-between items-center mb-3 md:mb-6 shrink-0">
-            <h1 className="text-xl md:text-2xl lg:text-3xl font-black text-white tracking-tight flex items-center gap-2">
-              <span>🚗</span> Drive Map
+            <h1 className="text-xl md:text-2xl lg:text-3xl font-black tracking-tight flex items-center gap-2">
+              <span>🚗</span>
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-sky-400 via-indigo-300 to-purple-400 drop-shadow-[0_2px_8px_rgba(56,189,248,0.3)]">Drive Map</span>
             </h1>
             <button 
               onClick={() => setIsInquiryModalOpen(true)}
