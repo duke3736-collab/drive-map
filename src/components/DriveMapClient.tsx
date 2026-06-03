@@ -1837,9 +1837,17 @@ export default function Home() {
           hidden md:flex
           ${isDriveMode ? 'hidden md:hidden' : ''}
         `}>
-          <h1 className="text-xl md:text-3xl font-black text-white mb-3 md:mb-6 tracking-tight flex items-center gap-2">
-            <span>🚗</span> Drive Map
-          </h1>
+          <div className="flex justify-between items-center mb-3 md:mb-6 shrink-0">
+            <h1 className="text-xl md:text-2xl lg:text-3xl font-black text-white tracking-tight flex items-center gap-2">
+              <span>🚗</span> Drive Map
+            </h1>
+            <button 
+              onClick={() => setIsInquiryModalOpen(true)}
+              className="bg-slate-850 border border-slate-750 hover:bg-slate-800 hover:border-slate-700 text-slate-300 hover:text-white px-3 py-1.5 rounded-full text-xs font-bold transition-all flex items-center gap-1 active:scale-95 shrink-0"
+            >
+              <span>제안 및 문의</span><span>💡</span>
+            </button>
+          </div>
 
           <form 
             onSubmit={(e) => {
@@ -2339,16 +2347,7 @@ export default function Home() {
         </div>
       )}
 
-      {/* 좌측 하단 제안 및 문의 플로팅 버튼 (데스크톱 전용) */}
-      {!isMobile && (
-        <button
-          onClick={() => setIsInquiryModalOpen(true)}
-          className="fixed bottom-6 left-6 z-50 bg-slate-800/90 backdrop-blur-md text-slate-300 hover:text-white px-4 py-3 rounded-full shadow-[0_4px_20px_rgba(0,0,0,0.5)] border border-slate-700 flex items-center justify-center gap-2 transition-all hover:-translate-y-1 hover:shadow-indigo-500/20 active:scale-95 group"
-        >
-          <span className="text-xl group-hover:animate-bounce">💡</span>
-          <span className="text-sm font-bold tracking-tight">제안 및 문의</span>
-        </button>
-      )}
+
 
       {/* 문의하기 팝업 모달 */}
       <AnimatePresence>
