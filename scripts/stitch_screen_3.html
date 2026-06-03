@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="ko"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>DRIVE MAP - 북악스카이웨이 야간 드라이브</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&amp;family=Inter:wght@400;500;600&amp;family=Space+Grotesk:wght@700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "outline": "#88929b",
+                        "on-background": "#dce1fb",
+                        "surface-container-low": "#151b2d",
+                        "secondary": "#ffb690",
+                        "outline-variant": "#3e4850",
+                        "inverse-on-surface": "#2a3043",
+                        "on-secondary-fixed": "#341100",
+                        "inverse-primary": "#006591",
+                        "tertiary": "#d0bcff",
+                        "on-tertiary-fixed-variant": "#5516be",
+                        "secondary-fixed": "#ffdbca",
+                        "surface-container": "#191f31",
+                        "track-orange": "#F97316",
+                        "tertiary-fixed-dim": "#d0bcff",
+                        "surface-dim": "#0c1324",
+                        "on-secondary-container": "#4a1c00",
+                        "tertiary-container": "#a986ff",
+                        "white-glare": "#FFFFFF",
+                        "primary-fixed": "#c9e6ff",
+                        "background": "#0c1324",
+                        "secondary-fixed-dim": "#ffb690",
+                        "error-container": "#93000a",
+                        "inverse-surface": "#dce1fb",
+                        "surface-variant": "#2e3447",
+                        "surface-container-highest": "#2e3447",
+                        "on-surface-variant": "#bec8d2",
+                        "asphalt-700": "#1E293B",
+                        "error": "#ffb4ab",
+                        "on-tertiary-fixed": "#23005c",
+                        "electric-blue": "#0EA5E9",
+                        "on-tertiary": "#3c0091",
+                        "primary": "#89ceff",
+                        "neon-green": "#22C55E",
+                        "on-surface": "#dce1fb",
+                        "on-tertiary-container": "#3e0097",
+                        "surface-container-lowest": "#070d1f",
+                        "on-primary-container": "#003751",
+                        "surface-bright": "#33394c",
+                        "on-primary": "#00344d",
+                        "asphalt-900": "#020617",
+                        "surface-tint": "#89ceff",
+                        "on-secondary-fixed-variant": "#783200",
+                        "on-error": "#690005",
+                        "surface": "#0c1324",
+                        "on-primary-fixed-variant": "#004c6e",
+                        "primary-fixed-dim": "#89ceff",
+                        "on-error-container": "#ffdad6",
+                        "tertiary-fixed": "#e9ddff",
+                        "primary-container": "#0ea5e9",
+                        "on-secondary": "#552100",
+                        "asphalt-800": "#0F172A",
+                        "secondary-container": "#ec6a06",
+                        "surface-container-high": "#23293c",
+                        "on-primary-fixed": "#001e2f"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "unit": "8px",
+                        "gutter": "24px",
+                        "container-max": "1280px",
+                        "margin-mobile": "16px",
+                        "margin-desktop": "48px"
+                    },
+                    "fontFamily": {
+                        "headline-md": ["Sora"],
+                        "headline-lg-mobile": ["Sora"],
+                        "headline-lg": ["Sora"],
+                        "stats-number": ["Space Grotesk"],
+                        "label-caps": ["Space Grotesk"],
+                        "body-md": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "display-hero": ["Sora"]
+                    },
+                    "fontSize": {
+                        "headline-md": ["24px", { "lineHeight": "1.3", "fontWeight": "600" }],
+                        "headline-lg-mobile": ["32px", { "lineHeight": "1.2", "fontWeight": "700" }],
+                        "headline-lg": ["40px", { "lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "stats-number": ["32px", { "lineHeight": "1", "fontWeight": "700" }],
+                        "label-caps": ["12px", { "lineHeight": "1", "letterSpacing": "0.1em", "fontWeight": "700" }],
+                        "body-md": ["16px", { "lineHeight": "1.5", "fontWeight": "400" }],
+                        "body-lg": ["18px", { "lineHeight": "1.6", "fontWeight": "400" }],
+                        "display-hero": ["72px", { "lineHeight": "1.1", "letterSpacing": "-0.04em", "fontWeight": "800" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body {
+            background-color: theme('colors.asphalt-900');
+            color: theme('colors.on-background');
+        }
+        .glow-effect {
+            box-shadow: 0 0 20px rgba(14, 165, 233, 0.2);
+        }
+        .glass-panel {
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(12px);
+            border: 1px solid theme('colors.asphalt-700');
+        }
+        /* Custom Scrollbar for sleek look */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: theme('colors.asphalt-900');
+        }
+        ::-webkit-scrollbar-thumb {
+            background: theme('colors.asphalt-700');
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: theme('colors.outline-variant');
+        }
+    </style>
+</head>
+<body class="antialiased min-h-screen flex flex-col pt-20">
+<!-- TopNavBar Component -->
+<nav class="fixed top-0 w-full z-50 bg-asphalt-900/80 backdrop-blur-xl border-b border-asphalt-700 shadow-lg shadow-electric-blue/10 transition-all duration-300 ease-in-out">
+<div class="flex justify-between items-center h-20 px-margin-mobile md:px-margin-desktop w-full max-w-container-max mx-auto">
+<div class="flex items-center">
+<a class="font-display-hero text-headline-md italic tracking-tighter text-white-glare pr-8 border-r border-asphalt-700 md:border-none" href="#">DRIVE MAP</a>
+<div class="hidden md:flex ml-8 space-x-6">
+<a class="font-body-md text-body-md text-electric-blue border-b-2 border-electric-blue pb-1" href="#">Explore</a>
+<a class="font-body-md text-body-md text-on-surface-variant hover:text-white-glare hover:text-electric-blue hover:bg-asphalt-800/50 transition-colors px-3 py-2 rounded-md" href="#">Hall of Fame</a>
+<a class="font-body-md text-body-md text-on-surface-variant hover:text-white-glare hover:text-electric-blue hover:bg-asphalt-800/50 transition-colors px-3 py-2 rounded-md" href="#">Night Drive</a>
+<a class="font-body-md text-body-md text-on-surface-variant hover:text-white-glare hover:text-electric-blue hover:bg-asphalt-800/50 transition-colors px-3 py-2 rounded-md" href="#">Coastal</a>
+<a class="font-body-md text-body-md text-on-surface-variant hover:text-white-glare hover:text-electric-blue hover:bg-asphalt-800/50 transition-colors px-3 py-2 rounded-md" href="#">Forest</a>
+<a class="font-body-md text-body-md text-on-surface-variant hover:text-white-glare hover:text-electric-blue hover:bg-asphalt-800/50 transition-colors px-3 py-2 rounded-md" href="#">Community</a>
+</div>
+</div>
+<div class="flex items-center space-x-4">
+<button class="hidden md:flex items-center justify-center text-on-surface-variant hover:text-electric-blue transition-colors">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">search</span>
+</button>
+<button class="font-label-caps text-label-caps bg-gradient-to-r from-electric-blue to-primary text-white-glare px-6 py-3 rounded-DEFAULT hover:shadow-[0_0_15px_rgba(14,165,233,0.5)] transition-all">Start Driving</button>
+<button class="md:hidden text-on-surface-variant">
+<span class="material-symbols-outlined">menu</span>
+</button>
+</div>
+</div>
+</nav>
+<!-- Main Content -->
+<main class="flex-grow">
+<!-- Hero Section -->
+<section class="relative h-[60vh] min-h-[400px] w-full flex flex-col justify-end pb-12 px-margin-mobile md:px-margin-desktop overflow-hidden">
+<div class="absolute inset-0 z-0">
+<div class="absolute inset-0 bg-gradient-to-t from-asphalt-900 via-asphalt-900/60 to-transparent z-10"></div>
+<!-- Requested Image style -->
+<img alt="Placeholder for user requested image style" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida/AP1WRLsRGKdgZV2f-ks2kZd7xGvRkpsfKBrJXW0Thwzg1CaqPTa_h_CQoW86nMU6-qgpNv4PNo2eqogsO_Y8w1qkATxLo6wh95gIpIlSxfIsd4DRbBkDlmhT_dYnw6YCsiNRFR3uMFo5s2vude6YVzkipxulfYElJnGWK_7nYjxxysEXYZpf-OXSJCHPOIBoOZVZiRWoYKNJ21sIJcmZu1hHY0B6Y31h-lirTOk75HgIky6qmhhfvbVUMGd9QSQ"/>
+</div>
+<div class="relative z-20 max-w-container-max mx-auto w-full">
+<span class="inline-block font-label-caps text-label-caps text-electric-blue border border-electric-blue/30 bg-electric-blue/10 px-3 py-1 rounded-full mb-4">NIGHT DRIVE</span>
+<h1 class="font-headline-lg-mobile md:font-headline-lg text-headline-lg-mobile md:text-headline-lg text-white-glare mb-4 drop-shadow-lg">북악스카이웨이 야간 드라이브</h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant max-w-2xl drop-shadow-md">서울 도심의 화려한 야경을 한눈에 담을 수 있는 대표적인 드라이브 코스</p>
+</div>
+</section>
+<!-- Floating Stats Bar -->
+<section class="relative z-30 -mt-8 px-margin-mobile md:px-margin-desktop w-full max-w-container-max mx-auto">
+<div class="glass-panel rounded-lg p-6 flex flex-wrap gap-8 justify-around items-center glow-effect">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-full bg-asphalt-800 flex items-center justify-center text-track-orange border border-asphalt-700">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">route</span>
+</div>
+<div>
+<div class="font-label-caps text-label-caps text-outline mb-1">DISTANCE</div>
+<div class="font-stats-number text-stats-number text-white-glare">15<span class="text-body-md font-body-md text-on-surface-variant ml-1">km</span></div>
+</div>
+</div>
+<div class="hidden md:block w-px h-12 bg-asphalt-700"></div>
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-full bg-asphalt-800 flex items-center justify-center text-electric-blue border border-asphalt-700">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">timer</span>
+</div>
+<div>
+<div class="font-label-caps text-label-caps text-outline mb-1">DURATION</div>
+<div class="font-stats-number text-stats-number text-white-glare">30<span class="text-body-md font-body-md text-on-surface-variant ml-1">min</span></div>
+</div>
+</div>
+<div class="hidden md:block w-px h-12 bg-asphalt-700"></div>
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-full bg-asphalt-800 flex items-center justify-center text-neon-green border border-asphalt-700">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">signal_cellular_alt_1_bar</span>
+</div>
+<div>
+<div class="font-label-caps text-label-caps text-outline mb-1">DIFFICULTY</div>
+<div class="font-stats-number text-stats-number text-white-glare text-[24px]">Easy</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Main Content Split -->
+<section class="px-margin-mobile md:px-margin-desktop py-16 w-full max-w-container-max mx-auto flex flex-col lg:flex-row gap-8">
+<!-- Left: Interactive Map Area -->
+<div class="w-full lg:w-[60%] flex flex-col gap-6">
+<div class="flex justify-between items-end mb-2">
+<h2 class="font-headline-md text-headline-md text-white-glare flex items-center gap-2">
+<span class="material-symbols-outlined text-electric-blue">map</span>
+                        Route Map
+                    </h2>
+<div class="flex gap-2">
+<button class="bg-asphalt-800 border border-asphalt-700 hover:border-electric-blue text-on-surface-variant p-2 rounded-DEFAULT transition-colors">
+<span class="material-symbols-outlined">layers</span>
+</button>
+<button class="bg-asphalt-800 border border-asphalt-700 hover:border-electric-blue text-on-surface-variant p-2 rounded-DEFAULT transition-colors">
+<span class="material-symbols-outlined">my_location</span>
+</button>
+</div>
+</div>
+<!-- Map Container -->
+<div class="relative h-[500px] w-full rounded-xl overflow-hidden border border-asphalt-700 bg-surface-container-low" data-location="Seoul" style="">
+<!-- Placeholder map background -->
+<div class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MDAiIGhlaWdodD0iNDAwIiB2aWV3Qm94PSIwIDAgNDAwIDQwMCI+PGVsbGlwc2UgY3g9IjIwMCIgY3k9IjIwMCIgcng9IjEwMCIgcnk9IjEwMCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjM0U0ODUwIiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1kYXNoYXJyYXk9IjQgNCIvPjwvc3ZnPg==')] opacity-20 bg-repeat"></div>
+<!-- Simulated Route Line -->
+<svg class="absolute inset-0 w-full h-full pointer-events-none" preserveaspectratio="none" viewbox="0 0 100 100">
+<path class="drop-shadow-[0_0_8px_rgba(14,165,233,0.8)]" d="M 20 80 Q 40 60 50 40 T 80 20" fill="none" stroke="theme('colors.electric-blue')" stroke-linecap="round" stroke-linejoin="round" stroke-width="0.5"></path>
+</svg>
+<!-- Start Marker -->
+<div class="absolute bottom-[20%] left-[20%] transform -translate-x-1/2 -translate-y-1/2 flex flex-col items-center">
+<div class="w-4 h-4 bg-neon-green rounded-full border-2 border-asphalt-900 shadow-[0_0_10px_rgba(34,197,94,0.8)]"></div>
+<span class="mt-1 font-label-caps text-label-caps text-white-glare bg-asphalt-800/80 px-2 py-0.5 rounded">START</span>
+</div>
+<!-- End Marker -->
+<div class="absolute top-[20%] right-[20%] transform -translate-x-1/2 -translate-y-1/2 flex flex-col items-center">
+<div class="w-4 h-4 bg-track-orange rounded-full border-2 border-asphalt-900 shadow-[0_0_10px_rgba(249,115,22,0.8)] animate-pulse"></div>
+<span class="mt-1 font-label-caps text-label-caps text-white-glare bg-asphalt-800/80 px-2 py-0.5 rounded">END</span>
+</div>
+</div>
+</div>
+<!-- Right: Course Details -->
+<div class="w-full lg:w-[40%] flex flex-col gap-8">
+<!-- Description Card -->
+<div class="glass-panel p-8 rounded-xl border border-asphalt-700">
+<h3 class="font-headline-md text-headline-md text-white-glare mb-4">Course Overview</h3>
+<p class="font-body-md text-body-md text-on-surface-variant mb-6">
+                        북악산 능선을 따라 달리는 이 코스는 사계절 내내 아름다운 풍경을 선사합니다. 특히 팔각정에서 내려다보는 서울의 밤 풍경은 놓칠 수 없는 백미입니다.
+                    </p>
+<div class="space-y-4">
+<div class="flex justify-between items-center border-b border-asphalt-700 pb-2">
+<span class="font-body-md text-body-md text-outline">Road Type</span>
+<span class="font-body-md text-body-md text-white-glare">Mountain Winding</span>
+</div>
+<div class="flex justify-between items-center border-b border-asphalt-700 pb-2">
+<span class="font-body-md text-body-md text-outline">Traffic</span>
+<span class="font-body-md text-body-md text-white-glare flex items-center gap-1">
+                                Moderate 
+                                <span class="flex gap-0.5">
+<span class="w-1.5 h-3 bg-neon-green skew-x-[-15deg]"></span>
+<span class="w-1.5 h-3 bg-neon-green skew-x-[-15deg]"></span>
+<span class="w-1.5 h-3 bg-asphalt-700 skew-x-[-15deg]"></span>
+</span>
+</span>
+</div>
+<div class="flex justify-between items-center border-b border-asphalt-700 pb-2">
+<span class="font-body-md text-body-md text-outline">Best Time</span>
+<span class="font-body-md text-body-md text-white-glare">22:00 - 02:00</span>
+</div>
+</div>
+</div>
+<!-- Action Area -->
+<div class="flex flex-col gap-4">
+<button class="w-full py-4 rounded-lg bg-electric-blue/10 border border-electric-blue text-electric-blue font-label-caps text-label-caps hover:bg-electric-blue hover:text-asphalt-900 transition-all flex items-center justify-center gap-2 group">
+<span class="material-symbols-outlined group-hover:animate-pulse" style="font-variation-settings: 'FILL' 1;">favorite</span>
+                        SAVE TO GARAGE
+                    </button>
+<button class="w-full py-4 rounded-lg bg-asphalt-800 border border-asphalt-700 text-on-surface-variant font-label-caps text-label-caps hover:bg-asphalt-700 transition-all flex items-center justify-center gap-2">
+<span class="material-symbols-outlined">share</span>
+                        SHARE ROUTE
+                    </button>
+</div>
+</div>
+</section>
+<!-- Highlights Section (Bento Grid Style) -->
+<section class="px-margin-mobile md:px-margin-desktop py-16 w-full max-w-container-max mx-auto border-t border-asphalt-800">
+<h2 class="font-headline-lg-mobile md:font-headline-lg text-headline-lg-mobile md:text-headline-lg text-white-glare mb-8">Waypoints &amp; Highlights</h2>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6 auto-rows-[250px]">
+<!-- Highlight 1: Large Card -->
+<div class="md:col-span-2 group relative overflow-hidden rounded-xl border border-asphalt-700 glass-panel">
+<div class="absolute inset-0 bg-asphalt-800/50 z-10 transition-opacity group-hover:opacity-30"></div>
+<!-- Assuming placeholder for waypoint image -->
+<div class="absolute inset-0 bg-surface-container-low flex items-center justify-center opacity-30">
+<span class="material-symbols-outlined text-[64px] text-electric-blue">landscape</span>
+</div>
+<div class="relative z-20 h-full p-6 flex flex-col justify-end">
+<div class="flex items-center gap-2 mb-2">
+<span class="material-symbols-outlined text-track-orange text-sm">location_on</span>
+<span class="font-label-caps text-label-caps text-track-orange">WP 01</span>
+</div>
+<h3 class="font-headline-md text-headline-md text-white-glare mb-2 group-hover:text-electric-blue transition-colors">북악팔각정</h3>
+<p class="font-body-md text-body-md text-on-surface-variant line-clamp-2">The highest point offering panoramic views of the city skyline. Perfect spot for a mid-drive break.</p>
+</div>
+</div>
+<!-- Highlight 2 -->
+<div class="group relative overflow-hidden rounded-xl border border-asphalt-700 glass-panel">
+<div class="absolute inset-0 bg-surface-container-low z-0"></div>
+<div class="relative z-20 h-full p-6 flex flex-col justify-end">
+<div class="flex items-center gap-2 mb-2">
+<span class="material-symbols-outlined text-electric-blue text-sm">location_on</span>
+<span class="font-label-caps text-label-caps text-electric-blue">WP 02</span>
+</div>
+<h3 class="font-headline-md text-headline-md text-white-glare mb-2">자하문 고개</h3>
+<p class="font-body-md text-body-md text-on-surface-variant text-sm">Historic gateway marking the beginning of the steepest ascent.</p>
+</div>
+</div>
+<!-- Highlight 3 -->
+<div class="group relative overflow-hidden rounded-xl border border-asphalt-700 glass-panel">
+<div class="absolute inset-0 bg-surface-container-low z-0"></div>
+<div class="relative z-20 h-full p-6 flex flex-col justify-end">
+<div class="flex items-center gap-2 mb-2">
+<span class="material-symbols-outlined text-electric-blue text-sm">location_on</span>
+<span class="font-label-caps text-label-caps text-electric-blue">WP 03</span>
+</div>
+<h3 class="font-headline-md text-headline-md text-white-glare mb-2">창의문</h3>
+<p class="font-body-md text-body-md text-on-surface-variant text-sm">Ancient fortress gate where the road narrows, demanding precision.</p>
+</div>
+</div>
+<!-- Info Box -->
+<div class="md:col-span-2 rounded-xl border border-asphalt-700 bg-asphalt-800 p-6 flex items-center gap-6">
+<div class="w-16 h-16 rounded-full bg-asphalt-900 border border-electric-blue/30 flex items-center justify-center flex-shrink-0">
+<span class="material-symbols-outlined text-electric-blue text-[32px]">warning</span>
+</div>
+<div>
+<h4 class="font-body-lg text-body-lg text-white-glare font-bold mb-1">Driver Advisory</h4>
+<p class="font-body-md text-body-md text-on-surface-variant">Watch for cyclists and pedestrians, especially near the start of the climb. Road surface can be slick during winter nights.</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Other Popular Courses -->
+<section class="px-margin-mobile md:px-margin-desktop py-16 w-full max-w-container-max mx-auto">
+<div class="flex justify-between items-end mb-8">
+<h2 class="font-headline-lg-mobile md:font-headline-lg text-headline-lg-mobile md:text-headline-lg text-white-glare">Similar Routes</h2>
+<div class="flex gap-2">
+<button class="w-10 h-10 rounded-full border border-asphalt-700 flex items-center justify-center text-on-surface-variant hover:text-white-glare hover:border-electric-blue transition-colors">
+<span class="material-symbols-outlined">chevron_left</span>
+</button>
+<button class="w-10 h-10 rounded-full border border-asphalt-700 flex items-center justify-center text-on-surface-variant hover:text-white-glare hover:border-electric-blue transition-colors">
+<span class="material-symbols-outlined">chevron_right</span>
+</button>
+</div>
+</div>
+<div class="flex gap-6 overflow-x-auto pb-4 snap-x">
+<!-- Card 1 -->
+<div class="min-w-[300px] md:min-w-[350px] snap-start glass-panel rounded-xl overflow-hidden border border-asphalt-700 group hover:border-electric-blue transition-colors cursor-pointer">
+<div class="h-40 bg-surface-container-low relative">
+<div class="absolute bottom-2 left-2 bg-asphalt-900/80 px-2 py-1 rounded text-xs font-label-caps text-electric-blue">URBAN</div>
+</div>
+<div class="p-6">
+<h3 class="font-headline-md text-headline-md text-white-glare mb-2">남산 소월길</h3>
+<div class="flex items-center gap-4 text-sm text-outline mb-4">
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">route</span> 8km</span>
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">timer</span> 20m</span>
+</div>
+</div>
+</div>
+<!-- Card 2 -->
+<div class="min-w-[300px] md:min-w-[350px] snap-start glass-panel rounded-xl overflow-hidden border border-asphalt-700 group hover:border-electric-blue transition-colors cursor-pointer">
+<div class="h-40 bg-surface-container-low relative">
+<div class="absolute bottom-2 left-2 bg-asphalt-900/80 px-2 py-1 rounded text-xs font-label-caps text-track-orange">MOUNTAIN</div>
+</div>
+<div class="p-6">
+<h3 class="font-headline-md text-headline-md text-white-glare mb-2">호명산 와인딩</h3>
+<div class="flex items-center gap-4 text-sm text-outline mb-4">
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">route</span> 22km</span>
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">timer</span> 45m</span>
+</div>
+</div>
+</div>
+<!-- Card 3 -->
+<div class="min-w-[300px] md:min-w-[350px] snap-start glass-panel rounded-xl overflow-hidden border border-asphalt-700 group hover:border-electric-blue transition-colors cursor-pointer">
+<div class="h-40 bg-surface-container-low relative">
+<div class="absolute bottom-2 left-2 bg-asphalt-900/80 px-2 py-1 rounded text-xs font-label-caps text-electric-blue">COASTAL</div>
+</div>
+<div class="p-6">
+<h3 class="font-headline-md text-headline-md text-white-glare mb-2">시화방조제</h3>
+<div class="flex items-center gap-4 text-sm text-outline mb-4">
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">route</span> 12km</span>
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">timer</span> 15m</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Footer Component -->
+<footer class="w-full py-12 bg-asphalt-900 border-t border-asphalt-800 flat no shadows">
+<div class="flex flex-col md:flex-row justify-between items-center px-margin-desktop max-w-container-max mx-auto space-y-6 md:space-y-0">
+<div class="font-display-hero text-body-lg italic text-asphalt-700">DRIVE MAP</div>
+<div class="flex flex-wrap justify-center gap-6">
+<a class="font-body-md text-body-md text-on-surface-variant hover:text-electric-blue transition-colors duration-200" href="#">Terms of Service</a>
+<a class="font-body-md text-body-md text-on-surface-variant hover:text-electric-blue transition-colors duration-200" href="#">Privacy Policy</a>
+<a class="font-body-md text-body-md text-on-surface-variant hover:text-electric-blue transition-colors duration-200" href="#">Track Guidelines</a>
+<a class="font-body-md text-body-md text-on-surface-variant hover:text-electric-blue transition-colors duration-200" href="#">Support</a>
+</div>
+<div class="font-body-md text-body-md text-asphalt-700">© 2024 DRIVE MAP. Engineered for Speed.</div>
+</div>
+</footer>
+</body></html>

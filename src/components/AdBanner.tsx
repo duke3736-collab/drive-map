@@ -31,6 +31,7 @@ export default function AdBanner({
   return (
     <div className="w-full h-full overflow-hidden flex items-center justify-center">
       <ins
+        suppressHydrationWarning
         className="adsbygoogle"
         style={{ display: "block", width: "100%", height: "100%" }}
         data-ad-client="ca-pub-6635245275061755"

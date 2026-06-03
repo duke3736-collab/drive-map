@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="ko"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>DRIVE MAP - 전국 감성 드라이브 코스</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&amp;family=Sora:wght@600;700;800&amp;family=Space+Grotesk:wght@700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "inverse-surface": "#dce1fb",
+                      "on-secondary-container": "#4a1c00",
+                      "primary": "#89ceff",
+                      "on-tertiary-fixed": "#23005c",
+                      "primary-fixed-dim": "#89ceff",
+                      "on-tertiary": "#3c0091",
+                      "white-glare": "#FFFFFF",
+                      "secondary": "#ffb690",
+                      "error": "#ffb4ab",
+                      "on-surface": "#dce1fb",
+                      "tertiary-container": "#a986ff",
+                      "tertiary-fixed": "#e9ddff",
+                      "on-error": "#690005",
+                      "surface-container-high": "#23293c",
+                      "secondary-fixed": "#ffdbca",
+                      "on-tertiary-container": "#3e0097",
+                      "on-primary-fixed-variant": "#004c6e",
+                      "inverse-on-surface": "#2a3043",
+                      "on-surface-variant": "#bec8d2",
+                      "surface-container-lowest": "#070d1f",
+                      "on-background": "#dce1fb",
+                      "outline": "#88929b",
+                      "error-container": "#93000a",
+                      "surface-container-low": "#151b2d",
+                      "on-secondary-fixed": "#341100",
+                      "primary-container": "#0ea5e9",
+                      "on-primary": "#00344d",
+                      "surface-container-highest": "#2e3447",
+                      "neon-green": "#22C55E",
+                      "on-tertiary-fixed-variant": "#5516be",
+                      "on-primary-container": "#003751",
+                      "inverse-primary": "#006591",
+                      "track-orange": "#F97316",
+                      "tertiary": "#d0bcff",
+                      "on-error-container": "#ffdad6",
+                      "surface-dim": "#0c1324",
+                      "tertiary-fixed-dim": "#d0bcff",
+                      "on-secondary": "#552100",
+                      "on-secondary-fixed-variant": "#783200",
+                      "background": "#0c1324",
+                      "asphalt-900": "#020617",
+                      "on-primary-fixed": "#001e2f",
+                      "asphalt-700": "#1E293B",
+                      "surface-variant": "#2e3447",
+                      "surface-container": "#191f31",
+                      "surface-tint": "#89ceff",
+                      "secondary-fixed-dim": "#ffb690",
+                      "asphalt-800": "#0F172A",
+                      "surface": "#0c1324",
+                      "electric-blue": "#0EA5E9",
+                      "outline-variant": "#3e4850",
+                      "secondary-container": "#ec6a06",
+                      "primary-fixed": "#c9e6ff",
+                      "surface-bright": "#33394c"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "margin-desktop": "48px",
+                      "gutter": "24px",
+                      "container-max": "1280px",
+                      "margin-mobile": "16px",
+                      "unit": "8px"
+              },
+              "fontFamily": {
+                      "stats-number": [
+                              "Space Grotesk"
+                      ],
+                      "body-lg": [
+                              "Inter"
+                      ],
+                      "headline-lg-mobile": [
+                              "Sora"
+                      ],
+                      "label-caps": [
+                              "Space Grotesk"
+                      ],
+                      "headline-lg": [
+                              "Sora"
+                      ],
+                      "body-md": [
+                              "Inter"
+                      ],
+                      "headline-md": [
+                              "Sora"
+                      ],
+                      "display-hero": [
+                              "Sora"
+                      ]
+              },
+              "fontSize": {
+                      "stats-number": [
+                              "32px",
+                              {
+                                      "lineHeight": "1",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "body-lg": [
+                              "18px",
+                              {
+                                      "lineHeight": "1.6",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "headline-lg-mobile": [
+                              "32px",
+                              {
+                                      "lineHeight": "1.2",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "label-caps": [
+                              "12px",
+                              {
+                                      "lineHeight": "1",
+                                      "letterSpacing": "0.1em",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "headline-lg": [
+                              "40px",
+                              {
+                                      "lineHeight": "1.2",
+                                      "letterSpacing": "-0.02em",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "body-md": [
+                              "16px",
+                              {
+                                      "lineHeight": "1.5",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "headline-md": [
+                              "24px",
+                              {
+                                      "lineHeight": "1.3",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "display-hero": [
+                              "72px",
+                              {
+                                      "lineHeight": "1.1",
+                                      "letterSpacing": "-0.04em",
+                                      "fontWeight": "800"
+                              }
+                      ]
+              }
+      },
+          },
+        }
+      </script>
+<style>
+        .glass-panel {
+            background: rgba(15, 23, 42, 0.7);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(30, 41, 59, 1);
+        }
+        .neon-glow {
+            box-shadow: 0 0 20px rgba(14, 165, 233, 0.3);
+        }
+        .neon-text-glow {
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+        }
+        .gradient-button {
+            background: linear-gradient(135deg, #0EA5E9 0%, #006591 100%);
+            transition: all 0.3s ease;
+        }
+        .gradient-button:hover {
+            box-shadow: 0 0 15px rgba(14, 165, 233, 0.6);
+            transform: translateY(-2px);
+        }
+      </style>
+</head>
+<body class="bg-asphalt-900 text-on-surface font-body-md overflow-x-hidden">
+<!-- Top Navigation Bar -->
+<header class="fixed top-0 w-full z-50 bg-asphalt-900/80 backdrop-blur-xl border-b border-asphalt-700 shadow-lg shadow-electric-blue/10 transition-all duration-300 ease-in-out">
+<div class="flex justify-between items-center h-20 px-margin-mobile md:px-margin-desktop w-full max-w-container-max mx-auto">
+<!-- Brand -->
+<div class="flex items-center">
+<a class="font-display-hero text-headline-md italic tracking-tighter text-white-glare" href="#">DRIVE MAP</a>
+</div>
+<!-- Navigation Links (Desktop) -->
+<nav class="hidden md:flex space-x-8 items-center">
+<a class="font-body-md text-electric-blue border-b-2 border-electric-blue pb-1 transition-colors duration-200" href="#">Explore</a>
+<a class="font-body-md text-on-surface-variant hover:text-white-glare hover:text-electric-blue transition-colors duration-200" href="#">야경 드라이브</a>
+<a class="font-body-md text-on-surface-variant hover:text-white-glare hover:text-electric-blue transition-colors duration-200" href="#">해안도로</a>
+<a class="font-body-md text-on-surface-variant hover:text-white-glare hover:text-electric-blue transition-colors duration-200" href="#">숲속/계곡</a>
+<a class="font-body-md text-on-surface-variant hover:text-white-glare hover:text-electric-blue transition-colors duration-200" href="#">카페/데이트</a>
+<a class="font-body-md text-on-surface-variant hover:text-white-glare hover:text-electric-blue transition-colors duration-200" href="#">Community</a>
+</nav>
+<!-- Trailing Action -->
+<div class="hidden md:block">
+<button class="gradient-button text-white-glare font-label-caps text-label-caps px-6 py-3 rounded-full flex items-center gap-2">
+                    Start Driving <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">speed</span>
+</button>
+</div>
+<!-- Mobile Menu Toggle -->
+<button class="md:hidden text-on-surface p-2">
+<span class="material-symbols-outlined">menu</span>
+</button>
+</div>
+</header>
+<!-- Hero Section -->
+<section class="relative w-full h-screen min-h-[600px] flex items-center justify-center pt-20 overflow-hidden">
+<!-- Background Image -->
+<div class="absolute inset-0 z-0">
+<img alt="Hero background" class="w-full h-full object-cover object-center opacity-60" src="https://lh3.googleusercontent.com/aida/AP1WRLsRGKdgZV2f-ks2kZd7xGvRkpsfKBrJXW0Thwzg1CaqPTa_h_CQoW86nMU6-qgpNv4PNo2eqogsO_Y8w1qkATxLo6wh95gIpIlSxfIsd4DRbBkDlmhT_dYnw6YCsiNRFR3uMFo5s2vude6YVzkipxulfYElJnGWK_7nYjxxysEXYZpf-OXSJCHPOIBoOZVZiRWoYKNJ21sIJcmZu1hHY0B6Y31h-lirTOk75HgIky6qmhhfvbVUMGd9QSQ"/>
+<div class="absolute inset-0 bg-gradient-to-b from-asphalt-900/40 via-transparent to-asphalt-900"></div>
+<div class="absolute inset-0 bg-asphalt-900/30 backdrop-blur-[2px]"></div>
+</div>
+<!-- Hero Content -->
+<div class="relative z-10 text-center px-margin-mobile md:px-margin-desktop max-w-4xl mx-auto flex flex-col items-center">
+<div class="inline-block bg-primary-container/20 border border-primary-container/50 rounded-full px-4 py-1.5 mb-6 backdrop-blur-md">
+<span class="font-label-caps text-label-caps text-electric-blue tracking-widest">전국 감성 드라이브 코스</span>
+</div>
+<h1 class="font-display-hero text-[48px] md:text-display-hero italic text-white-glare mb-4 neon-text-glow drop-shadow-2xl">
+                DRIVE MAP
+            </h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant mb-10 max-w-2xl mx-auto drop-shadow-md">
+                답답한 도심을 벗어나<br/>
+                완벽한 궤적을 그리며 달려보세요
+            </p>
+<button class="gradient-button text-white-glare font-headline-md text-body-lg px-10 py-4 rounded-full flex items-center gap-3 neon-glow group">
+                드라이브 시작하기 <span class="text-2xl group-hover:translate-x-1 transition-transform">🏁</span>
+</button>
+<!-- Quick App Link -->
+<div class="mt-16 glass-panel rounded-xl p-4 flex items-center gap-4 hover:border-electric-blue/50 transition-colors cursor-pointer group w-full max-w-md mx-auto">
+<div class="w-12 h-12 bg-asphalt-900 rounded-lg flex items-center justify-center border border-asphalt-700 group-hover:border-electric-blue">
+<span class="material-symbols-outlined text-electric-blue text-3xl">sports_motorsports</span>
+</div>
+<div class="text-left flex-1">
+<h3 class="font-body-md font-semibold text-white-glare flex items-center gap-2">
+                         앱으로 1초만에 접속하기 <span class="bg-electric-blue text-asphalt-900 text-xs px-2 py-0.5 rounded-sm font-bold">무료</span>
+</h3>
+<p class="font-label-caps text-[10px] text-on-surface-variant mt-1">바탕화면에 설치하고 언제든 바로 꺼내보세요!</p>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant group-hover:text-electric-blue transition-colors">arrow_forward</span>
+</div>
+</div>
+</section>
+<!-- Main Content: Layout Grid -->
+<main class="w-full bg-asphalt-900 pb-24 pt-12 relative z-20">
+<div class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop">
+<!-- Bento Grid Layout for Categories -->
+<div class="mb-16">
+<div class="flex justify-between items-end mb-8">
+<h2 class="font-headline-md text-headline-md text-white-glare flex items-center gap-2">
+<span class="material-symbols-outlined text-electric-blue" style="font-variation-settings: 'FILL' 1;">explore</span>
+                        테마별 드라이브 코스
+                    </h2>
+<a class="font-body-md text-sm text-electric-blue hover:text-white-glare flex items-center gap-1 transition-colors" href="#">
+                        전체보기 <span class="material-symbols-outlined text-sm">chevron_right</span>
+</a>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+<!-- Category Card 1 -->
+<a class="group relative overflow-hidden rounded-2xl aspect-[4/3] border border-asphalt-700 hover:border-electric-blue transition-all duration-300" href="#">
+<div class="absolute inset-0 bg-asphalt-800" data-alt="A sleek, modern sports car driving down a winding mountain road at dusk. The scene is illuminated by the car's headlights and soft, ambient twilight. The aesthetic is cinematic and high-contrast, fitting a premium dark mode UI."></div>
+<div class="absolute inset-0 bg-gradient-to-t from-asphalt-900 via-asphalt-900/50 to-transparent opacity-80 group-hover:opacity-60 transition-opacity"></div>
+<div class="absolute bottom-0 left-0 p-6 w-full">
+<span class="text-3xl mb-2 block">👑</span>
+<h3 class="font-headline-md text-body-lg text-white-glare group-hover:text-electric-blue transition-colors">명예의 전당</h3>
+<p class="font-label-caps text-label-caps text-on-surface-variant mt-2">최고 평점 코스 모음</p>
+</div>
+</a>
+<!-- Category Card 2 -->
+<a class="group relative overflow-hidden rounded-2xl aspect-[4/3] border border-asphalt-700 hover:border-electric-blue transition-all duration-300" href="#">
+<div class="absolute inset-0 bg-asphalt-800" data-alt="A scenic coastal road viewed from above during a vibrant sunset. The road hugs the rugged coastline, with deep blue ocean waves crashing against the rocks. Warm orange and purple hues fill the sky. The image has a slight vignette to focus on the road."></div>
+<div class="absolute inset-0 bg-gradient-to-t from-asphalt-900 via-asphalt-900/50 to-transparent opacity-80 group-hover:opacity-60 transition-opacity"></div>
+<div class="absolute bottom-0 left-0 p-6 w-full">
+<span class="text-3xl mb-2 block">🌸</span>
+<h3 class="font-headline-md text-body-lg text-white-glare group-hover:text-electric-blue transition-colors">봄꽃 드라이브</h3>
+<p class="font-label-caps text-label-caps text-on-surface-variant mt-2">시즌 한정 벚꽃 로드</p>
+</div>
+</a>
+<!-- Category Card 3 -->
+<a class="group relative overflow-hidden rounded-2xl aspect-[4/3] border border-asphalt-700 hover:border-electric-blue transition-all duration-300" href="#">
+<div class="absolute inset-0 bg-asphalt-800" data-alt="A wide, straight, and well-paved highway passing through a serene forest setting. The lighting is bright and clear, indicating safe driving conditions. The surrounding trees are lush green, creating a calm and inviting atmosphere for beginner drivers."></div>
+<div class="absolute inset-0 bg-gradient-to-t from-asphalt-900 via-asphalt-900/50 to-transparent opacity-80 group-hover:opacity-60 transition-opacity"></div>
+<div class="absolute bottom-0 left-0 p-6 w-full">
+<span class="text-3xl mb-2 block">🚗</span>
+<h3 class="font-headline-md text-body-lg text-white-glare group-hover:text-electric-blue transition-colors">초보운전 안심</h3>
+<p class="font-label-caps text-label-caps text-on-surface-variant mt-2">넓고 안전한 직진 위주</p>
+</div>
+</a>
+<!-- Category Card 4 -->
+<a class="group relative overflow-hidden rounded-2xl aspect-[4/3] border border-asphalt-700 hover:border-electric-blue transition-all duration-300" href="#">
+<div class="absolute inset-0 bg-asphalt-800" data-alt="A futuristic cityscape at night viewed from inside a car driving on a highway. Bright neon lights in blues and pinks blur past, creating a sense of speed and urban energy. The dashboard is subtly visible, framing the vibrant city view ahead."></div>
+<div class="absolute inset-0 bg-gradient-to-t from-asphalt-900 via-asphalt-900/50 to-transparent opacity-80 group-hover:opacity-60 transition-opacity"></div>
+<div class="absolute bottom-0 left-0 p-6 w-full">
+<span class="text-3xl mb-2 block">🌃</span>
+<h3 class="font-headline-md text-body-lg text-white-glare group-hover:text-electric-blue transition-colors">야경 드라이브</h3>
+<p class="font-label-caps text-label-caps text-on-surface-variant mt-2">도시의 불빛을 따라서</p>
+</div>
+</a>
+</div>
+</div>
+<!-- Map & List Split View -->
+<div class="flex flex-col lg:flex-row gap-8 h-[800px]">
+<!-- Left Sidebar: Course List & Filters -->
+<div class="w-full lg:w-96 flex flex-col gap-4 h-full">
+<!-- Search & Filter -->
+<div class="glass-panel rounded-xl p-4 flex flex-col gap-4">
+<div class="relative">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant">search</span>
+<input class="w-full bg-asphalt-900 border border-asphalt-700 rounded-lg pl-10 pr-4 py-3 text-white-glare placeholder-on-surface-variant focus:border-electric-blue focus:ring-1 focus:ring-electric-blue transition-colors font-body-md" placeholder="지역, 코스명 검색..." type="text"/>
+</div>
+<!-- Region Chips -->
+<div class="flex flex-wrap gap-2">
+<button class="px-4 py-1.5 rounded-full bg-electric-blue text-asphalt-900 font-label-caps text-label-caps font-bold">전국</button>
+<button class="px-4 py-1.5 rounded-full border border-outline-variant text-on-surface-variant hover:border-electric-blue hover:text-electric-blue font-label-caps text-label-caps transition-colors">서울/경기</button>
+<button class="px-4 py-1.5 rounded-full border border-outline-variant text-on-surface-variant hover:border-electric-blue hover:text-electric-blue font-label-caps text-label-caps transition-colors">강원</button>
+<button class="px-4 py-1.5 rounded-full border border-outline-variant text-on-surface-variant hover:border-electric-blue hover:text-electric-blue font-label-caps text-label-caps transition-colors">제주</button>
+</div>
+<div class="flex justify-between items-center mt-2 border-t border-asphalt-700 pt-4">
+<span class="font-label-caps text-label-caps text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-sm">sort</span> 내 주변순 정렬
+                            </span>
+<button class="text-on-surface-variant hover:text-white-glare">
+<span class="material-symbols-outlined">filter_list</span>
+</button>
+</div>
+</div>
+<!-- Course List -->
+<div class="flex-1 overflow-y-auto pr-2 space-y-4 custom-scrollbar">
+<!-- List Item 1 (Active) -->
+<div class="bg-asphalt-800 border-l-4 border-track-orange rounded-r-xl p-4 cursor-pointer hover:bg-asphalt-700/50 transition-colors group relative overflow-hidden">
+<div class="absolute right-0 top-0 w-24 h-full bg-gradient-to-l from-track-orange/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+<div class="flex justify-between items-start mb-2 relative z-10">
+<h4 class="font-headline-md text-body-lg text-white-glare group-hover:text-track-orange transition-colors">북악스카이웨이</h4>
+<span class="material-symbols-outlined text-track-orange text-sm">favorite</span>
+</div>
+<p class="font-body-md text-sm text-on-surface-variant mb-3 relative z-10">서울 도심의 야경을 한눈에 담을 수 있는 대표적인 코스.</p>
+<div class="flex items-center gap-3 relative z-10">
+<span class="bg-surface-container py-1 px-2 rounded font-label-caps text-[10px] text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-[12px]">directions_car</span> 15km
+                                </span>
+<span class="bg-surface-container py-1 px-2 rounded font-label-caps text-[10px] text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-[12px]">schedule</span> 30분
+                                </span>
+</div>
+</div>
+<!-- List Item 2 -->
+<div class="bg-asphalt-800 border border-asphalt-700 rounded-xl p-4 cursor-pointer hover:border-electric-blue transition-colors group">
+<div class="flex justify-between items-start mb-2">
+<h4 class="font-headline-md text-body-lg text-white-glare group-hover:text-electric-blue transition-colors">호명산 와인딩</h4>
+<span class="material-symbols-outlined text-on-surface-variant text-sm group-hover:text-white-glare">favorite_border</span>
+</div>
+<p class="font-body-md text-sm text-on-surface-variant mb-3">연속된 코너와 울창한 숲이 어우러진 다이내믹 코스.</p>
+<div class="flex items-center gap-3">
+<span class="bg-surface-container py-1 px-2 rounded font-label-caps text-[10px] text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-[12px]">directions_car</span> 22km
+                                </span>
+<span class="bg-surface-container py-1 px-2 rounded font-label-caps text-[10px] text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-[12px]">schedule</span> 45분
+                                </span>
+</div>
+</div>
+<!-- List Item 3 -->
+<div class="bg-asphalt-800 border border-asphalt-700 rounded-xl p-4 cursor-pointer hover:border-electric-blue transition-colors group">
+<div class="flex justify-between items-start mb-2">
+<h4 class="font-headline-md text-body-lg text-white-glare group-hover:text-electric-blue transition-colors">시화방조제 달리기</h4>
+<span class="material-symbols-outlined text-on-surface-variant text-sm group-hover:text-white-glare">favorite_border</span>
+</div>
+<p class="font-body-md text-sm text-on-surface-variant mb-3">탁 트인 바다를 양옆에 두고 달리는 시원한 직선 주로.</p>
+<div class="flex items-center gap-3">
+<span class="bg-surface-container py-1 px-2 rounded font-label-caps text-[10px] text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-[12px]">directions_car</span> 12km
+                                </span>
+<span class="bg-surface-container py-1 px-2 rounded font-label-caps text-[10px] text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-[12px]">schedule</span> 20분
+                                </span>
+</div>
+</div>
+</div>
+</div>
+<!-- Right Canvas: Map View Placeholder -->
+<div class="flex-1 bg-surface-container-low rounded-2xl border border-asphalt-700 relative overflow-hidden hidden md:flex items-center justify-center">
+<!-- Map Background pattern (Simulated) -->
+<div class="absolute inset-0 opacity-20" style="background-image: radial-gradient(#3e4850 1px, transparent 1px); background-size: 20px 20px;"></div>
+<!-- Map UI Overlay -->
+<div class="absolute top-4 right-4 flex flex-col gap-2 z-10">
+<button class="w-10 h-10 bg-asphalt-800 border border-asphalt-700 rounded-lg flex items-center justify-center text-white-glare hover:text-electric-blue hover:border-electric-blue transition-colors shadow-lg">
+<span class="material-symbols-outlined">add</span>
+</button>
+<button class="w-10 h-10 bg-asphalt-800 border border-asphalt-700 rounded-lg flex items-center justify-center text-white-glare hover:text-electric-blue hover:border-electric-blue transition-colors shadow-lg">
+<span class="material-symbols-outlined">remove</span>
+</button>
+<button class="w-10 h-10 bg-asphalt-800 border border-asphalt-700 rounded-lg flex items-center justify-center text-electric-blue hover:bg-asphalt-700 mt-2 shadow-lg">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">my_location</span>
+</button>
+</div>
+<!-- Placeholder Content when no route selected -->
+<div class="relative z-10 text-center flex flex-col items-center glass-panel p-8 rounded-2xl max-w-sm">
+<span class="material-symbols-outlined text-6xl text-on-surface-variant mb-4 opacity-50">map</span>
+<p class="font-body-lg text-white-glare mb-2">지도에서 코스를 선택해주세요</p>
+<p class="font-body-md text-sm text-on-surface-variant">왼쪽 목록에서 코스를 클릭하시면<br/>상세한 경로와 뷰를 확인할 수 있습니다.</p>
+</div>
+<!-- Simulated Active Marker -->
+<div class="absolute top-1/2 left-1/3 transform -translate-x-1/2 -translate-y-1/2 hidden">
+<div class="w-6 h-6 bg-electric-blue rounded-full flex items-center justify-center shadow-[0_0_20px_rgba(14,165,233,0.8)] relative">
+<div class="absolute inset-0 rounded-full border-2 border-electric-blue animate-ping opacity-75"></div>
+<span class="w-2 h-2 bg-white-glare rounded-full"></span>
+</div>
+</div>
+</div>
+</div>
+<!-- Promotional Banner -->
+<div class="mt-16 bg-gradient-to-r from-surface-container-high to-asphalt-800 rounded-2xl border border-asphalt-700 p-8 flex flex-col md:flex-row items-center justify-between gap-6 overflow-hidden relative">
+<div class="absolute right-0 top-0 h-full w-1/3 bg-gradient-to-l from-primary/10 to-transparent"></div>
+<div class="relative z-10">
+<span class="font-label-caps text-label-caps text-electric-blue mb-2 block tracking-widest">SPONSORED</span>
+<h3 class="font-headline-md text-headline-md text-white-glare mb-2">여름 물놀이 스팟 찾기</h3>
+<p class="font-body-md text-on-surface-variant">전국 계곡, 해수욕장, 수영장을 씨맵에서 한눈에!</p>
+</div>
+<a class="relative z-10 bg-asphalt-900 border border-asphalt-700 hover:border-electric-blue text-white-glare px-6 py-3 rounded-lg font-body-md transition-all flex items-center gap-2 group" href="#">
+                     확인하러 가기 <span class="material-symbols-outlined group-hover:translate-x-1 transition-transform">arrow_forward</span>
+</a>
+</div>
+</div>
+</main>
+<!-- Footer Component from JSON -->
+<footer class="bg-asphalt-900 w-full py-12 border-t border-asphalt-800 relative z-30">
+<div class="flex flex-col md:flex-row justify-between items-center px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto gap-6 md:gap-0">
+<!-- Brand & Copyright -->
+<div class="flex flex-col items-center md:items-start">
+<span class="font-display-hero text-body-lg italic text-asphalt-700 mb-2">DRIVE MAP</span>
+<p class="font-body-md text-body-md text-on-surface-variant text-sm">© 2024 DRIVE MAP. Engineered for Speed.</p>
+</div>
+<!-- Links -->
+<div class="flex flex-wrap justify-center gap-6">
+<a class="font-body-md text-body-md text-on-surface-variant hover:text-electric-blue transition-colors duration-200" href="#">Terms of Service</a>
+<a class="font-body-md text-body-md text-on-surface-variant hover:text-electric-blue transition-colors duration-200" href="#">Privacy Policy</a>
+<a class="font-body-md text-body-md text-on-surface-variant hover:text-electric-blue transition-colors duration-200" href="#">Track Guidelines</a>
+<a class="font-body-md text-body-md text-on-surface-variant hover:text-electric-blue transition-colors duration-200" href="#">Support</a>
+</div>
+</div>
+</footer>
+<!-- Floating Action Button (Feedback) -->
+<button class="fixed bottom-8 left-8 z-50 bg-asphalt-800 border border-outline-variant hover:border-electric-blue text-white-glare px-4 py-2.5 rounded-full flex items-center gap-2 shadow-lg hover:-translate-y-1 transition-all duration-300">
+<span class="text-lg">💡</span>
+<span class="font-body-md text-sm">제안 및 문의</span>
+</button>
+</body></html>
