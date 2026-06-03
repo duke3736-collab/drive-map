@@ -1541,16 +1541,37 @@ export default function Home() {
             </h2>
 
             {/* 검색창 */}
-            <div className="relative mb-3 w-full">
+            <form 
+              onSubmit={(e) => {
+                e.preventDefault();
+                if (document.activeElement instanceof HTMLElement) {
+                  document.activeElement.blur();
+                }
+              }}
+              className="relative mb-3 w-full"
+            >
               <input 
                 type="text" 
                 placeholder="지역, 코스명 검색 (예: 북한강)" 
                 value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
+                onChange={(e) => {
+                  const val = e.target.value;
+                  setSearchQuery(val);
+                  closeCourseAndReturnToList();
+                  if (isMobile) {
+                    setActiveTab('list');
+                  }
+                  if (val.trim() !== '') {
+                    setActiveTheme('all');
+                    setActiveRegion('all');
+                    setActiveCuration(null);
+                  }
+                }}
                 className="w-full bg-slate-900 border border-slate-800 text-white pl-10 pr-10 py-3 rounded-xl focus:outline-none focus:border-sky-500 focus:ring-1 focus:ring-sky-500 transition-all placeholder:text-slate-600 text-sm"
               />
               {searchQuery ? (
                 <button
+                  type="button"
                   onClick={() => setSearchQuery('')}
                   className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-white bg-slate-800 rounded-full w-5 h-5 flex items-center justify-center text-[10px] font-black"
                 >
@@ -1559,7 +1580,7 @@ export default function Home() {
               ) : (
                 <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500 text-sm">🔍</span>
               )}
-            </div>
+            </form>
 
             {/* 지역 필터 칩 */}
             <div className="flex overflow-x-auto gap-1.5 pb-2 scrollbar-hide">
@@ -1820,19 +1841,34 @@ export default function Home() {
             <span>🚗</span> Drive Map
           </h1>
 
-          <div className="relative mb-4 w-full shrink-0">
+          <form 
+            onSubmit={(e) => {
+              e.preventDefault();
+              if (document.activeElement instanceof HTMLElement) {
+                document.activeElement.blur();
+              }
+            }}
+            className="relative mb-4 w-full shrink-0"
+          >
             <input 
               type="text" 
               placeholder="지역, 코스명, 태그 검색 (예: 북한강)" 
               value={searchQuery}
               onChange={(e) => {
-                setSearchQuery(e.target.value);
+                const val = e.target.value;
+                setSearchQuery(val);
                 closeCourseAndReturnToList();
+                if (val.trim() !== '') {
+                  setActiveTheme('all');
+                  setActiveRegion('all');
+                  setActiveCuration(null);
+                }
               }}
               className="w-full bg-slate-800/80 border border-slate-700 text-white pl-4 pr-10 py-3 rounded-xl focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all placeholder:text-slate-500 shadow-inner"
             />
             {searchQuery ? (
               <button
+                type="button"
                 onClick={() => {
                   setSearchQuery('');
                   closeCourseAndReturnToList();
@@ -1867,7 +1903,7 @@ export default function Home() {
                 )}
               </button>
             </div>
-          </div>
+          </form>
 
           {/* === SCROLLABLE WRAPPER START === */}
           <div className="flex-1 overflow-y-auto custom-scrollbar flex flex-col relative pr-2 -mr-2">
