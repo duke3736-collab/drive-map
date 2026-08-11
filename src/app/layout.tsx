@@ -90,9 +90,6 @@ export default function RootLayout({
         className="bg-slate-900 text-slate-100 font-sans antialiased selection:bg-indigo-500 selection:text-white"
       >
         <main suppressHydrationWarning className="w-full min-h-screen bg-slate-950 relative flex flex-col">
-          {/* 상단 접이식 애드센스 광고 배너 */}
-          <CollapsibleAdBanner position="top" dataAdSlot="4564542487" />
-
           <div className="flex-1 relative w-full h-full">
             {children}
           </div>
