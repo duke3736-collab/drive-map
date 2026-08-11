@@ -1,6 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import Script from "next/script";
-import CollapsibleAdBanner from "@/components/CollapsibleAdBanner";
+import BottomAnchorAd from "@/components/BottomAnchorAd";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -78,9 +78,7 @@ export default function RootLayout({
               window.dataLayer = window.dataLayer || [];
               function gtag(){dataLayer.push(arguments);}
               gtag('js', new Date());
-              gtag('config', 'G-HXGF6RRRQT', {
-                page_path: window.location.pathname,
-              });
+              gtag('config', '${process.env.NEXT_PUBLIC_GA_ID}');
             `,
           }}
         />
@@ -90,12 +88,12 @@ export default function RootLayout({
         className="bg-slate-900 text-slate-100 font-sans antialiased selection:bg-indigo-500 selection:text-white"
       >
         <main suppressHydrationWarning className="w-full min-h-screen bg-slate-950 relative flex flex-col">
-          <div className="flex-1 relative w-full h-full">
+          <div className="flex-1 relative w-full h-full pb-16">
             {children}
           </div>
 
-          {/* 하단 접이식 애드센스 광고 배너 */}
-          <CollapsibleAdBanner position="bottom" dataAdSlot="4564542487" />
+          {/* 사진과 동일한 하단 쏙 내려가는 플로팅 애드센스 광고 */}
+          <BottomAnchorAd dataAdSlot="4564542487" />
         </main>
       </body>
     </html>
