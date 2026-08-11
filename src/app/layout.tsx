@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import Script from "next/script";
+import CollapsibleAdBanner from "@/components/CollapsibleAdBanner";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -86,10 +87,18 @@ export default function RootLayout({
       </head>
       <body 
         suppressHydrationWarning 
-        className="bg-slate-900 text-slate-100 font-sans antialiased selection:bg-indigo-500 selection:text-white overscroll-none"
+        className="bg-slate-900 text-slate-100 font-sans antialiased selection:bg-indigo-500 selection:text-white"
       >
-        <main suppressHydrationWarning className="fixed inset-0 w-full h-full bg-slate-950 overflow-hidden">
-          {children}
+        <main suppressHydrationWarning className="w-full min-h-screen bg-slate-950 relative flex flex-col">
+          {/* 상단 접이식 애드센스 광고 배너 */}
+          <CollapsibleAdBanner position="top" dataAdSlot="4564542487" />
+
+          <div className="flex-1 relative w-full h-full">
+            {children}
+          </div>
+
+          {/* 하단 접이식 애드센스 광고 배너 */}
+          <CollapsibleAdBanner position="bottom" dataAdSlot="4564542487" />
         </main>
       </body>
     </html>
