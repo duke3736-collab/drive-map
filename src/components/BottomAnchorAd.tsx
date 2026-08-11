@@ -28,7 +28,7 @@ export default function BottomAnchorAd({
       {/* 광고 박스 (사진처럼 하단 중앙 둥근 플로팅 카드) */}
       {isOpen && (
         <div className="pointer-events-auto w-full bg-slate-900/95 backdrop-blur-xl border border-slate-700/80 shadow-[0_-10px_30px_rgba(0,0,0,0.5)] rounded-t-2xl p-2 flex justify-center items-center overflow-hidden transition-all duration-300">
-          <AdBanner dataAdSlot={dataAdSlot} dataAdFormat="auto" dataFullWidthResponsive={true} className="my-0 border-none shadow-none" />
+          <AdBanner dataAdSlot={dataAdSlot} dataAdFormat="auto" dataFullWidthResponsive={true} />
         </div>
       )}
     </div>
