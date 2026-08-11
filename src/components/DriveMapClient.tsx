@@ -1233,26 +1233,16 @@ export default function Home() {
           </button>
         </div>
         
-        {/* 쿠팡 파트너스 배너 (수익화) */}
+        {/* 구글 애드센스 수익화 배너 */}
         <div className="mt-6 mb-2">
-          <a 
-            href="https://link.coupang.com/a/d9GFO0yULs" 
-            target="_blank" 
-            rel="noopener noreferrer"
-            className="block w-full bg-gradient-to-r from-pink-500 to-rose-500 rounded-xl p-4 shadow-lg hover:-translate-y-1 transition-transform relative overflow-hidden group"
-          >
-            <div className="absolute -right-4 -top-4 w-20 h-20 bg-white/20 rounded-full blur-xl group-hover:bg-white/30 transition-colors"></div>
-            <div className="flex items-center justify-between relative z-10">
-              <div>
-                <p className="text-white font-black text-sm mb-1">드라이브 갈 때 이거 챙겼어? 👀</p>
-                <p className="text-pink-100 text-xs font-semibold">차량 필수템 / 간식 로켓배송</p>
-              </div>
-              <div className="bg-white text-rose-500 w-8 h-8 rounded-full flex items-center justify-center font-black shadow-md group-hover:scale-110 transition-transform">
-                ➔
-              </div>
-            </div>
-            <p className="text-[8px] text-white/50 mt-2 text-right">이 포스팅은 쿠팡 파트너스 활동의 일환으로, 이에 따른 일정액의 수수료를 제공받습니다.</p>
-          </a>
+          <div className="w-full bg-slate-900/80 backdrop-blur-lg rounded-2xl border border-slate-700/80 p-3 shadow-lg flex flex-col justify-center items-center">
+            <span className="text-[10px] text-slate-500 font-bold mb-1">SPONSORED</span>
+            <AdBanner 
+              dataAdSlot="4564542487" 
+              dataAdFormat="auto" 
+              dataFullWidthResponsive={true} 
+            />
+          </div>
         </div>
 
         {/* 가상 주행 모드 버튼 (데스크톱/PC 전용) */}
@@ -2211,57 +2201,7 @@ export default function Home() {
                 />
               </div>
             </div>
-            
-            {/* 두 번째 커스텀 배너 (쿠팡 파트너스 자동차용품 수동 배너) */}
-            <a
-              href="https://link.coupang.com/a/d9aFVtygcC" 
-              target="_blank"
-              rel="noopener noreferrer" 
-              className="group relative w-full h-[140px] bg-slate-900/80 backdrop-blur-lg rounded-2xl border border-slate-700/80 p-4 shadow-[0_10px_30px_rgba(0,0,0,0.5)] overflow-hidden flex flex-col justify-end shrink-0 transition-all hover:-translate-y-1 hover:shadow-sky-500/20"
-            >
-              {/* 자동차용품 배경 이미지 (어둡게 처리) */}
-              <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1601362840469-51e4d8d58785?q=80&w=800&auto=format&fit=crop')] bg-cover bg-center opacity-40 group-hover:opacity-60 group-hover:scale-110 transition-all duration-700"></div>
-              <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-900/70 to-transparent"></div>
-              
-              <div className="relative z-10 flex flex-col gap-1">
-                <span className="bg-sky-500 text-white text-[9px] font-black px-1.5 py-0.5 rounded w-fit tracking-wider shadow-lg">CAR ACCESSORIES</span>
-                <h3 className="text-white font-black text-base leading-tight mt-1 group-hover:text-sky-100 transition-colors drop-shadow-md">
-                  드라이브 필수 차량용품<br/>로켓배송 기획전
-                </h3>
-                <p className="text-slate-300 text-[11px] font-medium mt-1 flex items-center gap-1">
-                  쿠팡 자동차용품 바로가기 <span className="group-hover:translate-x-1 transition-transform">→</span>
-                </p>
-              </div>
-            </a>
 
-            {/* 세 번째 커스텀 배너 (쿠팡 파트너스 호텔/여행 수동 배너) */}
-            <a
-              href="https://link.coupang.com/a/d9adnYXKtE" 
-              target="_blank"
-              rel="noopener noreferrer" 
-              className="group relative w-full h-[140px] bg-slate-900/80 backdrop-blur-lg rounded-2xl border border-slate-700/80 p-4 shadow-[0_10px_30px_rgba(0,0,0,0.5)] overflow-hidden flex flex-col justify-end shrink-0 transition-all hover:-translate-y-1 hover:shadow-rose-500/20"
-            >
-              {/* 호캉스 배경 이미지 (어둡게 처리) */}
-              <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1566073771259-6a8506099945?q=80&w=800&auto=format&fit=crop')] bg-cover bg-center opacity-40 group-hover:opacity-60 group-hover:scale-110 transition-all duration-700"></div>
-              <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-900/70 to-transparent"></div>
-              
-              <div className="relative z-10 flex flex-col gap-1">
-                <span className="bg-rose-500 text-white text-[9px] font-black px-1.5 py-0.5 rounded w-fit tracking-wider shadow-lg">HOTEL & RESORT</span>
-                <h3 className="text-white font-black text-base leading-tight mt-1 group-hover:text-rose-100 transition-colors drop-shadow-md">
-                  드라이브 코스 주변<br/>전국 호캉스 특가 예약
-                </h3>
-                <p className="text-slate-300 text-[11px] font-medium mt-1 flex items-center gap-1">
-                  쿠팡 트래블 바로가기 <span className="group-hover:translate-x-1 transition-transform">→</span>
-                </p>
-              </div>
-            </a>
-            
-            {/* 쿠팡 파트너스 대가성 문구 (법적 의무) */}
-            <div className="w-full text-center py-3 px-3 bg-slate-900/60 backdrop-blur-lg rounded-xl border border-slate-700/50 shrink-0 mt-2">
-              <p className="text-[11px] text-slate-400 leading-relaxed">
-                이 포스팅은 쿠팡 파트너스 활동의 일환으로,<br/>이에 따른 일정액의 수수료를 제공받습니다.
-              </p>
-            </div>
           </div>
         )}
       </div>
